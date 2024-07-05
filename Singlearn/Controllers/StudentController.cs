@@ -25,6 +25,11 @@ namespace SinglearnWeb.Controllers
             return View();
         }
 
+        public IActionResult lessonmain()
+        {
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> profile(string id)
         {
