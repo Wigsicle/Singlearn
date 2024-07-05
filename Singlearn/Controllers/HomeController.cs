@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Singlearn.Models;
+using SinglearnWeb.Models;
 using System.Diagnostics;
 
-namespace Singlearn.Controllers
+namespace SinglearnWeb.Controllers
 {
     public class HomeController : Controller
     {
@@ -18,10 +18,7 @@ namespace Singlearn.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

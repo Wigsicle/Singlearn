@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>@ViewData["StudentTitle"]</title
+    <link rel="icon" href="~/assets/images/poop.png">
+    <link rel="stylesheet" href="~/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="~/assets/css/templatemo-digimedia-v3.css">
+    <link rel="stylesheet" href="~/assets/css/animated.css">
+    <link rel="stylesheet" href="~/assets/css/owl.css">
+    <link rel="stylesheet" href="~/css/demo.css">
+    <link rel="stylesheet" href="~/css/core.css" class="template-customizer-core-css">
+    <link rel="stylesheet" href="~/css/theme-default.css" class="template-customizer-theme-css">
+    <link rel="stylesheet" href="~/css/boxicons.css">
+     <link rel="stylesheet" href="~/assets/vendor/perfect-scrollbar/perfect-scrollbar.css" />
+     <script src="~/assets/js/helpers.js"></script>
+     <script src="~/assets/js/config.js"></script>
+     
+
+</head>
+<body>
+    <!-- ***** Preloader Start ***** -->
+    <div id="js-preloader" class="js-preloader">
+        <div class="preloader-inner">
+            <span class="dot"></span>
+            <div class="dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="index.html" class="logo">
+                            <span style="color: #9900FF;font-size: x-large;font-weight: bold;text-shadow: 2px 2px 5px grey;">SingLe</span><span style="color:#4da6e7;font-size: x-large;font-weight: bold;text-shadow: 2px 2px 5px grey;">arn</span>
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li><a href="#" disabled><i class="fas fa fa-bell-o"></i></a></li>
+                            <li>
+                                <div class="dropdown show">
+                                    <a class="dropdown-toggle no-arrow" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disable>
+                                        User 1
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right mt-4" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item" href="~/Student/profile">Profile</a>
+                                        <a class="dropdown-item" href="/">Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><a style="cursor: default;" disabled></a></li>
+                        </ul>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>  
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+    <div class="layout-container">
+    <div class="d-flex justify-content-start">
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" style="padding-top: 110px">
+
+          <ul class="menu-inner py-1">
+            <!-- Dashboard -->
+            <li class="menu-item">
+              <a href="~/student/home" class="menu-link">
+                <i class="menu-icon tf-icons fa fa-home"></i>
+                <div data-i18n="Analytics">Home</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="" class="menu-link">
+                <i class="menu-icon tf-icons fa fa-book"></i>
+                <div data-i18n="Analytics">Learning Material</div>
+              </a>
+            </li>
+            
+          </ul>
+        </aside>
+        <main role="main">
+        @RenderBody()
+        
+        </main>
+    </div>
+    </div>
+    
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright © 2024 SingLearn All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Scripts -->
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/js/owl-carousel.js"></script>
+    <script src="~/assets/js/animation.js"></script>
+    <script src="~/assets/js/imagesloaded.js"></script>
+    <script src="~/assets/js/custom.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/vendor/jquery1/jquery.js"></script>
+    <script src="~/assets/vendor/popper/popper.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/assets/vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+    <script src="~/js/menu.js"></script>
+    <!-- endbuild -->
+     <!-- Main JS -->
+    <script src="~/assets/js/main.js"></script>
+    <script src="../assets/vendor/libs/masonry/masonry.js"></script>
+
+    
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

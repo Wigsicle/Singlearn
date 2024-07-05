@@ -1,4 +1,4 @@
-namespace Singlearn.Models
+namespace SinglearnWeb.Models
 {
     public class ErrorViewModel
     {
