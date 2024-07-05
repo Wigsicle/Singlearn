@@ -1,8 +1,11 @@
-﻿namespace SinglearnWeb.Models.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SinglearnWeb.Models.Entities
 {
     public class User
     {
-        public Guid id { get; set; }
+        [Key]
+        public Guid user_id { get; set; }
         public string email { get; set; }
 
         public string password { get; set; }

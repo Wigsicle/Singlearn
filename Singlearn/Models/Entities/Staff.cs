@@ -1,19 +1,16 @@
-﻿namespace SinglearnWeb.Models.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SinglearnWeb.Models.Entities
 {
     public class Staff
     {
-        public string staffId { get; set; }
+        [Key]
+        public string staff_id { get; set; }
 
-        public string userId { get; set; }
+        public string user_id { get; set; }
 
         public string name { get; set; }
 
-        public string contactNo { get; set; }
-
-        public string address { get; set; }
-
-        public DateTime dob { get; set; }
-
-        public string gender { get; set; }
+        public string contact_no { get; set; }
     }
 }
