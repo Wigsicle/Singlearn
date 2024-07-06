@@ -1,7 +1,10 @@
-﻿namespace Singlearn.Models.Entities
+﻿using System.ComponentModel.DataAnnotations;
+namespace Singlearn.Models.Entities
 {
+    
     public class Subject
     {
+        [Key]
         public int subject_id { get; set; }
         public string name { get; set; }
 

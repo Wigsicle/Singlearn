@@ -13,7 +13,7 @@ namespace SinglearnWeb.Data
         }
 
         public DbSet<Student> Students { get; set; }
-        public DbSet<Staff> Staffs { get; set; }
+        public DbSet<Staff> Staff { get; set; }
 
         public DbSet<User> Users { get; set; }
 
@@ -22,6 +22,42 @@ namespace SinglearnWeb.Data
         public DbSet<SubjectTeacherClass> SubjectTeacherClasses { get; set; }
         public DbSet<Template> Templates { get; set; }
         public DbSet<STCTemplate> STCTemplates { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<SubjectTeacherClass>()
+                .HasOne(stc => stc.Subject)
+                .WithMany()
+                .HasForeignKey(stc => stc.subject_id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SubjectTeacherClass>()
+                .HasOne(stc => stc.Class)
+                .WithMany()
+                .HasForeignKey(stc => stc.class_id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SubjectTeacherClass>()
+                .HasOne(stc => stc.Staff)
+                .WithMany()
+                .HasForeignKey(stc => stc.teacher_id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Define primary keys if not done via data annotations
+            modelBuilder.Entity<Subject>()
+                .HasKey(s => s.subject_id);
+
+            modelBuilder.Entity<Class>()
+                .HasKey(c => c.class_id);
+
+            modelBuilder.Entity<Staff>()
+                .HasKey(t => t.staff_id);
+
+            // Define other entity configurations here
+            
+        }
 
 
 

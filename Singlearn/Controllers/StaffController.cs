@@ -50,23 +50,34 @@ namespace SinglearnWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> TemplateEditor(int teacherId)
         {
-            ViewBag.Subjects = await dbContext.SubjectTeacherClasses
-                .Include(stc => stc.Subject)
-                .Where(stc => stc.teacher_id.Equals(teacherId))
-                .Select(stc => stc.Subject)
-                .Distinct()
-                .ToListAsync();
+            try
+            {
 
-            ViewBag.Classes = await dbContext.SubjectTeacherClasses
-                .Include(stc => stc.Class)
-                .Where(stc => stc.teacher_id.Equals(teacherId))
-                .Select(stc => stc.Class)
-                .Distinct()
-                .ToListAsync();
 
-            ViewBag.Templates = await dbContext.Templates.ToListAsync();
+                ViewBag.Subjects = await dbContext.SubjectTeacherClasses
+                    .Include(stc => stc.Subject)
+                    .Where(stc => stc.teacher_id.Equals(teacherId))
+                    .Select(stc => stc.Subject)
+                    .Distinct()
+                    .ToListAsync();
 
-            return View();
+                ViewBag.Classes = await dbContext.SubjectTeacherClasses
+                    .Include(stc => stc.Class)
+                    .Where(stc => stc.teacher_id.Equals(teacherId))
+                    .Select(stc => stc.Class)
+                    .Distinct()
+                    .ToListAsync();
+
+                ViewBag.Templates = await dbContext.Templates.ToListAsync();
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception and show a meaningful error message
+                Console.WriteLine($"Error in TemplateEditor: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpPost]
@@ -117,7 +128,7 @@ namespace SinglearnWeb.Controllers
             var stc = await dbContext.SubjectTeacherClasses
                 .Include(stc => stc.Subject)
                 .Include(stc => stc.Class)
-                .Include(stc => stc.Teacher)
+                .Include(stc => stc.Staff)
                 .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id == classId);
 
             if (stc == null)
@@ -137,11 +148,6 @@ namespace SinglearnWeb.Controllers
             ViewBag.SubjectTeacherClasses = stc;
             return View((object)stcTemplate.Template.view_name);
         }
-
-
-
-
-
 
     }
 }

@@ -15,7 +15,7 @@ namespace Singlearn.Models.Entities
         public int class_id { get; set; }
 
         public Subject Subject { get; set; }
-        public Staff Teacher { get; set; }
+        public Staff Staff { get; set; }
         public Class Class { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace Singlearn.Models.Entities
 
         public int template_id { get; set; }
 
-        public SubjectTeacherClass SubjectTeacherClasses { get; set; }
+        public SubjectTeacherClass SubjectTeacherClass { get; set; }
         public Template Template { get; set; }
 
     }

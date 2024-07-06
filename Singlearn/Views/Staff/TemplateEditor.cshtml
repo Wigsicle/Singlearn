@@ -1,11 +1,12 @@
 ﻿@{
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
     ViewData["Title"] = "Template Editor";
 }
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Template Edtor</title>
+    <title>Template Editr</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         .main-body {
@@ -15,28 +16,10 @@
 
         .centered-form {
             max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .form-group {
             margin-bottom: 1.5rem;
-        }
-
-        .template-preview {
-            margin-top: 30px;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        .container {
-            position: relative;
-        }
-
-        #templatePreview {
-            min-height: 200px; /* Ensures there's space for the preview without shifting layout */
         }
     </style>
 </head>
@@ -49,16 +32,7 @@
                 <select id="subjectSelect" class="form-control">
                     @foreach (var subject in ViewBag.Subjects)
                     {
-                        <option value="@subject.Subject_id">@subject.name</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="classSelect">Select Class:</label>
-                <select id="classSelect" class="form-control">
-                    @foreach (var classItem in ViewBag.Classes) 
-                    {
-                        <option value="@classItem.class_id">@classItem.name</option>
+                        <option value="@subject.subject_id">@subject.name</option>
                     }
                 </select>
             </div>
@@ -73,7 +47,7 @@
                 </select>
             </div>
             <button id="saveTemplate" class="btn btn-primary btn-block">Save Template</button>
-            <div id="templatePreview" class="template-preview mt-4">
+            <div id="templatePreview" class="mt-4">
                 <p class="text-center">Please select a template to preview.</p>
             </div>
         </div>
@@ -87,6 +61,8 @@
                 if (templateId) {
                     $.get('/Staff/LoadTemplatePreview', { templateId: templateId }, function (data) {
                         $('#templatePreview').html(data);
+                    }).fail(function() {
+                        $('#templatePreview').html('<p class="text-center text-danger">Error loading template preview.</p>');
                     });
                 } else {
                     $('#templatePreview').html('<p class="text-center">Please select a template to preview.</p>');
@@ -95,11 +71,16 @@
 
             $('#saveTemplate').click(function () {
                 var subjectId = $('#subjectSelect').val();
-                var classId = $('#classSelect').val();
                 var templateId = $('#templateSelect').val();
-                $.post('/Staff/SaveTemplateSelection', { subjectId: subjectId, classId: classId, templateId: templateId }, function () {
-                    alert('Template saved successfully!');
-                });
+                if (subjectId && templateId) {
+                    $.post('/Staff/SaveTemplateSelection', { subjectId: subjectId, templateId: templateId }, function () {
+                        alert('Template saved successfully!');
+                    }).fail(function() {
+                        alert('Error saving template.');
+                    });
+                } else {
+                    alert('Please select a subject and a template.');
+                }
             });
         });
     </script>
