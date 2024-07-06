@@ -48,27 +48,39 @@ namespace SinglearnWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> TemplateEditor(int teacherId)
+        public async Task<IActionResult> TemplateEditor(string teacherId)
         {
             try
             {
+                var subjects = await dbContext.Subjects
+                .Join(dbContext.SubjectTeacherClasses,
+                subject => subject.subject_id,
+                stc => stc.subject_id,
+                (subject, stc) => new { Subject = subject, stc.teacher_id })
+                .Where(result => result.teacher_id.Equals(teacherId))
+                .Select(result => result.Subject)
+                .Distinct()
+                .ToListAsync();
 
+                ViewBag.Subjects = subjects;
 
-                ViewBag.Subjects = await dbContext.SubjectTeacherClasses
-                    .Include(stc => stc.Subject)
-                    .Where(stc => stc.teacher_id.Equals(teacherId))
-                    .Select(stc => stc.Subject)
-                    .Distinct()
-                    .ToListAsync();
+                var classes = await dbContext.SubjectTeacherClasses
+                .Include(stc => stc.Class)
+                .Where(stc => stc.teacher_id.Equals(teacherId))
+                .Select(stc => stc.Class)
+                .Distinct()
+                .ToListAsync();
 
-                ViewBag.Classes = await dbContext.SubjectTeacherClasses
-                    .Include(stc => stc.Class)
-                    .Where(stc => stc.teacher_id.Equals(teacherId))
-                    .Select(stc => stc.Class)
-                    .Distinct()
-                    .ToListAsync();
+                ViewBag.Classes = classes;
 
-                ViewBag.Templates = await dbContext.Templates.ToListAsync();
+                var templates = await dbContext.Templates.ToListAsync();
+                ViewBag.Templates = templates;
+
+                Console.WriteLine($"Subjects found: {subjects.Count}");
+                foreach (var subject in subjects)
+                {
+                    Console.WriteLine($"Subject: {subject}");
+                }
 
                 return View();
             }
@@ -79,6 +91,7 @@ namespace SinglearnWeb.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> SaveTemplateSelection(int subjectId, int classId, int templateId)
@@ -112,14 +125,36 @@ namespace SinglearnWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult LoadTemplatePreview(int templateId)
+        public async Task<IActionResult> LoadTemplatePreview(int templateId, int subjectId, int classId)
         {
-            var template = dbContext.Templates.FirstOrDefault(t => t.template_id == templateId);
-            if (template == null)
+            try
             {
-                return Content("Template not found.");
+                var template = await dbContext.Templates.FirstOrDefaultAsync(t => t.template_id == templateId);
+                if (template == null)
+                {
+                    Console.WriteLine("Template not found.");
+                    return Content("Template not found.");
+                }
+                Console.WriteLine($"Template found: {template.view_name}");
+
+                // Fetch SubjectTeacherClass data
+                var stc = await dbContext.SubjectTeacherClasses
+                    .Include(stc => stc.Subject)
+                    .Include(stc => stc.Class)
+                    .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id == classId);
+
+                if (stc == null)
+                {
+                    return Content("Subject or Class not found.");
+                }
+
+                return PartialView($"~/Views/Templates/{template.view_name}.cshtml", stc);
             }
-            return PartialView($"Templates/{template.view_name}");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in LoadTemplatePreview: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpGet]

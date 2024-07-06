@@ -27,36 +27,28 @@ namespace SinglearnWeb.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Staff>().ToTable("Staff");
+            modelBuilder.Entity<Subject>().ToTable("Subjects");
+            modelBuilder.Entity<Class>().ToTable("Classes");
+            modelBuilder.Entity<SubjectTeacherClass>().ToTable("SubjectTeacherClasses");
+            modelBuilder.Entity<Template>().ToTable("Templates");
+            modelBuilder.Entity<STCTemplate>().ToTable("STCTemplates");
+
             modelBuilder.Entity<SubjectTeacherClass>()
                 .HasOne(stc => stc.Subject)
-                .WithMany()
-                .HasForeignKey(stc => stc.subject_id)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(s => s.SubjectTeacherClasses)
+                .HasForeignKey(stc => stc.subject_id);
 
             modelBuilder.Entity<SubjectTeacherClass>()
                 .HasOne(stc => stc.Class)
-                .WithMany()
-                .HasForeignKey(stc => stc.class_id)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(c => c.SubjectTeacherClasses)
+                .HasForeignKey(stc => stc.class_id);
 
             modelBuilder.Entity<SubjectTeacherClass>()
                 .HasOne(stc => stc.Staff)
-                .WithMany()
-                .HasForeignKey(stc => stc.teacher_id)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(t => t.SubjectTeacherClasses)
+                .HasForeignKey(stc => stc.teacher_id);
 
-            // Define primary keys if not done via data annotations
-            modelBuilder.Entity<Subject>()
-                .HasKey(s => s.subject_id);
-
-            modelBuilder.Entity<Class>()
-                .HasKey(c => c.class_id);
-
-            modelBuilder.Entity<Staff>()
-                .HasKey(t => t.staff_id);
-
-            // Define other entity configurations here
-            
         }
 
 

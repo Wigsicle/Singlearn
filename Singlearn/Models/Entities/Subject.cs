@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace Singlearn.Models.Entities
 {
-    
+    [Table("Subjects")]
     public class Subject
     {
         [Key]
@@ -15,5 +16,7 @@ namespace Singlearn.Models.Entities
         public int no_chapters { get; set; }
 
         public string image {  get; set; }
+
+        public ICollection<SubjectTeacherClass> SubjectTeacherClasses { get; set; }
     }
 }

@@ -30,9 +30,32 @@
             <div class="form-group">
                 <label for="subjectSelect">Select Subject:</label>
                 <select id="subjectSelect" class="form-control">
-                    @foreach (var subject in ViewBag.Subjects)
+                    @if (ViewBag.Subjects != null && ViewBag.Subjects.Count > 0)
                     {
-                        <option value="@subject.subject_id">@subject.name</option>
+                        @foreach (var subject in ViewBag.Subjects)
+                        {
+                            <option value="@subject.subject_id">@subject.name</option>
+                        }
+                    }
+                    else
+                    {
+                        <option value="">No subjects available</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="classSelect">Select Class:</label>
+                <select id="classSelect" class="form-control">
+                    @if (ViewBag.Classes != null && ViewBag.Classes.Count > 0)
+                    {
+                        @foreach (var classitem in ViewBag.Classes)
+                        {
+                            <option value="@classitem.class_id">@classitem.name</option>
+                        }
+                    }
+                    else
+                    {
+                        <option value="">No classes available</option>
                     }
                 </select>
             </div>
@@ -58,28 +81,31 @@
         $(document).ready(function () {
             $('#templateSelect').change(function () {
                 var templateId = $(this).val();
-                if (templateId) {
-                    $.get('/Staff/LoadTemplatePreview', { templateId: templateId }, function (data) {
+                var subjectId = $('#subjectSelect').val();
+                var classId = $('#classSelect').val();
+                if (templateId && subjectId && classId) {
+                    $.get('/Staff/LoadTemplatePreview', { templateId: templateId, subjectId: subjectId, classId: classId }, function (data) {
                         $('#templatePreview').html(data);
-                    }).fail(function() {
+                    }).fail(function () {
                         $('#templatePreview').html('<p class="text-center text-danger">Error loading template preview.</p>');
                     });
                 } else {
-                    $('#templatePreview').html('<p class="text-center">Please select a template to preview.</p>');
+                    $('#templatePreview').html('<p class="text-center">Please select a template, subject, and class to preview.</p>');
                 }
             });
 
             $('#saveTemplate').click(function () {
                 var subjectId = $('#subjectSelect').val();
+                var classId = $('#classSelect').val();
                 var templateId = $('#templateSelect').val();
-                if (subjectId && templateId) {
-                    $.post('/Staff/SaveTemplateSelection', { subjectId: subjectId, templateId: templateId }, function () {
+                if (subjectId && classId && templateId) {
+                    $.post('/Staff/SaveTemplateSelection', { subjectId: subjectId, classId: classId, templateId: templateId }, function () {
                         alert('Template saved successfully!');
-                    }).fail(function() {
+                    }).fail(function () {
                         alert('Error saving template.');
                     });
                 } else {
-                    alert('Please select a subject and a template.');
+                    alert('Please select a subject, class, and a template.');
                 }
             });
         });

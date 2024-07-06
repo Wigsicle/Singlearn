@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Singlearn.Models.Entities
 {
+    [Table("Materials")]
     public class Material
     {
         [Key]

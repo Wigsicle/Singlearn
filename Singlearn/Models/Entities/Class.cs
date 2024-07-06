@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Singlearn.Models.Entities
 {
+    [Table("Classes")]
     public class Class
     {
         [Key]
@@ -10,5 +12,7 @@ namespace Singlearn.Models.Entities
         public string name { get; set; }
 
         public string teacher_id { get; set; }
+
+        public ICollection<SubjectTeacherClass> SubjectTeacherClasses { get; set; }
     }
 }

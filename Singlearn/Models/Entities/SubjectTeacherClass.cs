@@ -1,8 +1,10 @@
 ﻿using SinglearnWeb.Models.Entities;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Singlearn.Models.Entities
 {
+    [Table("SubjectTeacherClasses")]
     public class SubjectTeacherClass
     {
         [Key]
