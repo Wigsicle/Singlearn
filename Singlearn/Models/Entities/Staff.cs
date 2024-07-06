@@ -7,7 +7,7 @@ namespace SinglearnWeb.Models.Entities
         [Key]
         public string staff_id { get; set; }
 
-        public string user_id { get; set; }
+        public Guid user_id { get; set; }
 
         public string name { get; set; }
 
