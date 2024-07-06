@@ -7,6 +7,8 @@ namespace Singlearn.Models.Entities
         [Key]
         public int template_id { get; set; }
 
-        public string layout { get; set; }
+        public string name { get; set; }
+
+        public string view_name { get; set; }
     }
 }
