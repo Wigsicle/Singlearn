@@ -243,7 +243,7 @@ namespace SinglearnWeb.Migrations
                 );
 
             migrationBuilder.CreateTable(
-                name: "STCTemplate",
+                name: "STCTemplates",
                 columns: table => new
                 {
                     stc_t_id = table.Column<int>(type: "int", nullable: false)
