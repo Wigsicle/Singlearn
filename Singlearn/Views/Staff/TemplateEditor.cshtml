@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["Title"] = "Template Editor";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Template Edtor</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .main-body {
+            margin-left: 200px;
+            margin-top: 120px;
+        }
+
+        .centered-form {
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .template-preview {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            position: relative;
+        }
+
+        #templatePreview {
+            min-height: 200px; /* Ensures there's space for the preview without shifting layout */
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-body">
+        <h1 class="text-center">Template Editor</h1>
+        <div class="centered-form">
+            <div class="form-group">
+                <label for="subjectSelect">Select Subject:</label>
+                <select id="subjectSelect" class="form-control">
+                    @foreach (var subject in ViewBag.Subjects)
+                    {
+                        <option value="@subject.Subject_id">@subject.name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="classSelect">Select Class:</label>
+                <select id="classSelect" class="form-control">
+                    @foreach (var classItem in ViewBag.Classes) 
+                    {
+                        <option value="@classItem.class_id">@classItem.name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="templateSelect">Select Template:</label>
+                <select id="templateSelect" class="form-control">
+                    <option value="">--Select a Template--</option>
+                    @foreach (var template in ViewBag.Templates)
+                    {
+                        <option value="@template.template_id">@template.name</option>
+                    }
+                </select>
+            </div>
+            <button id="saveTemplate" class="btn btn-primary btn-block">Save Template</button>
+            <div id="templatePreview" class="template-preview mt-4">
+                <p class="text-center">Please select a template to preview.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#templateSelect').change(function () {
+                var templateId = $(this).val();
+                if (templateId) {
+                    $.get('/Staff/LoadTemplatePreview', { templateId: templateId }, function (data) {
+                        $('#templatePreview').html(data);
+                    });
+                } else {
+                    $('#templatePreview').html('<p class="text-center">Please select a template to preview.</p>');
+                }
+            });
+
+            $('#saveTemplate').click(function () {
+                var subjectId = $('#subjectSelect').val();
+                var classId = $('#classSelect').val();
+                var templateId = $('#templateSelect').val();
+                $.post('/Staff/SaveTemplateSelection', { subjectId: subjectId, classId: classId, templateId: templateId }, function () {
+                    alert('Template saved successfully!');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

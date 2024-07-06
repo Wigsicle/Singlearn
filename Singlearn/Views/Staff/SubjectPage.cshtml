@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Subject Page";
+    string view_name = Model as string;
+    var stc = ViewBag.SubjectTeacherClasses as Singlearn.Models.Entities.SubjectTeacherClass;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Subject Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>@stc.Subject.name - @stc.Class.name</h1>
+        @await Html.PartialAsync($"Templates/{view_name}", stc)
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+﻿@model Singlearn.Models.Entities.SubjectTeacherClass
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Template 2</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="jumbotron">
+            <h2 class="display-4">@Model.Subject.name with Different Style</h2>
+        </div>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Link Panel</h5>
+                <div class="list-group">
+                    <a href="/" class="list-group-item list-group-item-action">Home</a>
+                    <a href="/Discussions" class="list-group-item list-group-item-action">Discussions</a>
+                    <a href="/Assessments" class="list-group-item list-group-item-action">Assessments</a>
+                    <a href="/ClassMatters" class="list-group-item list-group-item-action">Class Matters</a>
+                </div>
+            </div>
+        </div>
+        <div class="alert alert-info mt-3" role="alert">
+            <h5 class="alert-heading">Subject Announcements</h5>
+            <!-- Add announcements logic here -->
+        </div>
+        <div class="alert alert-warning mt-3" role="alert">
+            <h5 class="alert-heading">Subject Materials</h5>
+            <!-- Add materials logic here -->
+        </div>
+    </div>
+</body>
+</html>
