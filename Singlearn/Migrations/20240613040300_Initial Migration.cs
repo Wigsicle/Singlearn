@@ -176,7 +176,7 @@ namespace SinglearnWeb.Migrations
                     subject_id = table.Column<int>(type: "int", nullable: false),
                     teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     class_id = table.Column<int>(type: "int", nullable: false),
-                    name = table.Column<int>(type: "int", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     chapter_id = table.Column<int>(type: "int", nullable: false),
                     type = table.Column<string>(type: "nvarchar(max)", nullable: false),
