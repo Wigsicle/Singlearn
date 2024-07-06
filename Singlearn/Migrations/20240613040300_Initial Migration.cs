@@ -61,7 +61,7 @@ namespace SinglearnWeb.Migrations
                     class_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     name = table.Column<string>(type: "nvarchar(max)", nullable:false),
-                    teacher_id = table.Column<int>(type: "int", nullable: false)
+                    teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,7 +99,7 @@ namespace SinglearnWeb.Migrations
                     stc_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     subject_id = table.Column<int>(type: "int", nullable: false),
-                    teacher_id = table.Column<int>(type: "int", nullable: false),
+                    teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     class_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -133,7 +133,7 @@ namespace SinglearnWeb.Migrations
                     announcement_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     subject_id = table.Column<int>(type: "int", nullable: false),
-                    teacher_id = table.Column<int>(type: "int", nullable: false),
+                    teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     class_id = table.Column<int>(type: "int", nullable: false),
                     title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -172,7 +172,7 @@ namespace SinglearnWeb.Migrations
                     material_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     subject_id = table.Column<int>(type: "int", nullable: false),
-                    teacher_id = table.Column<int>(type: "int", nullable: false),
+                    teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     class_id = table.Column<int>(type: "int", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
