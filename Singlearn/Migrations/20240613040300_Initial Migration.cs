@@ -30,28 +30,19 @@ namespace SinglearnWeb.Migrations
                 columns: table => new
                 {
                     staff_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    user_id = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     contact_no = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Staff", x => x.staff_id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Students",
-                columns: table => new
-                {
-                    student_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    user_id = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    contact_no = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    class_id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Students", x => x.student_id);
+                    table.ForeignKey(
+                        name: "FK_Staff_user_id",
+                        column: x => x.user_id,
+                        principalTable: "Users",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,17 +51,44 @@ namespace SinglearnWeb.Migrations
                 {
                     class_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable:false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                   },
+                constraints: table =>
+                {
+                table.PrimaryKey("PK_Classes", x => x.class_id);
+                table.ForeignKey(
+                    name: "FK_Classes_teacher_id",
+                    column: x => x.teacher_id,
+                    principalTable: "Staff",
+                    principalColumn: "staff_id",
+                    onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Students",
+                columns: table => new
+                {
+                    student_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    contact_no = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    class_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Classes", x => x.class_id);
+                    table.PrimaryKey("PK_Students", x => x.student_id);
                     table.ForeignKey(
-                        name: "FK_Classes_teacher_id",
-                        column: x => x.teacher_id,
-                        principalTable: "Staff",
-                        principalColumn: "staff_id",
+                        name: "FK_Students_class_id",
+                        column: x => x.class_id,
+                        principalTable: "Classes",
+                        principalColumn: "class_id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Students_user_id",
+                        column: x => x.user_id,
+                        principalTable: "Users",
+                        principalColumn: "user_id",
                         onDelete: ReferentialAction.NoAction);
                 });
 
@@ -254,6 +272,12 @@ namespace SinglearnWeb.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_STCTemplate", x => x.stc_t_id);
+                    table.ForeignKey(
+                        name: "FK_STCTemplate_stc_id",
+                        column: x => x.stc_id,
+                        principalTable: "SubjectTeacherClasses",
+                        principalColumn: "stc_id",
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_STCTemplate_template_id",
                         column: x => x.template_id,
