@@ -51,7 +51,9 @@ namespace SinglearnWeb.Migrations
                 {   
                     class_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    academic_level = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    year = table.Column<int>(type: "int", nullable: false)
                    },
                 constraints: table =>
                 {
