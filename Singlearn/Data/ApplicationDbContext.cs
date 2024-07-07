@@ -2,8 +2,7 @@
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Identity.Client;
 using Singlearn.Models.Entities;
-using SinglearnWeb.Models.Entities;
-namespace SinglearnWeb.Data
+namespace Singlearn.Data
 {
     public class ApplicationDbContext:DbContext
     {
@@ -13,7 +12,7 @@ namespace SinglearnWeb.Data
         }
 
         public DbSet<Student> Students { get; set; }
-        public DbSet<Staff> Staffs { get; set; }
+        public DbSet<Staff> Staff { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Announcement> Announcements { get; set; }
         public DbSet<ChapterName> ChapterNames { get; set; }

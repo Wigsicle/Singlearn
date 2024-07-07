@@ -1,7 +1,12 @@
-﻿﻿@{
-    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+﻿
+@{
+    Layout = "~/Views/Shared/_LayoutStudent.cshtml";
     ViewData["StudentTitle"] = "Homepage";
 }
+@using Singlearn.Models.Entities  // Import the namespace where Subject model is defined
+
+@model List<Singlearn.ViewModels.SubjectViewModel>
+
 <div class="container-fluid" style="padding-top: 100px;">
     <div class="row">
         <!-- Bootstrap carousel -->
@@ -100,66 +105,28 @@
     <!-- Subject Display -->
     <div class="row">
         <h1 class="fw-bold py-3 mb-2">Subjects</h1>
-        <div class="col-md-6 col-lg-4 padding-bottom-20">
-            <a href="javascript:void(0)" class="card-link">
-                <div class="card mb-2 card-hover-effect">
-                    <img class="card-img-top card-img-custom" src="https://t3.ftcdn.net/jpg/03/70/42/66/360_F_370426690_Pejt9KxjWTHPklsKwripaxr0iA17zupF.jpg" alt="Card image cap" />
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold py-3 mb-2">Primary 3 English</h5>
+        @if (Model != null && Model.Any())
+        {
+            <div class="row">
+                @foreach (var subject in Model)
+                {
+                    <div class="col-md-6 col-lg-3 padding-bottom-20">
+                        <a href="javascript:void(0)" class="card-link">
+                            <div class="card mb-2 card-hover-effect">
+                                <img class="card-img-top card-img-custom" src="@subject.image" alt="Card image cap" />
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold py-3 mb-2">@subject.academic_level @subject.year @subject.name (@subject.class_id)</h5>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-6 col-lg-4 padding-bottom-20">
-            <a href="javascript:void(0)" class="card-link">
-                <div class="card mb-2 card-hover-effect">
-                    <img class="card-img-top card-img-custom" src="https://img.freepik.com/free-vector/maths-chalkboard_23-2148178220.jpg?size=626&ext=jpg&ga=GA1.1.1413502914.1719878400&semt=sph" alt="Card image cap" />
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold py-3 mb-2">Primary 3 Math</h5>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-6 col-lg-4 padding-bottom-20">
-            <a href="javascript:void(0)" class="card-link">
-                <div class="card mb-2 card-hover-effect">
-                    <img class="card-img-top card-img-custom" src="https://img.freepik.com/free-vector/colorful-science-education-background_23-2148490697.jpg?size=626&ext=jpg&ga=GA1.1.1413502914.1719878400&semt=sph" alt="Card image cap" />
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold py-3 mb-2">Primary 3 Science</h5>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-6 col-lg-4 padding-bottom-20">
-            <a href="javascript:void(0)" class="card-link">
-                <div class="card mb-2 card-hover-effect">
-                    <img class="card-img-top card-img-custom" src="https://images.squarespace-cdn.com/content/v1/5f80186fcbc83a248b2087bf/cb7c0cf2-2d52-4271-b0b0-4997247e3867/Mother+Tongue+Logo+Backup.png" alt="Card image cap" />
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold py-3 mb-2">Primary 3 Mother Tongue</h5>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-6 col-lg-4 padding-bottom-20">
-            <a href="javascript:void(0)" class="card-link">
-                <div class="card mb-2 card-hover-effect">
-                    <img class="card-img-top card-img-custom" src="https://i.pinimg.com/originals/6e/03/53/6e035315ead45b775cd58a2f60f49a90.png" alt="Card image cap" />
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold py-3 mb-2">Primary 3 Social Studies</h5>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-6 col-lg-4 padding-bottom-20">
-            <a href="javascript:void(0)" class="card-link">
-                <div class="card mb-2 card-hover-effect">
-                    <img class="card-img-top card-img-custom" src="https://i.pinimg.com/originals/6e/03/53/6e035315ead45b775cd58a2f60f49a90.png" alt="Card image cap" />
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold py-3 mb-2">Primary 3 Social Studies</h5>
-                    </div>
-                </div>
-            </a>
-        </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>No subjects found for this student.</p>
+        }
     </div>
 </div>
 
