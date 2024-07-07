@@ -1,76 +1,87 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
     ViewData["Title"] = "Template Editor";
+    var teacherId = Context.Request.Query["teacherId"].ToString(); // Get teacherId from the query string
 }
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Template Editr</title>
+    <title>Template Editor</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
-        .main-body {
-            margin-left: 200px;
+        .header {
             margin-top: 120px;
+            text-align: center;
         }
 
         .centered-form {
             max-width: 600px;
+            margin: auto;
         }
 
         .form-group {
             margin-bottom: 1.5rem;
         }
+
+        #templatePreview {
+            width: 100%;
+            height: 600px; /* Fixed height to avoid pushing content */
+            background-color: #f8f9fa; /* Light grey background */
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow-y: auto; /* Allow scrolling if content overflows */
+        }
+
+        .container-flex {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .form-container, .preview-container {
+            flex: 1;
+            min-width: 800px; /* Ensure containers don't shrink too small */
+            margin: 10px;
+        }
     </style>
 </head>
 <body>
+    <h1 class="header">Template Editor</h1>
     <div class="container main-body">
-        <h1 class="text-center">Template Editor</h1>
-        <div class="centered-form">
-            <div class="form-group">
-                <label for="subjectSelect">Select Subject:</label>
-                <select id="subjectSelect" class="form-control">
-                    @if (ViewBag.Subjects != null && ViewBag.Subjects.Count > 0)
-                    {
+        <div class="container-flex">
+            <div class="form-container centered-form">
+                <input type="hidden" id="teacherId" value="@teacherId" />
+                <div class="form-group">
+                    <label for="subjectSelect">Select Subject:</label>
+                    <select id="subjectSelect" class="form-control">
+                        <option value="">--Select a Subject--</option>
                         @foreach (var subject in ViewBag.Subjects)
                         {
                             <option value="@subject.subject_id">@subject.name</option>
                         }
-                    }
-                    else
-                    {
-                        <option value="">No subjects available</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="classSelect">Select Class:</label>
-                <select id="classSelect" class="form-control">
-                    @if (ViewBag.Classes != null && ViewBag.Classes.Count > 0)
-                    {
-                        @foreach (var classitem in ViewBag.Classes)
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="classSelect">Select Class:</label>
+                    <select id="classSelect" class="form-control">
+                        <option value="">--Select a Class--</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="templateSelect">Select Template:</label>
+                    <select id="templateSelect" class="form-control">
+                        <option value="">--Select a Template--</option>
+                        @foreach (var template in ViewBag.Templates)
                         {
-                            <option value="@classitem.class_id">@classitem.name</option>
+                            <option value="@template.template_id">@template.name</option>
                         }
-                    }
-                    else
-                    {
-                        <option value="">No classes available</option>
-                    }
-                </select>
+                    </select>
+                </div>
+                <button id="saveTemplate" class="btn btn-primary btn-block">Save Template</button>
             </div>
-            <div class="form-group">
-                <label for="templateSelect">Select Template:</label>
-                <select id="templateSelect" class="form-control">
-                    <option value="">--Select a Template--</option>
-                    @foreach (var template in ViewBag.Templates)
-                    {
-                        <option value="@template.template_id">@template.name</option>
-                    }
-                </select>
-            </div>
-            <button id="saveTemplate" class="btn btn-primary btn-block">Save Template</button>
-            <div id="templatePreview" class="mt-4">
+            <div class="preview-container" id="templatePreview">
                 <p class="text-center">Please select a template to preview.</p>
             </div>
         </div>
@@ -79,6 +90,25 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
+            var teacherId = $('#teacherId').val(); // Get the teacherId from the hidden input
+
+            $('#subjectSelect').change(function () {
+                var subjectId = $(this).val();
+                if (subjectId) {
+                    $.get('/Staff/GetClassesForSubject', { subjectId: subjectId, teacherId: teacherId }, function (data) {
+                        var classSelect = $('#classSelect');
+                        classSelect.empty();
+                        classSelect.append('<option value="">--Select a Class--</option>');
+                        $.each(data, function (index, item) {
+                            classSelect.append('<option value="' + item.class_id + '">' + item.name + '</option>');
+                        });
+                    });
+                } else {
+                    $('#classSelect').empty();
+                    $('#classSelect').append('<option value="">--Select a Class--</option>');
+                }
+            });
+
             $('#templateSelect').change(function () {
                 var templateId = $(this).val();
                 var subjectId = $('#subjectSelect').val();
@@ -90,7 +120,7 @@
                         $('#templatePreview').html('<p class="text-center text-danger">Error loading template preview.</p>');
                     });
                 } else {
-                    $('#templatePreview').html('<p class="text-center">Please select a template, subject, and class to preview.</p>');
+                    $('#templatePreview').html('<p class="text-center">Please select a template to preview.</p>');
                 }
             });
 
@@ -105,7 +135,7 @@
                         alert('Error saving template.');
                     });
                 } else {
-                    alert('Please select a subject, class, and a template.');
+                    alert('Please select a subject, a class, and a template.');
                 }
             });
         });

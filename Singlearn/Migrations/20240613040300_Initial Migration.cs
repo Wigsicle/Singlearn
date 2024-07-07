@@ -49,20 +49,21 @@ namespace SinglearnWeb.Migrations
                 name: "Classes",
                 columns: table => new
                 {
-                    class_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    class_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                   },
+                    teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    academic_level = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    year = table.Column<int>(type: "int", nullable: false)
+                },
                 constraints: table =>
                 {
-                table.PrimaryKey("PK_Classes", x => x.class_id);
-                table.ForeignKey(
-                    name: "FK_Classes_teacher_id",
-                    column: x => x.teacher_id,
-                    principalTable: "Staff",
-                    principalColumn: "staff_id",
-                    onDelete: ReferentialAction.NoAction);
+                    table.PrimaryKey("PK_Classes", x => x.class_id);
+                    table.ForeignKey(
+                        name: "FK_Classes_teacher_id",
+                        column: x => x.teacher_id,
+                        principalTable: "Staff",
+                        principalColumn: "staff_id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,7 +74,7 @@ namespace SinglearnWeb.Migrations
                     user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     contact_no = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    class_id = table.Column<int>(type: "int", nullable: false)
+                    class_id = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -101,7 +102,7 @@ namespace SinglearnWeb.Migrations
                     name = table.Column<String>(type: "nvarchar(max)", nullable: false),
                     year = table.Column<int>(type: "int", nullable: false),
                     academic_level = table.Column<String>(type: "nvarchar(max)", nullable: false),
-                    no_chapters = table.Column<int>(type: "int", nullable:false),
+                    no_chapters = table.Column<int>(type: "int", nullable: false),
                     image = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -118,7 +119,7 @@ namespace SinglearnWeb.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     subject_id = table.Column<int>(type: "int", nullable: false),
                     teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    class_id = table.Column<int>(type: "int", nullable: false)
+                    class_id = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -152,11 +153,11 @@ namespace SinglearnWeb.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     subject_id = table.Column<int>(type: "int", nullable: false),
                     teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    class_id = table.Column<int>(type: "int", nullable: false),
+                    class_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    date = table.Column<DateTime>(type: "DateTime", nullable : false),
+                    date = table.Column<DateTime>(type: "DateTime", nullable: false),
                     message_body = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -191,7 +192,7 @@ namespace SinglearnWeb.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     subject_id = table.Column<int>(type: "int", nullable: false),
                     teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    class_id = table.Column<int>(type: "int", nullable: false),
+                    class_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     chapter_id = table.Column<int>(type: "int", nullable: false),

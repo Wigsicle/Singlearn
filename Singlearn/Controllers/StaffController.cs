@@ -16,7 +16,6 @@ namespace SinglearnWeb.Controllers
             this.dbContext = dbContext;
         }
 
-
         public IActionResult home()
         {
             return View();
@@ -53,34 +52,19 @@ namespace SinglearnWeb.Controllers
             try
             {
                 var subjects = await dbContext.Subjects
-                .Join(dbContext.SubjectTeacherClasses,
-                subject => subject.subject_id,
-                stc => stc.subject_id,
-                (subject, stc) => new { Subject = subject, stc.teacher_id })
-                .Where(result => result.teacher_id.Equals(teacherId))
-                .Select(result => result.Subject)
-                .Distinct()
-                .ToListAsync();
+                    .Join(dbContext.SubjectTeacherClasses,
+                        subject => subject.subject_id,
+                        stc => stc.subject_id,
+                        (subject, stc) => new { Subject = subject, stc.teacher_id })
+                    .Where(result => result.teacher_id.Equals(teacherId))
+                    .Select(result => result.Subject)
+                    .Distinct()
+                    .ToListAsync();
 
                 ViewBag.Subjects = subjects;
 
-                var classes = await dbContext.SubjectTeacherClasses
-                .Include(stc => stc.Class)
-                .Where(stc => stc.teacher_id.Equals(teacherId))
-                .Select(stc => stc.Class)
-                .Distinct()
-                .ToListAsync();
-
-                ViewBag.Classes = classes;
-
                 var templates = await dbContext.Templates.ToListAsync();
                 ViewBag.Templates = templates;
-
-                Console.WriteLine($"Subjects found: {subjects.Count}");
-                foreach (var subject in subjects)
-                {
-                    Console.WriteLine($"Subject: {subject}");
-                }
 
                 return View();
             }
@@ -92,12 +76,24 @@ namespace SinglearnWeb.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetClassesForSubject(int subjectId, string teacherId)
+        {
+            var classes = await dbContext.SubjectTeacherClasses
+                .Include(stc => stc.Class)
+                .Where(stc => stc.subject_id == subjectId && stc.teacher_id.Equals(teacherId))
+                .Select(stc => stc.Class)
+                .Distinct()
+                .ToListAsync();
+
+            return Json(classes);
+        }
 
         [HttpPost]
-        public async Task<IActionResult> SaveTemplateSelection(int subjectId, int classId, int templateId)
+        public async Task<IActionResult> SaveTemplateSelection(int subjectId, string classId, int templateId)
         {
             var stc = await dbContext.SubjectTeacherClasses
-                .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id == classId);
+                .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id.Equals(classId));
 
             if (stc != null)
             {
@@ -125,7 +121,7 @@ namespace SinglearnWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> LoadTemplatePreview(int templateId, int subjectId, int classId)
+        public async Task<IActionResult> LoadTemplatePreview(int templateId, int subjectId, string classId)
         {
             try
             {
@@ -141,7 +137,7 @@ namespace SinglearnWeb.Controllers
                 var stc = await dbContext.SubjectTeacherClasses
                     .Include(stc => stc.Subject)
                     .Include(stc => stc.Class)
-                    .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id == classId);
+                    .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id.Equals(classId));
 
                 if (stc == null)
                 {
@@ -158,13 +154,13 @@ namespace SinglearnWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SubjectPage(int subjectId, int classId)
+        public async Task<IActionResult> SubjectPage(int subjectId, string classId)
         {
             var stc = await dbContext.SubjectTeacherClasses
                 .Include(stc => stc.Subject)
                 .Include(stc => stc.Class)
                 .Include(stc => stc.Staff)
-                .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id == classId);
+                .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id.Equals(classId));
 
             if (stc == null)
             {
@@ -183,6 +179,5 @@ namespace SinglearnWeb.Controllers
             ViewBag.SubjectTeacherClasses = stc;
             return View((object)stcTemplate.Template.view_name);
         }
-
     }
 }
