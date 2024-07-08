@@ -1,6 +1,50 @@
-﻿namespace Singlearn.Views.ChapterNames
-{
-    public class Edit
-    {
-    }
+@model Singlearn.Models.Entities.Subject
+
+@{
+    ViewData["Title"] = "Edit";
 }
+
+<h1>Edit</h1>
+
+<h4>Subject</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="subject_id" />
+            <div class="form-group">
+                <label asp-for="name" class="control-label"></label>
+                <input asp-for="name" class="form-control" />
+                <span asp-validation-for="name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="year" class="control-label"></label>
+                <input asp-for="year" class="form-control" />
+                <span asp-validation-for="year" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="academic_level" class="control-label"></label>
+                <input asp-for="academic_level" class="form-control" />
+                <span asp-validation-for="academic_level" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="no_chapters" class="control-label"></label>
+                <input asp-for="no_chapters" class="form-control" />
+                <span asp-validation-for="no_chapters" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="image" class="control-label"></label>
+                <input asp-for="image" class="form-control" />
+                <span asp-validation-for="image" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
