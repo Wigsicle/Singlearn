@@ -1,8 +1,7 @@
-﻿using Singlearn.Models.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SinglearnWeb.Models.Entities
+namespace Singlearn.Models.Entities
 {
     [Table("Staff")]
     public class Staff

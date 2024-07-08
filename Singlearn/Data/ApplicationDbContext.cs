@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Identity.Client;
 using Singlearn.Models.Entities;
-using SinglearnWeb.Models.Entities;
-namespace SinglearnWeb.Data
+
+namespace Singlearn.Data
 {
     public class ApplicationDbContext:DbContext
     {

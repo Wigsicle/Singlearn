@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SinglearnWeb.Data;
+using Singlearn.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Singlearn.Models.Entities;
 
-namespace SinglearnWeb.Controllers
+namespace Singlearn.Controllers
 {
     public class StaffController : Controller
     {

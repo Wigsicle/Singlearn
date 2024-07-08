@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SinglearnWeb.Data;
+using Singlearn.Data;
 
 #nullable disable
 
-namespace SinglearnWeb.Migrations
+namespace Singlearn.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20240613040300_Initial Migration")]
@@ -25,7 +25,7 @@ namespace SinglearnWeb.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SinglearnWeb.Models.Entities.Staff", b =>
+            modelBuilder.Entity("Singlearn.Models.Entities.Staff", b =>
                 {
                     b.Property<string>("staffId")
                         .HasColumnType("nvarchar(450)");
@@ -58,7 +58,7 @@ namespace SinglearnWeb.Migrations
                     b.ToTable("Staffs");
                 });
 
-            modelBuilder.Entity("SinglearnWeb.Models.Entities.Student", b =>
+            modelBuilder.Entity("Singlearn.Models.Entities.Student", b =>
                 {
                     b.Property<string>("studentId")
                         .HasColumnType("nvarchar(450)");
@@ -99,7 +99,7 @@ namespace SinglearnWeb.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("SinglearnWeb.Models.Entities.User", b =>
+            modelBuilder.Entity("Singlearn.Models.Entities.User", b =>
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()

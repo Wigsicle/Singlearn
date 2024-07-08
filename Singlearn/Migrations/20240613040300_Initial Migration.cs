@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace SinglearnWeb.Migrations
+namespace Singlearn.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration
