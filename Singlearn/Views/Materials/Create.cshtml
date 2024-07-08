@@ -1,6 +1,69 @@
-﻿namespace Singlearn.Views.ChapterNames
-{
-    public class Create
-    {
-    }
+@model Singlearn.Models.Entities.Material
+
+@{
+    ViewData["Title"] = "Create";
 }
+
+<h1>Create</h1>
+
+<h4>Material</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="subject_id" class="control-label"></label>
+                <input asp-for="subject_id" class="form-control" />
+                <span asp-validation-for="subject_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="teacher_id" class="control-label"></label>
+                <input asp-for="teacher_id" class="form-control" />
+                <span asp-validation-for="teacher_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="class_id" class="control-label"></label>
+                <input asp-for="class_id" class="form-control" />
+                <span asp-validation-for="class_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="name" class="control-label"></label>
+                <input asp-for="name" class="form-control" />
+                <span asp-validation-for="name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="description" class="control-label"></label>
+                <input asp-for="description" class="form-control" />
+                <span asp-validation-for="description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="chapter_id" class="control-label"></label>
+                <input asp-for="chapter_id" class="form-control" />
+                <span asp-validation-for="chapter_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="type" class="control-label"></label>
+                <input asp-for="type" class="form-control" />
+                <span asp-validation-for="type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="link" class="control-label"></label>
+                <input asp-for="link" class="form-control" />
+                <span asp-validation-for="link" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="status" class="control-label"></label>
+                <input asp-for="status" class="form-control" />
+                <span asp-validation-for="status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
