@@ -16,9 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\ChapterNames\" />
-    <Folder Include="Views\Materials\" />
-    <Folder Include="Views\Subjects\" />
     <Folder Include="Views\Staff\" />
   </ItemGroup>
 
