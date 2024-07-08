@@ -1,6 +1,59 @@
-﻿namespace Singlearn.Views.ChapterNames
-{
-    public class Index
-    {
-    }
+@model IEnumerable<Singlearn.Models.Entities.Subject>
+
+@{
+    ViewData["Title"] = "Index";
 }
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.academic_level)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.no_chapters)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.image)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.year)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.academic_level)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.no_chapters)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.image)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.subject_id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.subject_id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.subject_id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
