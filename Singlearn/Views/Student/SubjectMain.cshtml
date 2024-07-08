@@ -1,0 +1,125 @@
+﻿@using Singlearn.Models.Entities
+
+@model List<Singlearn.ViewModels.ChapterViewModel>
+
+@{
+    ViewData["Title"] = @ViewData["SubjectName"];
+}
+
+<h1>Welcome, Student @ViewData["SubjectId"]</h1>
+<h1>Welcome, Student @ViewData["ClassId"]</h1>
+
+<h2>Chapters</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Chapter Name Id</th>
+            <th>Name</th>
+            <th>Chapter Id</th>
+            <th>Subject Id</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var chapter in Model)
+        {
+            <tr>
+                <td>@chapter.chapter_name_id</td>
+                <td>@chapter.name</td>
+                <td>@chapter.chapter_id</td>
+                <td>@chapter.subject_id</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<div class="row">
+    <h1 class="fw-bold py-3 mb-2">Chapters</h1>
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var chapter in Model)
+            {
+                <div class="col-md-6 col-lg-3 padding-bottom-20">
+                    <a asp-controller="Student" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" class="card-link">
+                        <div class="card mb-2 card-hover-effect">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold py-3 mb-2">Chapter @chapter.chapter_id: @chapter.name</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>No subjects found for this student.</p>
+    }
+</div>
+
+<style>
+    .carousel-img {
+        height: 300px;
+        width: 100%;
+        object-fit: fit;
+    }
+
+    .card-img-custom {
+        height: 225px;
+        width: 100%;
+        object-fit: fit;
+    }
+
+    .round-corner {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .padding-top-10 {
+        padding-top: 10px;
+    }
+
+    .padding-top-20 {
+        padding-top: 20px;
+    }
+
+    .padding-top-40 {
+        padding-top: 40px;
+    }
+
+    .padding-top-60 {
+        padding-top: 60px;
+    }
+
+    .padding-bottom-10 {
+        padding-bottom: 10px;
+    }
+
+    .padding-bottom-20 {
+        padding-bottom: 20px;
+    }
+
+    .padding-bottom-40 {
+        padding-bottom: 40px;
+    }
+
+    .padding-bottom-60 {
+        padding-bottom: 60px;
+    }
+
+    .card-hover-effect {
+        overflow: hidden;
+        position: relative;
+        border-radius: 0.5rem;
+        transition: transform 0.25s ease-in-out;
+    }
+
+        .card-hover-effect:hover {
+            transform: scale(1.05); /* Increase size on hover */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
+        }
+</style>
