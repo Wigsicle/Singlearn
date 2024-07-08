@@ -10,27 +10,22 @@ using Singlearn.Models.Entities;
 
 namespace Singlearn.Controllers
 {
-    public class MaterialController : Controller
+    public class SubjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public MaterialController(ApplicationDbContext context)
+        public SubjectsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Material
-
-        public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id)
+        // GET: Subjects
+        public async Task<IActionResult> Index()
         {
-            var materials = await _context.Materials
-                .Where(m => m.subject_id == subject_id && m.chapter_id == chapter_id)
-                .ToListAsync();
-
-            return View("Index", materials);
+            return View(await _context.Subjects.ToListAsync());
         }
 
-        // GET: Material/Details/5
+        // GET: Subjects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -38,39 +33,39 @@ namespace Singlearn.Controllers
                 return NotFound();
             }
 
-            var material = await _context.Materials
-                .FirstOrDefaultAsync(m => m.material_id == id);
-            if (material == null)
+            var subject = await _context.Subjects
+                .FirstOrDefaultAsync(m => m.subject_id == id);
+            if (subject == null)
             {
                 return NotFound();
             }
 
-            return View(material);
+            return View(subject);
         }
 
-        // GET: Material/Create
+        // GET: Subjects/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Material/Create
+        // POST: Subjects/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("material_id,subject_id,teacher_id,class_id,name,description,chapter_id,type,link,status")] Material material)
+        public async Task<IActionResult> Create([Bind("subject_id,name,year,academic_level,no_chapters,image")] Subject subject)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(material);
+                _context.Add(subject);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(material);
+            return View(subject);
         }
 
-        // GET: Material/Edit/5
+        // GET: Subjects/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -78,22 +73,22 @@ namespace Singlearn.Controllers
                 return NotFound();
             }
 
-            var material = await _context.Materials.FindAsync(id);
-            if (material == null)
+            var subject = await _context.Subjects.FindAsync(id);
+            if (subject == null)
             {
                 return NotFound();
             }
-            return View(material);
+            return View(subject);
         }
 
-        // POST: Material/Edit/5
+        // POST: Subjects/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("material_id,subject_id,teacher_id,class_id,name,description,chapter_id,type,link,status")] Material material)
+        public async Task<IActionResult> Edit(int id, [Bind("subject_id,name,year,academic_level,no_chapters,image")] Subject subject)
         {
-            if (id != material.material_id)
+            if (id != subject.subject_id)
             {
                 return NotFound();
             }
@@ -102,12 +97,12 @@ namespace Singlearn.Controllers
             {
                 try
                 {
-                    _context.Update(material);
+                    _context.Update(subject);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MaterialExists(material.material_id))
+                    if (!SubjectExists(subject.subject_id))
                     {
                         return NotFound();
                     }
@@ -118,10 +113,10 @@ namespace Singlearn.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(material);
+            return View(subject);
         }
 
-        // GET: Material/Delete/5
+        // GET: Subjects/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,34 +124,34 @@ namespace Singlearn.Controllers
                 return NotFound();
             }
 
-            var material = await _context.Materials
-                .FirstOrDefaultAsync(m => m.material_id == id);
-            if (material == null)
+            var subject = await _context.Subjects
+                .FirstOrDefaultAsync(m => m.subject_id == id);
+            if (subject == null)
             {
                 return NotFound();
             }
 
-            return View(material);
+            return View(subject);
         }
 
-        // POST: Material/Delete/5
+        // POST: Subjects/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var material = await _context.Materials.FindAsync(id);
-            if (material != null)
+            var subject = await _context.Subjects.FindAsync(id);
+            if (subject != null)
             {
-                _context.Materials.Remove(material);
+                _context.Subjects.Remove(subject);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MaterialExists(int id)
+        private bool SubjectExists(int id)
         {
-            return _context.Materials.Any(e => e.material_id == id);
+            return _context.Subjects.Any(e => e.subject_id == id);
         }
     }
 }

@@ -82,6 +82,15 @@ namespace Singlearn.Controllers
             return View("SubjectMain", chapters);
         }
 
+        public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id)
+        {
+            var materials = await dbContext.Materials
+                .Where(m => m.subject_id == subject_id && m.chapter_id == chapter_id)
+                .ToListAsync();
+
+            return View("ChapterMain", materials);
+        }
+
         public IActionResult profile()
         {
             return View();
