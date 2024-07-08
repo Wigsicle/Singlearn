@@ -5,30 +5,71 @@
 <head>
     <title>Template 1</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .horizontal-links {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            padding-left: 0;
+            list-style: none;
+            height: 40px; /* Adjust the height to make it thinner */
+            align-items: center;
+        }
+
+            .horizontal-links .nav-item {
+                flex: 1;
+                text-align: center;
+            }
+
+            .horizontal-links .nav-link {
+                color: #007bff;
+                text-decoration: none;
+            }
+
+                .horizontal-links .nav-link:hover {
+                    text-decoration: underline;
+                }
+
+        .card-title {
+            background-color: #f8f9fa; /* Light gray background color */
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .container {
+            margin-left: 100px;
+        }
+
+        .wider-card {
+            width: 80%; /* Adjust this value to make the card wider */
+            margin: 0 auto; /* Center the card */
+            width: 700px;
+        }
+
+    </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-primary">@Model.Subject.name</h2>
-        <div class="card mt-3">
+        <div class="card mt-3 wider-card">
             <div class="card-body">
-                <h5 class="card-title">Link Panel</h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><a href="/">Home</a></li>
-                    <li class="list-group-item"><a href="/Discussions">Discussions</a></li>
-                    <li class="list-group-item"><a href="/Assessments">Assessments</a></li>
-                    <li class="list-group-item"><a href="/ClassMatters">Class Matters</a></li>
+                <h5 class="card-title text-center">Link Panel</h5>
+                <ul class="horizontal-links nav">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Discussions">Discussions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Assessments">Assessments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/ClassMatters">Class Matters</a></li>
                 </ul>
             </div>
         </div>
-        <div class="card mt-3">
+        <div class="card mt-3 wider-card">
             <div class="card-body">
-                <h5 class="card-title">Subject Announcements</h5>
+                <h5 class="card-title text-center">Subject Announcements</h5>
                 <!-- Add announcements logic here -->
             </div>
         </div>
-        <div class="card mt-3">
+        <div class="card mt-3 wider-card">
             <div class="card-body">
-                <h5 class="card-title">Subject Materials</h5>
+                <h5 class="card-title text-center">Subject Materials</h5>
                 <!-- Add materials logic here -->
             </div>
         </div>

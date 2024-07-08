@@ -92,33 +92,53 @@ namespace SinglearnWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveTemplateSelection(int subjectId, string classId, int templateId)
         {
-            var stc = await dbContext.SubjectTeacherClasses
-                .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id.Equals(classId));
-
-            if (stc != null)
+            try
             {
-                var stcTemplate = await dbContext.STCTemplates
-                    .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
+                var stc = await dbContext.SubjectTeacherClasses
+                    .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id.Equals(classId));
 
-                if (stcTemplate != null)
+                if (stc != null)
                 {
-                    stcTemplate.template_id = templateId;
+                    var stcTemplate = await dbContext.STCTemplates
+                        .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
+
+                    if (stcTemplate != null)
+                    {
+                        stcTemplate.template_id = templateId;
+                        dbContext.STCTemplates.Update(stcTemplate);
+                        Console.WriteLine("Template updated successfully.");
+                    }
+                    else
+                    {
+                        stcTemplate = new STCTemplate
+                        {
+                            stc_id = stc.stc_id,
+                            template_id = templateId
+                        };
+                        dbContext.STCTemplates.Add(stcTemplate);
+                        Console.WriteLine("Template added successfully.");
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                    Console.WriteLine("Changes saved to the database.");
                 }
                 else
                 {
-                    stcTemplate = new STCTemplate
-                    {
-                        stc_id = stc.stc_id,
-                        template_id = templateId
-                    };
-                    dbContext.STCTemplates.Add(stcTemplate);
+                    Console.WriteLine("SubjectTeacherClass not found.");
+                    return Json(new { success = false, message = "SubjectTeacherClass not found." });
                 }
 
-                await dbContext.SaveChangesAsync();
+                return Json(new { success = true, message = "Template saved successfully." });
             }
-
-            return RedirectToAction("TemplateEditor", new { teacherId = stc.teacher_id });
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SaveTemplateSelection: {ex.Message}");
+                return Json(new { success = false, message = $"Internal server error: {ex.Message}" });
+            }
         }
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> LoadTemplatePreview(int templateId, int subjectId, string classId)
@@ -153,31 +173,42 @@ namespace SinglearnWeb.Controllers
             }
         }
 
+
         [HttpGet]
         public async Task<IActionResult> SubjectPage(int subjectId, string classId)
         {
-            var stc = await dbContext.SubjectTeacherClasses
-                .Include(stc => stc.Subject)
-                .Include(stc => stc.Class)
-                .Include(stc => stc.Staff)
-                .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id.Equals(classId));
-
-            if (stc == null)
+            try
             {
-                return NotFound("Subject or Class not found.");
+                var stc = await dbContext.SubjectTeacherClasses
+                    .Include(stc => stc.Subject)
+                    .Include(stc => stc.Class)
+                    .Include(stc => stc.Staff)
+                    .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id.Equals(classId));
+
+                if (stc == null)
+                {
+                    return NotFound("Subject or Class not found.");
+                }
+
+                var stcTemplate = await dbContext.STCTemplates
+                    .Include(st => st.Template)
+                    .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
+
+                if (stcTemplate == null)
+                {
+                    return NotFound("Template not found.");
+                }
+
+                ViewBag.SubjectTeacherClasses = stc;
+                return View((object)stcTemplate.Template.view_name);
             }
-
-            var stcTemplate = await dbContext.STCTemplates
-                .Include(st => st.Template)
-                .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
-
-            if (stcTemplate == null)
+            catch (Exception ex)
             {
-                return NotFound("Template not found.");
+                Console.WriteLine($"Error in SubjectPage: {ex.Message}");
+                return StatusCode(500, "Internal server error");
             }
-
-            ViewBag.SubjectTeacherClasses = stc;
-            return View((object)stcTemplate.Template.view_name);
         }
+
+
     }
 }
