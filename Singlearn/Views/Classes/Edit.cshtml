@@ -1,51 +1,52 @@
-@model Singlearn.Models.Entities.Class
+﻿@model Singlearn.Models.Entities.Class
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Class";
 }
 
-<h1>Edit</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div style="padding: 15% 3% 3% 3%;">
+                <h2>Edit Class</h2>
+                <hr />
 
-<h4>Class</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="class_id" />
-            <div class="form-group">
-                <label asp-for="name" class="control-label"></label>
-                <input asp-for="name" class="form-control" />
-                <span asp-validation-for="name" class="text-danger"></span>
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="class_id" class="control-label">Class Id</label>
+                        <input asp-for="class_id" class="form-control" disabled />
+                        <span asp-validation-for="class_id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="name" class="control-label">Class Name</label>
+                        <input asp-for="name" class="form-control" />
+                        <span asp-validation-for="name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="teacher_id" class="control-label">Teacher Id</label>
+                        <input asp-for="teacher_id" class="form-control" />
+                        <span asp-validation-for="teacher_id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="academic_level" class="control-label">Academic Level</label>
+                        <input asp-for="academic_level" class="form-control" />
+                        <span asp-validation-for="academic_level" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="year" class="control-label">Year</label>
+                        <input asp-for="year" class="form-control" />
+                        <span asp-validation-for="year" class="text-danger"></span>
+                    </div>
+                    <div class="form-group text-center mt-3 mb-3">
+                        <input type="submit" value="Update" class="btn btn-primary" />
+                    </div>
+                </form>
+
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="teacher_id" class="control-label"></label>
-                <input asp-for="teacher_id" class="form-control" />
-                <span asp-validation-for="teacher_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="academic_level" class="control-label"></label>
-                <input asp-for="academic_level" class="form-control" />
-                <span asp-validation-for="academic_level" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="year" class="control-label"></label>
-                <input asp-for="year" class="form-control" />
-                <span asp-validation-for="year" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

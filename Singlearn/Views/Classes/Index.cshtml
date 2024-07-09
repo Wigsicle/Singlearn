@@ -1,60 +1,321 @@
-@model IEnumerable<Singlearn.Models.Entities.Class>
+﻿@model IEnumerable<Singlearn.Models.Entities.Class>
 
 @{
-    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Classes";
+
+    var classes = Model.Select(m => m.name).Distinct().OrderBy(classes => classes).ToList();
+    var tcherId = Model.Select(m => m.teacher_id).Distinct().OrderBy(tcherId => tcherId).ToList();
+    var academicLevels = Model.Select(m => m.academic_level).Distinct().OrderBy(level => level).ToList();
+    var years = Model.Select(m => m.year).Distinct().OrderBy(year => year).ToList();
 }
 
-<h1>Index</h1>
+<body>
+    <div style="padding:8% 3% 3% 3%;">
+        <div class="row">
+            <!-- Filter Panel: Side Panel -->
+            <div class="mt-3 col-lg-2">
+                <div class="form-group pt-3 pb-3">
+                    <button class="btn btn-secondary" id="clearFiltersBtn">Clear Filters</button>
+                </div>
+                <!-- Subject name -->
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5 class="card-title">Class Name</h5>
+                        @foreach (var classname in classes)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input class-filter" type="checkbox" value="@classname" id="@classname">
+                                <label class="form-check-label" for="@classname">
+                                    @classname
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.class_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.teacher_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.academic_level)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.year)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.class_id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.teacher_id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.academic_level)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.year)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.class_id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.class_id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.class_id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                <!-- Subject name -->
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5 class="card-title">Teacher ID</h5>
+                        @foreach (var id in tcherId)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input id-filter" type="checkbox" value="@id" id="@id">
+                                <label class="form-check-label" for="@id">
+                                    @id
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Academic Level -->
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5 class="card-title">Academic Level</h5>
+                        @foreach (var level in academicLevels)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input academic-filter" type="checkbox" value="@level" id="@level">
+                                <label class="form-check-label" for="@level">
+                                    @level
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Year -->
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5 class="card-title">Year</h5>
+                        @foreach (var year in years)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input year-filter" type="checkbox" value="@year" id="@year">
+                                <label class="form-check-label" for="@year">
+                                    @year
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <!-- End of Filter Panel -->
+
+            <!-- Main Content: Table and Pagination -->
+            <div class="col-lg-10 pt-3">
+                <h1>List of Classes</h1>
+
+                <div class="form-group pt-3 pb-3">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search for classes...">
+                </div>
+
+                <a asp-action="Create" class="btn btn-primary mb-3">Create Class</a>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="classTable">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Class ID</th>
+                                <th>Class Name</th>
+                                <th>Teacher ID</th>
+                                <th>Academic Level</th>
+                                <th>Year</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.class_id)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.teacher_id)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.academic_level)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.year)</td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@item.class_id"><i class="fa fa-eye text-primary"></i></a> |
+                                        <a asp-action="Edit" asp-route-id="@item.class_id"><i class="fa fa-pencil text-warning"></i></a> |
+                                        <a asp-action="Delete" asp-route-id="@item.class_id"><i class="fa fa-trash text-danger"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- End of table -->
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center" id="pagination">
+                        <li class="page-item" id="previousPage">
+                            <a class="page-link" href="" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <!-- Pagination Links will be dynamically added here -->
+                        <li class="page-item" id="nextPage">
+                            <a class="page-link" href="" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End of Pagination -->
+            </div>
+            <!-- End of Main Content -->
+        </div>
+    </div>
+</body>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var classes = @Html.Raw(Json.Serialize(Model));
+            var currentPage = 1;
+            var rowsPerPage = 10;
+
+            function updateTable(page) {
+                var startIndex = (page - 1) * rowsPerPage;
+                var endIndex = startIndex + rowsPerPage;
+                var slicedClasses = classes.slice(startIndex, endIndex);
+
+                updateTableContent(slicedClasses);
+            }
+
+            function updateTableContent(filteredClasses) {
+                var tableBody = document.querySelector("#classTable tbody");
+                tableBody.innerHTML = "";
+
+                filteredClasses.forEach(function (item) {
+                    var row = `
+                                        <tr>
+                                            <td>${item.class_id}</td>
+                                            <td>${item.name}</td>
+                                            <td>${item.teacher_id}</td>
+                                            <td>${item.academic_level}</td>
+                                            <td>${item.year}</td>
+                                            <td>
+                                                <a href="/Classes/Details/${item.class_id}"><i class="fa fa-eye text-primary"></i></a> |
+                                                <a href="/Classes/Edit/${item.class_id}"><i class="fa fa-pencil text-warning"></i></a> |
+                                                <a href="/Classes/Delete/${item.class_id}"><i class="fa fa-trash text-danger"></i></a>
+                                            </td>
+                                        </tr>`;
+                    tableBody.innerHTML += row;
+                });
+
+                // Update pagination after updating table content
+                updatePagination(filteredClasses.length);
+            }
+
+            function updatePagination() {
+                var totalPages = Math.ceil(classes.length / rowsPerPage);
+                var paginationElement = document.getElementById("pagination");
+                paginationElement.innerHTML = "";
+
+                var previousLi = `<li class="page-item" id="previousPage">
+                                                    <a class="page-link" href="" aria-label="Previous">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                        <span class="sr-only">Previous</span>
+                                                    </a>
+                                                  </li>`;
+                paginationElement.innerHTML += previousLi;
+
+                for (var i = 1; i <= totalPages; i++) {
+                    var li = `<li class="page-item"><a class="page-link" href="">${i}</a></li>`;
+                    paginationElement.innerHTML += li;
+                }
+
+                var nextLi = `<li class="page-item" id="nextPage">
+                                                <a class="page-link" href="" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                    <span class="sr-only">Next</span>
+                                                </a>
+                                              </li>`;
+                paginationElement.innerHTML += nextLi;
+
+                var pageLinks = document.querySelectorAll("#pagination .page-link");
+
+                pageLinks.forEach(function (pageLink, index) {
+                    if (index === 0) {
+                        pageLink.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            if (currentPage > 1) {
+                                currentPage--;
+                                updateTable(currentPage);
+                            }
+                        });
+                    } else if (index === pageLinks.length - 1) {
+                        pageLink.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            if (currentPage < totalPages) {
+                                currentPage++;
+                                updateTable(currentPage);
+                            }
+                        });
+                    } else {
+                        pageLink.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            currentPage = parseInt(pageLink.textContent);
+                            updateTable(currentPage);
+                        });
+                    }
+                });
+            }
+
+            function getSelectedValues(className) {
+                var checkboxes = document.querySelectorAll(`.${className}:checked`);
+                return Array.from(checkboxes).map(cb => cb.value);
+            }
+
+            function filterClasses() {
+                var selectedClasses = getSelectedValues('class-filter');
+                var selectedId = getSelectedValues('id-filter');
+                var selectedAcademicLevels = getSelectedValues('academic-filter');
+                var selectedYears = getSelectedValues('year-filter');
+
+                // Check if no checkboxes are selected, then reset filters
+                if (selectedClasses.length === 0 && selectedId.length === 0 && selectedAcademicLevels.length === 0 && selectedYears.length === 0) {
+                    updateTableContent(classes); // Reset to show all classes
+                    return;
+                }
+                var filteredClasses = classes.filter(function (item) {
+                    return (selectedClasses.length === 0 || selectedClasses.includes(item.name)) &&
+                        (selectedId.length === 0 || selectedId.includes(item.teacher_id.toString())) &&
+                        (selectedAcademicLevels.length === 0 || selectedAcademicLevels.includes(item.academic_level)) &&
+                        (selectedYears.length === 0 || selectedYears.includes(item.year.toString()));
+                });
+
+                updateTableContent(filteredClasses);
+            }
+
+            var filters = document.querySelectorAll('.form-check-input');
+            filters.forEach(function (filter) {
+                filter.addEventListener('change', filterClasses);
+            });
+
+            // Search bar functionality
+            document.getElementById('searchInput').addEventListener('input', function () {
+                var filter = this.value.toLowerCase();
+                var rows = document.querySelectorAll("#classTable tbody tr");
+
+                rows.forEach(function (row) {
+                    var text = row.textContent.toLowerCase();
+                    if (text.includes(filter)) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+
+            // Clear Filters button functionality
+            document.getElementById('clearFiltersBtn').addEventListener('click', function () {
+                // Uncheck all checkboxes
+                document.querySelectorAll('.form-check-input').forEach(function (checkbox) {
+                    checkbox.checked = false;
+                });
+
+                // Clear search input
+                document.getElementById('searchInput').value = '';
+
+
+
+                // Reset table and pagination
+                currentPage = 1;
+                updateTable(currentPage);
+                updatePagination();
+            });
+
+
+            // Initial setup
+            updateTable(currentPage);
+            updatePagination();
+        });
+    </script>
+}
+
+

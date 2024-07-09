@@ -1,51 +1,45 @@
 ﻿@model Singlearn.Models.Entities.Class
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Class Details";
 }
-
-<h1>Edit</h1>
-
-<h4>Class</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="class_id" />
-            <div class="form-group">
-                <label asp-for="name" class="control-label"></label>
-                <input asp-for="name" class="form-control" />
-                <span asp-validation-for="name" class="text-danger"></span>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div style="padding: 15% 3% 3% 3%;">
+                <h2>Subject Details</h2>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-4">
+                        Name
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.name)
+                    </dd>
+                    <dt class="col-sm-4">
+                        Teacher ID
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.teacher_id)
+                    </dd>
+                    <dt class="col-sm-4">
+                        Academic Level
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.academic_level)
+                    </dd>
+                    <dt class="col-sm-4">
+                        Year
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.year)
+                    </dd>
+                </dl>
+                <div class="form-group mt-3 mb-3">
+                    <a asp-action="Edit" asp-route-id="@Model?.class_id" class="btn btn-warning"><i class="fa fa-pencil"></i> Edit</a>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="teacher_id" class="control-label"></label>
-                <input asp-for="teacher_id" class="form-control" />
-                <span asp-validation-for="teacher_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="academic_level" class="control-label"></label>
-                <input asp-for="academic_level" class="form-control" />
-                <span asp-validation-for="academic_level" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="year" class="control-label"></label>
-                <input asp-for="year" class="form-control" />
-                <span asp-validation-for="year" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
