@@ -21,5 +21,7 @@ namespace Singlearn.Models.Entities
         public DateTime date { get; set; }
 
         public string message_body { get; set; }
+
+        public string url { get; set; }
     }
 }

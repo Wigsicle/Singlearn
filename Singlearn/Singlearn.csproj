@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Staff\announcement.cshtml" />
     <Content Remove="Views\Staff\SubjectMain.cshtml" />
   </ItemGroup>
 
@@ -21,16 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Staff\announcement.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Views\Staff\announcement.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Staff\SubjectMain.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\Staff\announcement.cshtml" />
     <None Include="Views\Staff\SubjectMain.cshtml" />
   </ItemGroup>
 
