@@ -2,7 +2,7 @@
 
 namespace Singlearn.Models.Entities
 {
-    public class StudentTeacherClass
+    public class SubjectTeacherClass
     {
         [Key]
         public int stc_id { get; set; }
@@ -11,6 +11,6 @@ namespace Singlearn.Models.Entities
 
         public string teacher_id { get; set; }
 
-        public int class_id { get; set; }
+        public string class_id { get; set; }
     }
 }

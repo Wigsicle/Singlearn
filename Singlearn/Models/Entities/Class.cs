@@ -5,10 +5,13 @@ namespace Singlearn.Models.Entities
     public class Class
     {
         [Key]
-        public int class_Id { get; set; }
+        public string class_Id { get; set; }
 
         public string name { get; set; }
 
         public string teacher_id { get; set; }
+
+        public string academic_level { get; set; }
+        public int year { get; set; }
     }
 }

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SinglearnWeb.Data;
+using Singlearn.Data;
 
 #nullable disable
 
-namespace SinglearnWeb.Migrations
+namespace Singlearn.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20240613040300_Initial Migration")]

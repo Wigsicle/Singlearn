@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
-using SinglearnWeb.Data;
-using SinglearnWeb.Models;
-using SinglearnWeb.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using Singlearn.Data;
+using Singlearn.Models;
+using Singlearn.Models.Entities;
+using System.Threading.Tasks;
 
-namespace SinglearnWeb.Controllers
+namespace Singlearn.Controllers
 {
     public class AuthController : Controller
     {
@@ -17,10 +17,8 @@ namespace SinglearnWeb.Controllers
         }
 
         [HttpGet]
-
-        public async Task<IActionResult> Login()
+        public IActionResult Login()
         {
-            
             return View();
         }
 
@@ -35,11 +33,19 @@ namespace SinglearnWeb.Controllers
                 {
                     if (user.role == "Student")
                     {
-                        return RedirectToAction("Home", "Student");
+                        var student = await dbContext.Students.FirstOrDefaultAsync(s => s.user_id == user.user_id);
+                        if (student != null)
+                        {
+                            return RedirectToAction("Home", "Student", new { id = student.student_id });
+                        }
                     }
                     else if (user.role == "Staff")
                     {
-                        return RedirectToAction("Home", "Staff");
+                        var staff = await dbContext.Staff.FirstOrDefaultAsync(s => s.user_id == user.user_id);
+                        if (staff != null)
+                        {
+                            return RedirectToAction("Home", "Staff", new { id = staff.staff_id });
+                        }
                     }
                 }
             }
@@ -48,11 +54,9 @@ namespace SinglearnWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
             return RedirectToAction("Login");
         }
-
-
     }
 }
