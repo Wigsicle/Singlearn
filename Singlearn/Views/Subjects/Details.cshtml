@@ -1,48 +1,52 @@
 ﻿@model Singlearn.Models.Entities.Subject
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Subject Details";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Subject</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.year)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.year)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.academic_level)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.academic_level)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.no_chapters)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.no_chapters)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.image)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.image)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.subject_id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div style="padding: 15% 3% 3% 3%;">
+                <h2>Subject Details</h2>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-4">
+                        Subject Name
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.name)
+                    </dd>
+                    <dt class="col-sm-4">
+                        Year
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.year)
+                    </dd>
+                    <dt class="col-sm-4">
+                        Academic Level
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.academic_level)
+                    </dd>
+                    <dt class="col-sm-4">
+                        No. of Chapters
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.no_chapters)
+                    </dd>
+                    <dt class="col-sm-4">
+                        Image
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.image)
+                    </dd>
+                </dl>
+                <div>
+                    <a asp-action="Edit" asp-route-id="@Model?.subject_id" class="btn btn-warning"><i class="fa fa-pencil"></i> Edit</a>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
