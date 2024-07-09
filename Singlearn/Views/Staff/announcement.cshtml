@@ -1,0 +1,402 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    ViewData["StudentTitle"] = "Homepage";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Announcement Page</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://kit.fontawesome.com/a076d05399.js" rel="stylesheet">
+    <style>
+        /* Existing styles */
+        .action-icons {
+            font-size: 1.2em;
+            cursor: pointer;
+            display: inline-block; /* Ensure icons are inline */
+            margin: 0 2px; /* Add margin between icons */
+        }
+
+        .main-content {
+            margin-top: 120px;
+            max-width: calc(100% - 300px);
+            margin-left: 150px;
+            margin-right: 50px;
+        }
+
+        .input-group {
+            flex-grow: 1;
+            justify-content: center;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+
+        .add-button {
+            margin-left: 20px;
+        }
+
+        .table-container table td.description {
+            max-width: 300px; /* Adjust max-width as needed */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Initially hide the Subject Type field */
+        .subject-type-field {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-content">
+        <div class="text-center mb-5">
+            <h1 class="display-4"><b>Announcement Page</b></h1>
+        </div>
+
+        <div class="d-flex justify-content-center mb-3">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fa fa-search"></i>
+                </span>
+                <input type="text" class="form-control" placeholder="Search..." aria-label="Search...">
+                <button class="btn btn-primary add-button" type="button" data-toggle="modal" data-target="#addAnnouncementModal">
+                    Add Announcement
+                </button>
+            </div>
+        </div>
+
+        <div class="card mb-5">
+            <div class="table-responsive table-container">
+                <table class="table table-bordered table-striped text-center table-responsive-md">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th style ="width: 125px;">Date Uploaded</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Image</th>
+                            <th>Subject Type</th>
+                            <th style="width: 100px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>1</strong></td>
+                            <td>Welcome to School Term 3!</td>
+                            <td class="description">In Term 3, we are going to embark on a new school timetable system...</td>
+                            <td>2024-07-05</td>
+                            <td>News</td>
+                            <td><b>Visible</b></td>
+                            <td><img src="../assets/images/poop.png" alt="Avatar" class="rounded-circle" style="max-width: 100px; max-height: 100px;" /></td>
+                            <td>NIL</td>
+                            <td>
+                                <i class="fa fa-eye action-icons" title="View" data-toggle="modal" data-target="#viewModal" data-content="Welcome to School Term 3!"></i>
+                                <i class="fa fa-edit action-icons" title="Edit" data-toggle="modal" data-target="#editModal" data-content="Welcome to School Term 3!"></i>
+                                <i class="fa fa-trash action-icons" title="Delete" data-toggle="modal" data-target="#deleteModal" data-content="Welcome to School Term 3!"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>2</strong></td>
+                            <td>Chinese New Year Celebration</td>
+                            <td class="description">In this year of Dragon, we will have a dragon-themed fiesta happening...</td>
+                            <td>2024-07-05</td>
+                            <td>Events</td>
+                            <td><b>Visible</b></td>
+                            <td><img src="../assets/images/poop.png" alt="Avatar" class="rounded-circle" style="max-width: 100px; max-height: 100px;" /></td>
+                            <td>NIL</td>
+                            <td>
+                                <i class="fa fa-eye action-icons" title="View" data-toggle="modal" data-target="#viewModal" data-content="Chinese New Year Celebration"></i>
+                                <i class="fa fa-edit action-icons" title="Edit" data-toggle="modal" data-target="#editModal" data-content="Chinese New Year Celebration"></i>
+                                <i class="fa fa-trash action-icons" title="Delete" data-toggle="modal" data-target="#deleteModal" data-content="Chinese New Year Celebration"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>3</strong></td>
+                            <td>Reminder to Submit Math Homework 2</td>
+                            <td class="description">It has come to my notice that 40% of the class has yet to submit their Math Homework...</td>
+                            <td>2024-07-05</td>
+                            <td>Subject</td>
+                            <td><b>Visible</b></td>
+                            <td><img src="../assets/images/poop.png" alt="Avatar" class="rounded-circle" style="max-width: 100px; max-height: 100px;" /></td>
+                            <td>Mathematics</td>
+                            <td>
+                                <i class="fa fa-eye action-icons" title="View" data-toggle="modal" data-target="#viewModal" data-content="Reminder to Submit Math Homework 2"></i>
+                                <i class="fa fa-edit action-icons" title="Edit" data-toggle="modal" data-target="#editModal" data-content="Reminder to Submit Math Homework 2"></i>
+                                <i class="fa fa-trash action-icons" title="Delete" data-toggle="modal" data-target="#deleteModal" data-content="Reminder to Submit Math Homework 2"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for View, Edit, and Delete -->
+    <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewModalLabel">View Announcement</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="viewContent"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Announcement</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editAnnouncementForm">
+                        <div class="form-group">
+                            <label for="editAnnouncementTitle">Title</label>
+                            <input type="text" class="form-control" id="editAnnouncementTitle" placeholder="Enter Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="editAnnouncementDescription">Description</label>
+                            <textarea class="form-control" id="editAnnouncementDescription" rows="3" placeholder="Enter Description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editAnnouncementType">Type</label>
+                            <select class="form-control" id="editAnnouncementType">
+                                <option value="News">News</option>
+                                <option value="Events">Events</option>
+                                <option value="Subject">Subject</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editAnnouncementStatus">Status</label>
+                            <select class="form-control" id="editAnnouncementStatus">
+                                <option>Visible</option>
+                                <option>Hidden</option>
+                            </select>
+                        </div>
+                        <div class="form-group subject-type-field" id="editSubjectTypeField">
+                            <label for="editSubjectType">Subject Type</label>
+                            <input type="text" class="form-control" id="editSubjectType" placeholder="Enter Subject Type">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete Announcement</h5>
+                    <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteContent" style="color: black;"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="confirmDeleteBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Add Announcement Modal -->
+    <div class="modal fade" id="addAnnouncementModal" tabindex="-1" role="dialog" aria-labelledby="addAnnouncementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAnnouncementModalLabel">Add Announcement</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="announcementTitle">Title</label>
+                            <input type="text" class="form-control" id="announcementTitle" placeholder="Enter Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="announcementDescription">Description</label>
+                            <textarea class="form-control" id="announcementDescription" rows="3" placeholder="Enter Description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="announcementType">Type</label>
+                            <select class="form-control" id="announcementType" onchange="toggleSubjectTypeField()">
+                                <option value="News">News</option>
+                                <option value="Events">Events</option>
+                                <option value="Subject">Subject</option>
+                            </select>
+                        </div>
+                        <div class="form-group subject-type-field" id="subjectTypeField">
+                            <label for="subjectType">Subject Type</label>
+                            <input type="text" class="form-control" id="subjectType" placeholder="Enter Subject Type">
+                        </div>
+                        <div class="form-group">
+                            <label for="announcementStatus">Status</label>
+                            <select class="form-control" id="announcementStatus">
+                                <option>Visible</option>
+                                <option>Hidden</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="announcementImage">Image</label>
+                            <input type="file" class="form-control-file" id="announcementImage">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script>
+        // jQuery to handle the modal content
+        $(document).ready(function () {
+            $('.action-icons').on('click', function () {
+                var actionType = $(this).attr('title'); // Get the title attribute which is "View", "Edit", or "Delete"
+                var row = $(this).closest('tr'); // Get the closest table row
+                var id = row.find('strong').text(); // Get the ID from the row
+                var title = row.find('td:eq(1)').text(); // Get the Title from the second column
+                var description = row.find('td:eq(2)').text(); // Get the Description from the third column
+                var date = row.find('td:eq(3)').text(); // Get the Date from the fourth column
+                var type = row.find('td:eq(4)').text(); // Get the Type from the fifth column
+                var status = row.find('td:eq(5)').text(); // Get the Status from the sixth column
+                var image = row.find('td:eq(6) img').attr('src'); // Get the Image source from the seventh column
+                var subjectType = row.find('td:eq(7)').text(); // Get the Subject Type from the eighth column
+
+                if (actionType === 'View') {
+                    $('#viewModalLabel').text('View Announcement ' + id);
+                    $('#viewContent').html('<b>Title:</b> ' + title + '<br><b>Description:</b> ' + description + '<br><b>Date:</b> ' + date + '<br><b>Type:</b> ' + type + '<br><b>Status:</b> ' + status + '<br><b>Image:</b> <img src="' + image + '" class="rounded-circle" alt="Image"><br><b>Subject Type:</b> ' + subjectType);
+                } else if (actionType === 'Edit') {
+                    $('#editModalLabel').text('Edit Announcement ' + id);
+                    $('#editAnnouncementTitle').val(title);
+                    $('#editAnnouncementDescription').val(description);
+                    $('#editAnnouncementType').val(type);
+                    $('#editAnnouncementStatus').val(status);
+                    $('#editSubjectType').val(subjectType);
+
+                    // Show the modal
+                    $('#editModal').modal('show');
+                } else if (actionType === 'Delete') {
+                    $('#deleteModalLabel').text('Delete Announcement ' + id);
+                    $('#deleteContent').html('<p>Are you sure you want to delete this entry?</p>');
+
+                    // Center the delete modal
+                    $('#deleteModal').on('shown.bs.modal', function () {
+                        var dialog = $(this).find('.modal-dialog');
+                        var modalHeight = $(window).height() / 2 - dialog.height() / 2;
+                        dialog.css('margin-top', modalHeight);
+                    });
+
+                    // Show the modal
+                    $('#deleteModal').modal('show');
+                }
+
+                // Show the modal
+                $('#' + actionType.toLowerCase() + 'Modal').modal('show');
+            });
+
+            $('#viewModal, #editModal, #deleteModal').on('hidden.bs.modal', function () {
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+            });
+
+            // Make the Add Announcement modal fields match the table
+            $('#addAnnouncementForm').on('submit', function (e) {
+                e.preventDefault();
+                // Collect data from form (for now, we just log it)
+                var formData = {
+                    title: $('#announcementTitle').val(),
+                    description: $('#announcementDescription').val(),
+                    date: $('#announcementDate').val(),
+                    type: $('#announcementType').val(),
+                    status: $('input[name="status"]:checked').val(),
+                    subjectType: $('#subjectType').val(),
+                    image: $('#uploadImage').val().split('\\').pop() // Get the file name only
+                };
+                console.log(formData);
+                // Close the modal
+                $('#addAnnouncementModal').modal('hide');
+            });
+
+            $('#editAnnouncementForm').on('submit', function (e) {
+                e.preventDefault();
+                // Collect updated data
+                var formData = {
+                    title: $('#editAnnouncementTitle').val(),
+                    description: $('#editAnnouncementDescription').val(),
+                    type: $('#editAnnouncementType').val(),
+                    status: $('#editAnnouncementStatus').val(),
+                    subjectType: $('#editSubjectType').val()
+                };
+                console.log(formData);
+                // Close the modal
+                $('#editModal').modal('hide');
+            });
+
+            // Handle Confirm button click
+            $('#confirmDeleteBtn').on('click', function () {
+                // Add your implementation for delete functionality here
+                console.log('Delete confirmed'); // Example: Log message
+                $('#deleteModal').modal('hide'); // Close modal after confirmation
+            });
+
+            // Handle close button click on delete modal (X icon)
+            $('#deleteModal .close').on('click', function () {
+                $('#deleteModal').modal('hide');
+            });
+
+            // Handle "Close" button click on delete modal
+            $('#deleteModal .btn-secondary').on('click', function () {
+                $('#deleteModal').modal('hide');
+            });
+
+            // Handle Confirm button click
+            $('#confirmDeleteBtn').on('click', function () {
+                // Add your implementation for delete functionality here
+                console.log('Delete confirmed'); // Example: Log message
+                $('#deleteModal').modal('hide'); // Close modal after confirmation
+            });
+        });
+
+        function toggleSubjectTypeField() {
+            var typeField = document.getElementById('announcementType');
+            var subjectTypeField = document.getElementById('subjectTypeField');
+            if (typeField.value === 'Subject') {
+                subjectTypeField.style.display = 'block';
+            } else {
+                subjectTypeField.style.display = 'none';
+            }
+        }
+
+        // Initialize the visibility when the page loads
+        window.onload = function () {
+            toggleSubjectTypeField();
+        };
+    </script>
+</body>
+</html>
