@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,85 +10,85 @@ using Singlearn.Models.Entities;
 
 namespace Singlearn.Controllers
 {
-    public class SubjectsController : Controller
+    public class ClassesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public SubjectsController(ApplicationDbContext context)
+        public ClassesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Subjects
+        // GET: Classes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Subjects.ToListAsync());
+            return View(await _context.Classes.ToListAsync());
         }
 
-        // GET: Subjects/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Classes/Details/5
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var subject = await _context.Subjects
-                .FirstOrDefaultAsync(m => m.subject_id == id);
-            if (subject == null)
+            var @class = await _context.Classes
+                .FirstOrDefaultAsync(m => m.class_id == id);
+            if (@class == null)
             {
                 return NotFound();
             }
 
-            return View(subject);
+            return View(@class);
         }
 
-        // GET: Subjects/Create
+        // GET: Classes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Subjects/Create
+        // POST: Classes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("subject_id,name,year,academic_level,no_chapters,image")] Subject subject)
+        public async Task<IActionResult> Create([Bind("class_Id,name,teacher_id,academic_level,year")] Class @class)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(subject);
+                _context.Add(@class);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(subject);
+            return View(@class);
         }
 
-        // GET: Subjects/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Classes/Edit/5
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var subject = await _context.Subjects.FindAsync(id);
-            if (subject == null)
+            var @class = await _context.Classes.FindAsync(id);
+            if (@class == null)
             {
                 return NotFound();
             }
-            return View(subject);
+            return View(@class);
         }
 
-        // POST: Subjects/Edit/5
+        // POST: Classes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("subject_id,name,year,academic_level,no_chapters,image")] Subject subject)
+        public async Task<IActionResult> Edit(string id, [Bind("class_Id,name,teacher_id,academic_level,year")] Class @class)
         {
-            if (id != subject.subject_id)
+            if (id != @class.class_id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace Singlearn.Controllers
             {
                 try
                 {
-                    _context.Update(subject);
+                    _context.Update(@class);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SubjectExists(subject.subject_id))
+                    if (!ClassExists(@class.class_id))
                     {
                         return NotFound();
                     }
@@ -113,45 +113,45 @@ namespace Singlearn.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(subject);
+            return View(@class);
         }
 
-        // GET: Subjects/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Classes/Delete/5
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var subject = await _context.Subjects
-                .FirstOrDefaultAsync(m => m.subject_id == id);
-            if (subject == null)
+            var @class = await _context.Classes
+                .FirstOrDefaultAsync(m => m.class_id == id);
+            if (@class == null)
             {
                 return NotFound();
             }
 
-            return View(subject);
+            return View(@class);
         }
 
-        // POST: Subjects/Delete/5
+        // POST: Classes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var subject = await _context.Subjects.FindAsync(id);
-            if (subject != null)
+            var @class = await _context.Classes.FindAsync(id);
+            if (@class != null)
             {
-                _context.Subjects.Remove(subject);
+                _context.Classes.Remove(@class);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SubjectExists(int id)
+        private bool ClassExists(string id)
         {
-            return _context.Subjects.Any(e => e.subject_id == id);
+            return _context.Classes.Any(e => e.class_id == id);
         }
     }
 }

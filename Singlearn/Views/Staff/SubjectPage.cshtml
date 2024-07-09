@@ -1,8 +1,12 @@
-﻿@{
+﻿@model Singlearn.ViewModels.SubjectViewModel
+
+@{
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
     ViewData["Title"] = "Subject Page";
-    string view_name = Model as string;
-    var stc = ViewBag.SubjectTeacherClasses as Singlearn.Models.Entities.SubjectTeacherClass;
+    var stc = Model.SubjectTeacherClass;
+    var announcements = Model.Announcements;
+    var materials = Model.Materials;
+    string view_name = Model.TemplateViewName;
 }
 
 <!DOCTYPE html>
@@ -10,29 +14,32 @@
 <head>
     <title>Subject Page</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>
-      .main-body{
-          margin-top: 120px;
-      }
-
-      .subject-title{
-          padding: 10px;
-          margin-left:300px;
-      }
-
-    </style>
 </head>
 <body>
-    <div class="main-body">
-        <h1 class="subject-title">@stc.Subject.name - @stc.Class.name (@stc.class_id)</h1>
-        @if (!string.IsNullOrEmpty(view_name))
-        {
+    <div class="container mt-5">
+        <h1>@stc.Subject.name - @stc.Class.name</h1>
+        <div>
             @await Html.PartialAsync($"~/Views/Templates/{view_name}.cshtml", stc)
-        }
-        else
-        {
-            <p>Template not found.</p>
-        }
+        </div>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">Subject Announcements</h5>
+                <ul>
+                    @foreach (var announcement in announcements)
+                    {
+                        @await Html.PartialAsync("~/Views/Staff/announcement.cshtml", announcement)
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">Subject Materials</h5>
+                <ul>
+                  
+                </ul>
+            </div>
+        </div>
     </div>
 </body>
 </html>

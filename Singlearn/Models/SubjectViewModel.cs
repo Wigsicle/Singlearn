@@ -9,5 +9,10 @@
         public int no_chapters { get; set; }
         public int year { get; set; }
         public string class_id { get; set; }
+
+        public Singlearn.Models.Entities.SubjectTeacherClass SubjectTeacherClass { get; set; }
+        public List<Singlearn.Models.Entities.Announcement> Announcements { get; set; }
+        public List<Singlearn.Models.Entities.Material> Materials { get; set; }
+        public string TemplateViewName { get; set; }
     }
 }

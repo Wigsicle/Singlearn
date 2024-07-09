@@ -1,7 +1,9 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
-    ViewData["StudentTitle"] = "Homepage";
+    ViewData["Title"] = "Announcement";
 }
+
+@model Singlearn.Models.Entities.Announcement
 
 <!DOCTYPE html>
 <html lang="en">
@@ -52,6 +54,7 @@
     </style>
 </head>
 <body>
+    <div class="announcement">
     <div class="container main-content">
         <div class="text-center mb-5">
             <h1 class="display-4"><b>Announcement Page</b></h1>
@@ -268,6 +271,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
