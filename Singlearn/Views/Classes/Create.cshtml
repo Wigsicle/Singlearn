@@ -14,27 +14,30 @@
                 <form asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="class_id" class="control-label"></label>
+                        <label asp-for="class_id" class="control-label">Class ID</label>
                         <input asp-for="class_id" class="form-control" />
                         <span asp-validation-for="class_id" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="name" class="control-label"></label>
+                        <label asp-for="name" class="control-label">Class Name</label>
                         <input asp-for="name" class="form-control" />
                         <span asp-validation-for="name" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="teacher_id" class="control-label"></label>
-                        <input asp-for="teacher_id" class="form-control" />
+                        <label asp-for="teacher_id" class="control-label">Teacher Id</label>
+                        <select asp-for="teacher_id" class="form-control" asp-items="ViewBag.TeacherList">
+                            <option value="">Select Teacher</option>
+                        </select>
                         <span asp-validation-for="teacher_id" class="text-danger"></span>
                     </div>
+
                     <div class="form-group">
-                        <label asp-for="academic_level" class="control-label"></label>
+                        <label asp-for="academic_level" class="control-label">Academic Level</label>
                         <input asp-for="academic_level" class="form-control" />
                         <span asp-validation-for="academic_level" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="year" class="control-label"></label>
+                        <label asp-for="year" class="control-label">Year</label>
                         <input asp-for="year" class="form-control" />
                         <span asp-validation-for="year" class="text-danger"></span>
                     </div>

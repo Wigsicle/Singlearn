@@ -13,19 +13,18 @@
 
                 <form asp-action="Edit">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="class_id" class="control-label">Class Id</label>
-                        <input asp-for="class_id" class="form-control" disabled />
-                        <span asp-validation-for="class_id" class="text-danger"></span>
-                    </div>
+                    
+                    <input asp-for="class_id" type="hidden" />
                     <div class="form-group">
                         <label asp-for="name" class="control-label">Class Name</label>
                         <input asp-for="name" class="form-control" />
                         <span asp-validation-for="name" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="teacher_id" class="control-label">Teacher Id</label>
-                        <input asp-for="teacher_id" class="form-control" />
+                        <label asp-for="teacher_id" class="control-label">Teacher</label>
+                        <select asp-for="teacher_id" class="form-control" asp-items="ViewBag.TeacherList">
+                            <option value="">Select Teacher</option>
+                        </select>
                         <span asp-validation-for="teacher_id" class="text-danger"></span>
                     </div>
                     <div class="form-group">
