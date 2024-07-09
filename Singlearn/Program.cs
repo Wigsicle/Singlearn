@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SinglearnWeb.Data;
+using Singlearn.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

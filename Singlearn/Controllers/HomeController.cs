@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using SinglearnWeb.Models;
+using Singlearn.Models;
 using System.Diagnostics;
 
-namespace SinglearnWeb.Controllers
+namespace Singlearn.Controllers
 {
     public class HomeController : Controller
     {

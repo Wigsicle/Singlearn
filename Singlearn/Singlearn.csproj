@@ -12,10 +12,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\HomeworkHub\" />
+    <Folder Include="Views\Staff\" />
+    <Folder Include="wwwroot\attachments\" />
   </ItemGroup>
 
 </Project>
