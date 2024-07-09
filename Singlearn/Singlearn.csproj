@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="Views\Staff\" />
+    <Folder Include="wwwroot\attachments\" />
   </ItemGroup>
 
 </Project>

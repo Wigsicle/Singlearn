@@ -23,6 +23,8 @@ namespace Singlearn.Data
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Template> Templates { get; set; }
 
+        public DbSet<Homework> Homeworks { get; set; }
+
 
 
 
