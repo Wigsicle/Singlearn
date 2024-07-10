@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SinglearnWeb.Data;
+using Singlearn.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace SinglearnWeb.Controllers
