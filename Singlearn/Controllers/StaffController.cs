@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Singlearn.Data;
 using Microsoft.EntityFrameworkCore;
+using Singlearn.Models.Entities;
+using System.Linq;
+using System.Threading.Tasks;
 using Singlearn.Models;
 using Singlearn.ViewModels;
 
@@ -84,28 +87,135 @@ namespace Singlearn.Controllers
             return View("ChapterMain", materials);
         }
 
+        public async Task<IActionResult> Announcement()
+        {
+            var announcements = await dbContext.Announcements.ToListAsync();
+            return View(announcements);
+        }
 
-        public IActionResult profile()
+        // GET: Create announcement
+        public IActionResult CreateAnnouncement()
         {
             return View();
         }
 
-        public IActionResult homeworkhub_subject()
+        // POST: Create announcement
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAnnouncement(Announcement announcement)
+        {
+            if (ModelState.IsValid)
+            {
+                dbContext.Add(announcement);
+                await dbContext.SaveChangesAsync();
+                return RedirectToAction(nameof(Announcement));
+            }
+            return View(announcement);
+        }
+
+        // GET: Edit announcement
+        public async Task<IActionResult> EditAnnouncement(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var announcement = await dbContext.Announcements.FindAsync(id);
+            if (announcement == null)
+            {
+                return NotFound();
+            }
+            return View(announcement);
+        }
+
+        // POST: Edit announcement
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAnnouncement(int id, Announcement announcement)
+        {
+            if (id != announcement.announcement_id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    dbContext.Update(announcement);
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AnnouncementExists(announcement.announcement_id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Announcement));
+            }
+            return View(announcement);
+        }
+
+        // GET: Delete announcement
+        public async Task<IActionResult> DeleteAnnouncement(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var announcement = await dbContext.Announcements
+                .FirstOrDefaultAsync(m => m.announcement_id == id);
+            if (announcement == null)
+            {
+                return NotFound();
+            }
+
+            return View(announcement);
+        }
+
+        // POST: Delete announcement
+        [HttpPost, ActionName("DeleteAnnouncement")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var announcement = await dbContext.Announcements.FindAsync(id);
+            if (announcement != null)
+            {
+                dbContext.Announcements.Remove(announcement);
+                await dbContext.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Announcement));
+        }
+
+        private bool AnnouncementExists(int id)
+        {
+            return dbContext.Announcements.Any(e => e.announcement_id == id);
+        }
+
+        // Other existing actions
+        public IActionResult HomeworkHubSubject()
         {
             return View();
         }
 
-        public IActionResult homeworkhub_class()
+        public IActionResult HomeworkHubClass()
         {
             return View();
         }
 
-        public IActionResult homeworkhub_homework()
+        public IActionResult HomeworkHubHomework()
         {
             return View();
         }
 
-        public IActionResult homeworkhub_submission()
+        public IActionResult HomeworkHubSubmission()
         {
             return View();
         }

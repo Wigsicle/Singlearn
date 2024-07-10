@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<Singlearn.Models.Entities.Announcement>
+
+@{
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
     ViewData["StudentTitle"] = "Homepage";
 }
@@ -77,6 +79,7 @@
                             <th>ID</th>
                             <th>Title</th>
                             <th>Description</th>
+                            <th style ="width: 125px;">Date Uploaded</th>
                             <th style="width: 125px;">Date Uploaded</th>
                             <th>Type</th>
                             <th>Status</th>
@@ -86,7 +89,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        @foreach (var announcement in Model)
+                        {
+                            <tr>
                             <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>1</strong></td>
                             <td>Welcome to School Term 3!</td>
                             <td class="description">In Term 3, we are going to embark on a new school timetable system...</td>
@@ -95,11 +100,11 @@
                             <td><b>Visible</b></td>
                             <td><img src="../assets/images/poop.png" alt="Avatar" class="rounded-circle" style="max-width: 100px; max-height: 100px;" /></td>
                             <td>NIL</td>
-                            <td>
+                                <td>
                                 <i class="fa fa-eye action-icons" title="View" data-toggle="modal" data-target="#viewModal" data-content="Welcome to School Term 3!"></i>
                                 <i class="fa fa-edit action-icons" title="Edit" data-toggle="modal" data-target="#editModal" data-content="Welcome to School Term 3!"></i>
                                 <i class="fa fa-trash action-icons" title="Delete" data-toggle="modal" data-target="#deleteModal" data-content="Welcome to School Term 3!"></i>
-                            </td>
+                                </td>
                         </tr>
                         <tr>
                             <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>2</strong></td>
@@ -110,12 +115,12 @@
                             <td><b>Visible</b></td>
                             <td><img src="../assets/images/poop.png" alt="Avatar" class="rounded-circle" style="max-width: 100px; max-height: 100px;" /></td>
                             <td>NIL</td>
-                            <td>
+                                <td>
                                 <i class="fa fa-eye action-icons" title="View" data-toggle="modal" data-target="#viewModal" data-content="Chinese New Year Celebration"></i>
                                 <i class="fa fa-edit action-icons" title="Edit" data-toggle="modal" data-target="#editModal" data-content="Chinese New Year Celebration"></i>
                                 <i class="fa fa-trash action-icons" title="Delete" data-toggle="modal" data-target="#deleteModal" data-content="Chinese New Year Celebration"></i>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
                         <tr>
                             <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>3</strong></td>
                             <td>Reminder to Submit Math Homework 2</td>
@@ -165,6 +170,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="editAnnouncementForm">
+                        <input type="hidden" id="editAnnouncementId" />
                         <div class="form-group">
                             <label for="editAnnouncementTitle">Title</label>
                             <input type="text" class="form-control" id="editAnnouncementTitle" placeholder="Enter Title">
@@ -323,7 +329,7 @@
             $('#viewModal, #editModal, #deleteModal').on('hidden.bs.modal', function () {
                 $('body').removeClass('modal-open');
                 $('.modal-backdrop').remove();
-            });
+        });
 
             // Make the Add Announcement modal fields match the table
             $('#addAnnouncementForm').on('submit', function (e) {
@@ -363,17 +369,17 @@
                 // Add your implementation for delete functionality here
                 console.log('Delete confirmed'); // Example: Log message
                 $('#deleteModal').modal('hide'); // Close modal after confirmation
-            });
+        });
 
             // Handle close button click on delete modal (X icon)
             $('#deleteModal .close').on('click', function () {
                 $('#deleteModal').modal('hide');
-            });
+        });
 
             // Handle "Close" button click on delete modal
             $('#deleteModal .btn-secondary').on('click', function () {
                 $('#deleteModal').modal('hide');
-            });
+        });
 
             // Handle Confirm button click
             $('#confirmDeleteBtn').on('click', function () {
