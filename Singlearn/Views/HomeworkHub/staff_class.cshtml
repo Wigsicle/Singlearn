@@ -1,0 +1,35 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    ViewData["StaffTitle"] = "Homepage";
+}
+
+<!-- Content wrapper -->
+<div style="padding-top: 110px;" class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y" style="width:200%">
+        <h1 class="fw-bold py-3 mb-2">Class</h1>
+
+        <!-- Basic Bootstrap Table -->
+        <div class="card">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th>Total Submission</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    <tr>
+                        <td><a href="~/HomeworkHub/staff_submission"><strong>Angular Project</strong></a></td>
+                        <td>100</td>
+                        <td><span class="badge bg-label-danger me-1">Closed</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--/ Basic Bootstrap Table -->
+    </div>
+</div>
+<!-- / Content -->

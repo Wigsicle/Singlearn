@@ -1,0 +1,58 @@
+﻿@model Singlearn.Models.Entities.SubjectTeacherClass
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Template 1</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .horizontal-links {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            padding-left: 0;
+            list-style: none;
+            width: 800px;
+        }
+
+            .horizontal-links .nav-item {
+                flex: 1;
+                text-align: center;
+            }
+
+            .horizontal-links .nav-link {
+                color: #007bff;
+                text-decoration: none;
+            }
+
+                .horizontal-links .nav-link:hover {
+                    text-decoration: underline;
+                }
+
+        .container {
+            margin-left: 50px;
+        }
+
+        .card-title {
+            background-color: #f8f9fa; /* Light gray background for card titles */
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">Link Panel</h5>
+                <ul class="horizontal-links nav">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Discussions">Discussions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Assessments">Assessments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/ClassMatters">Class Matters</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

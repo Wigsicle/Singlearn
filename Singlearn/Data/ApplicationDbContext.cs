@@ -23,6 +23,26 @@ namespace Singlearn.Data
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Template> Templates { get; set; }
 
+        public DbSet<Homework> Homeworks { get; set; }
+
+        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Staff>().ToTable("Staff");
+            modelBuilder.Entity<Subject>().ToTable("Subjects");
+            modelBuilder.Entity<Class>().ToTable("Classes");
+            modelBuilder.Entity<Announcement>().ToTable("Announcements");
+            modelBuilder.Entity<ChapterName>().ToTable("ChapterNames");
+            modelBuilder.Entity<Material>().ToTable("Materials");
+            modelBuilder.Entity<SubjectTeacherClass>().ToTable("SubjectTeacherClasses");
+            modelBuilder.Entity<Template>().ToTable("Templates");
+            modelBuilder.Entity<STCTemplate>().ToTable("STCTemplates");
+
+        }
+
+
 
 
 

@@ -3,16 +3,21 @@ using Singlearn.Data;
 using Microsoft.EntityFrameworkCore;
 using Singlearn.Models;
 using Singlearn.ViewModels;
+using Singlearn.Models.Entities;
+using Microsoft.AspNetCore.Hosting;
+
 
 namespace Singlearn.Controllers
 {
     public class StaffController : Controller
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly IWebHostEnvironment hostingEnvironment;
 
-        public StaffController(ApplicationDbContext dbContext)
+        public StaffController(ApplicationDbContext dbContext, IWebHostEnvironment hostEnvironment)
         {
             this.dbContext = dbContext;
+            this.hostingEnvironment = hostEnvironment;
         }
 
 
@@ -49,19 +54,16 @@ namespace Singlearn.Controllers
 
         public async Task<IActionResult> GetChapters(int subject_id, string class_id)
         {
-            // Set the subject ID and class ID in ViewData for use in the view
             ViewData["SubjectId"] = subject_id;
             ViewData["ClassId"] = class_id;
 
             var subject_name = await dbContext.Subjects
-                .Where(s => s.subject_id.Equals(subject_id))
+                .Where(s => s.subject_id == subject_id)
                 .Select(s => s.name)
                 .FirstOrDefaultAsync();
 
-            // Pass the data to the view
-
             var chapters = await dbContext.ChapterNames
-                .Where(c => c.subject_id.Equals(subject_id))
+                .Where(c => c.subject_id == subject_id)
                 .Select(c => new ChapterViewModel
                 {
                     chapter_name_id = c.chapter_name_id,
@@ -70,12 +72,49 @@ namespace Singlearn.Controllers
                     subject_id = c.subject_id,
                 })
                 .ToListAsync();
-            ViewData["SubjectName"] = subject_name;
 
-            return View("SubjectMain", chapters);
+            var subjectTeacherClass = await dbContext.SubjectTeacherClasses
+                .Include(stc => stc.Subject)
+                .Include(stc => stc.Class)
+                .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id == class_id);
+
+            if (subjectTeacherClass == null)
+            {
+                Console.WriteLine("SubjectTeacherClass is null");
+            }
+            else
+            {
+                Console.WriteLine("SubjectTeacherClass retrieved");
+            }
+
+            var stcTemplate = await dbContext.STCTemplates
+                .Include(st => st.Template)
+                .FirstOrDefaultAsync(st => st.stc_id == subjectTeacherClass.stc_id);
+
+            if (stcTemplate == null)
+            {
+                Console.WriteLine("STCTemplate is null");
+            }
+            else
+            {
+                Console.WriteLine("STCTemplate retrieved");
+            }
+
+            var viewModel = new SubjectViewModel
+            {
+                subject_id = subject_id,
+                class_id = class_id,
+                SubjectTeacherClass = subjectTeacherClass,
+                TemplateViewName = stcTemplate != null ? stcTemplate.Template.view_name : "DefaultTemplate",
+                Chapters = chapters
+            };
+
+            return View("SubjectMain", viewModel);
         }
 
-        public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id, string class_id) 
+
+
+        public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id, string class_id)
         {
             var materials = await dbContext.Materials
                 .Where(m => m.subject_id == subject_id && m.chapter_id == chapter_id && m.class_id == class_id)
@@ -85,6 +124,73 @@ namespace Singlearn.Controllers
         }
 
 
+        [HttpPost]
+        /*public async Task<IActionResult> homeworkhub_homework([Bind("homework_id,subject_id,title,desciption,startdate,enddate,attachment")]Homework homework)
+        {
+            if(ModelState.IsValid)
+            {
+                dbContext.Add(homework);
+                await dbContext.SaveChangesAsync();
+                return RedirectToAction("Home", "Staff");
+            }
+            return View(homework);
+        }*/
+
+        [HttpGet]
+        public async Task<IActionResult> homeworkhub_homework(int subjectId)
+        {
+            var homeworks = await dbContext.Homeworks
+                .Where(h => h.subject_id == subjectId)
+                .Select(h => new HomeworkViewModel
+                {
+                    homework_id = h.homework_id,
+                    subject_id = h.subject_id,
+                    title = h.title,
+                    description = h.description,
+                    startdate = h.startdate,
+                    enddate = h.enddate,
+                    //attachment = h.attachment
+                })
+                .ToListAsync();
+
+            ViewData["SubjectId"] = subjectId;
+
+            return View(homeworks);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateHomework(HomeworkViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                string uniqueFilename = null;
+                if (model.attachment != null)
+                {
+                    string uploadFolder = Path.Combine(hostingEnvironment.WebRootPath, "attachments");
+                    uniqueFilename = Guid.NewGuid().ToString() + "_" + model.attachment.FileName;
+                    string filePath = Path.Combine(uploadFolder, uniqueFilename);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.attachment.CopyToAsync(fileStream);
+                    }
+                }
+
+                var homework = new Homework
+                {
+                    subject_id = model.subject_id,
+                    title = model.title,
+                    description = model.description,
+                    startdate = model.startdate,
+                    enddate = model.enddate,
+                    attachment = uniqueFilename,
+                };
+
+                await dbContext.Homeworks.AddAsync(homework);
+                await dbContext.SaveChangesAsync();
+                return RedirectToAction("homeworkhub_homework", "Staff", new { subjectId = model.subject_id });
+            }
+            return View(model);
+        }
         public IActionResult profile()
         {
             return View();
@@ -105,15 +211,183 @@ namespace Singlearn.Controllers
             return View();
         }
 
-        public IActionResult homeworkhub_homework()
-        {
-            return View();
-        }
+
 
         public IActionResult homeworkhub_submission()
         {
             return View();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> TemplateEditor(string teacherId)
+        {
+            try
+            {
+                var subjects = await dbContext.Subjects
+                    .Join(dbContext.SubjectTeacherClasses,
+                        subject => subject.subject_id,
+                        stc => stc.subject_id,
+                        (subject, stc) => new { Subject = subject, stc.teacher_id })
+                    .Where(result => result.teacher_id.Equals(teacherId))
+                    .Select(result => result.Subject)
+                    .Distinct()
+                    .ToListAsync();
+
+                ViewBag.Subjects = subjects;
+
+                var templates = await dbContext.Templates.ToListAsync();
+                ViewBag.Templates = templates;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception and show a meaningful error message
+                Console.WriteLine($"Error in TemplateEditor: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetClassesForSubject(int subjectId, string teacherId)
+        {
+            var classes = await dbContext.SubjectTeacherClasses
+                .Include(stc => stc.Class)
+                .Where(stc => stc.subject_id == subjectId && stc.teacher_id.Equals(teacherId))
+                .Select(stc => stc.Class)
+                .Distinct()
+                .ToListAsync();
+
+            return Json(classes);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveTemplateSelection(int subjectId, string classId, int templateId)
+        {
+            try
+            {
+                var stc = await dbContext.SubjectTeacherClasses
+                    .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id.Equals(classId));
+
+                if (stc != null)
+                {
+                    var stcTemplate = await dbContext.STCTemplates
+                        .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
+
+                    if (stcTemplate != null)
+                    {
+                        stcTemplate.template_id = templateId;
+                        dbContext.STCTemplates.Update(stcTemplate);
+                        Console.WriteLine("Template updated successfully.");
+                    }
+                    else
+                    {
+                        stcTemplate = new STCTemplate
+                        {
+                            stc_id = stc.stc_id,
+                            template_id = templateId
+                        };
+                        dbContext.STCTemplates.Add(stcTemplate);
+                        Console.WriteLine("Template added successfully.");
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                    Console.WriteLine("Changes saved to the database.");
+                }
+                else
+                {
+                    Console.WriteLine("SubjectTeacherClass not found.");
+                    return Json(new { success = false, message = "SubjectTeacherClass not found." });
+                }
+
+                return Json(new { success = true, message = "Template saved successfully." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SaveTemplateSelection: {ex.Message}");
+                return Json(new { success = false, message = $"Internal server error: {ex.Message}" });
+            }
+        }
+
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> LoadTemplatePreview(int templateId, int subjectId, string classId)
+        {
+            try
+            {
+                var template = await dbContext.Templates.FirstOrDefaultAsync(t => t.template_id == templateId);
+                if (template == null)
+                {
+                    Console.WriteLine("Template not found.");
+                    return Content("Template not found.");
+                }
+                Console.WriteLine($"Template found: {template.view_name}");
+
+                // Fetch SubjectTeacherClass data
+                var stc = await dbContext.SubjectTeacherClasses
+                    .Include(stc => stc.Subject)
+                    .Include(stc => stc.Class)
+                    .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id.Equals(classId));
+
+                if (stc == null)
+                {
+                    return Content("Subject or Class not found.");
+                }
+
+                return PartialView($"~/Views/Templates/{template.view_name}.cshtml", stc);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in LoadTemplatePreview: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        /*
+        [HttpGet]
+        public async Task<IActionResult> SubjectPage(int subjectId, string classId)
+        {
+            var stc = await dbContext.SubjectTeacherClasses
+                .Include(stc => stc.Subject)
+                .Include(stc => stc.Class)
+                .Include(stc => stc.Staff)
+                .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id.Equals(classId));
+
+            if (stc == null)
+            {
+                return NotFound("Subject or Class not found.");
+            }
+
+            var stcTemplate = await dbContext.STCTemplates
+                .Include(st => st.Template)
+                .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
+
+            if (stcTemplate == null)
+            {
+                return NotFound("Template not found.");
+            }
+
+            var announcements = await dbContext.Announcements
+                .Where(a => a.subject_id == subjectId)
+                .ToListAsync();
+
+            var materials = await dbContext.Materials
+                .Where(m => m.subject_id == subjectId)
+                .ToListAsync();
+
+            var viewModel = new SubjectViewModel
+            {
+                SubjectTeacherClass = stc,
+                TemplateViewName = stcTemplate.Template.view_name,
+                Announcements = announcements,
+                Materials = materials
+            };
+
+            ViewBag.SubjectTeacherClasses = stc;
+            return View(viewModel);
+        }*/
 
     }
 }

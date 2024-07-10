@@ -1,0 +1,73 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    ViewData["StaffTitle"] = "Homepage";
+}
+
+
+<!-- Content wrapper -->
+
+<div style="padding-top: 110px;" class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+        <div class="row">
+            <h1 class="fw-bold py-3 mb-2">Subjects</h1>
+            <div class="col-md-6 col-lg-4 padding-bottom-20">
+                <a href="~/HomeworkHub/staff_homework" class="card-link">
+                    <div class="card mb-2 card-hover-effect">
+                        <img class="card-img-top card-img-custom" src="https://t3.ftcdn.net/jpg/03/70/42/66/360_F_370426690_Pejt9KxjWTHPklsKwripaxr0iA17zupF.jpg" alt="Card image cap" />
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold py-3 mb-2">Primary 3 English</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 col-lg-4 padding-bottom-20">
+                <a href="javascript:void(0)" class="card-link">
+                    <div class="card mb-2 card-hover-effect">
+                        <img class="card-img-top card-img-custom" src="https://img.freepik.com/free-vector/maths-chalkboard_23-2148178220.jpg?size=626&ext=jpg&ga=GA1.1.1413502914.1719878400&semt=sph" alt="Card image cap" />
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold py-3 mb-2">Primary 3 Math</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 col-lg-4 padding-bottom-20">
+                <a href="javascript:void(0)" class="card-link">
+                    <div class="card mb-2 card-hover-effect">
+                        <img class="card-img-top card-img-custom" src="https://img.freepik.com/free-vector/colorful-science-education-background_23-2148490697.jpg?size=626&ext=jpg&ga=GA1.1.1413502914.1719878400&semt=sph" alt="Card image cap" />
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold py-3 mb-2">Primary 3 Science</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- / Content -->
+
+<style>
+    .card-img-custom {
+        height: 225px;
+        width: 100%;
+        object-fit: fit;
+    }
+
+    .padding-bottom-20 {
+        padding-bottom: 20px;
+    }
+
+    .card-hover-effect {
+        overflow: hidden;
+        position: relative;
+        border-radius: 0.5rem;
+        transition: transform 0.25s ease-in-out;
+    }
+
+        .card-hover-effect:hover {
+            transform: scale(1.05); /* Increase size on hover */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
+        }
+</style>
