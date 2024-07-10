@@ -145,45 +145,6 @@ namespace SinglearnWeb.Migrations
                 );
 
             migrationBuilder.CreateTable(
-                name: "Announcements",
-                columns: table => new
-                {
-                    announcement_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    subject_id = table.Column<int>(type: "int", nullable: false),
-                    teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    class_id = table.Column<int>(type: "int", nullable: false),
-                    title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    date = table.Column<DateTime>(type: "DateTime", nullable : false),
-                    message_body = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Announcements", x => x.announcement_id);
-                    table.ForeignKey(
-                        name: "FK_Announcements_subject_id",
-                        column: x => x.subject_id,
-                        principalTable: "Subjects",
-                        principalColumn: "subject_id",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_Announcements_teacher_id",
-                        column: x => x.teacher_id,
-                        principalTable: "Staff",
-                        principalColumn: "staff_id",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_Announcements_class_id",
-                        column: x => x.class_id,
-                        principalTable: "Classes",
-                        principalColumn: "class_id",
-                        onDelete: ReferentialAction.NoAction);
-                }
-                );
-
-            migrationBuilder.CreateTable(
                 name: "Materials",
                 columns: table => new
                 {
@@ -222,6 +183,65 @@ namespace SinglearnWeb.Migrations
                         onDelete: ReferentialAction.NoAction);
                 }
                 );
+
+
+            migrationBuilder.CreateTable(
+                name: "Announcements",
+                columns: table => new
+                {
+                    announcement_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    subject_id = table.Column<int>(type: "int", nullable: true),
+                    teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    class_id = table.Column<int>(type: "int", nullable: true),
+                    subject_type = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Announcements", x => x.announcement_id);
+                    table.ForeignKey(
+                        name: "FK_Announcements_Subjects_subject_id",
+                        column: x => x.subject_id,
+                        principalTable: "Subjects",
+                        principalColumn: "subject_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Announcements_Staff_teacher_id",
+                        column: x => x.teacher_id,
+                        principalTable: "Staff",
+                        principalColumn: "staff_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Announcements_Classes_class_id",
+                        column: x => x.class_id,
+                        principalTable: "Classes",
+                        principalColumn: "class_id",
+                        onDelete: ReferentialAction.Cascade);
+                }
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Announcements_subject_id",
+                table: "Announcements",
+                column: "subject_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Announcements_teacher_id",
+                table: "Announcements",
+                column: "teacher_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Announcements_class_id",
+                table: "Announcements",
+                column: "class_id");
+
 
             migrationBuilder.CreateTable(
                 name: "ChapterNames",
@@ -310,13 +330,13 @@ namespace SinglearnWeb.Migrations
                 name: "SubjectTeacherClasses");
 
             migrationBuilder.DropTable(
-                name: "Announcements");
-
-            migrationBuilder.DropTable(
                 name: "Materials");
 
             migrationBuilder.DropTable(
                 name: "ChapterNames");
+
+            migrationBuilder.DropTable(
+                name: "Announcements");
 
             migrationBuilder.DropTable(
                 name: "Templates");

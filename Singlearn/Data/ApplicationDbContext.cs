@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Identity.Client;
+using Singlearn.Models.Entities;
 using SinglearnWeb.Models.Entities;
 namespace SinglearnWeb.Data
 {
@@ -16,7 +17,7 @@ namespace SinglearnWeb.Data
 
         public DbSet<User> Users { get; set; }
 
-      
+        public DbSet<Announcement> Announcement { get; set; }
 
 
 
