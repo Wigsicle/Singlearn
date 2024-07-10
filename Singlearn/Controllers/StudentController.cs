@@ -91,6 +91,20 @@ namespace Singlearn.Controllers
             return View("ChapterMain", materials);
         }
 
+        public async Task<IActionResult> GetMaterial(int material_id)
+        {
+            // Fetch the material by material_id
+            var material = await dbContext.Materials
+                .FirstOrDefaultAsync(m => m.material_id == material_id);
+
+            if (material == null)
+            {
+                return NotFound();
+            }
+
+            return View("Material", material);
+        }
+
         public IActionResult profile()
         {
             return View();

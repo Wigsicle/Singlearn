@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Singlearn.Data;
 using Singlearn.Models.Entities;
+using Singlearn.ViewModels;
 
 namespace Singlearn.Controllers
 {
@@ -25,24 +23,6 @@ namespace Singlearn.Controllers
             return View(await _context.Materials.ToListAsync());
         }
 
-        // GET: Materials/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var material = await _context.Materials
-                .FirstOrDefaultAsync(m => m.material_id == id);
-            if (material == null)
-            {
-                return NotFound();
-            }
-
-            return View(material);
-        }
-
         // GET: Materials/Create
         public IActionResult Create()
         {
@@ -50,108 +30,60 @@ namespace Singlearn.Controllers
         }
 
         // POST: Materials/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("material_id,subject_id,teacher_id,class_id,name,description,chapter_id,type,link,status")] Material material)
+        public async Task<IActionResult> Create(MaterialCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(material);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(material);
-        }
-
-        // GET: Materials/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var material = await _context.Materials.FindAsync(id);
-            if (material == null)
-            {
-                return NotFound();
-            }
-            return View(material);
-        }
-
-        // POST: Materials/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("material_id,subject_id,teacher_id,class_id,name,description,chapter_id,type,link,status")] Material material)
-        {
-            if (id != material.material_id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                // Process uploaded file if present
+                if (model.DataFile != null && model.DataFile.Length > 0)
                 {
-                    _context.Update(material);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MaterialExists(material.material_id))
+                    using (var memoryStream = new MemoryStream())
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        await model.DataFile.CopyToAsync(memoryStream);
+                        var material = new Material
+                        {
+                            subject_id = model.subject_id,
+                            teacher_id = model.teacher_id,
+                            class_id = model.class_id,
+                            name = model.name,
+                            description = model.description,
+                            chapter_id = model.chapter_id,
+                            type = model.type,
+                            link = model.link,
+                            status = model.status,
+                            data = memoryStream.ToArray()
+                        };
+
+                        _context.Add(material);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                else
+                {
+                    ModelState.AddModelError("DataFile", "Please upload a file.");
+                }
             }
-            return View(material);
+
+            // If we reach here, something went wrong, so return to the view with the model
+            return View(model);
         }
 
-        // GET: Materials/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult DownloadDocument(int id)
         {
-            if (id == null)
+            var material = _context.Materials.Find(id);
+            if (material == null || material.data == null || material.data.Length == 0)
             {
                 return NotFound();
             }
 
-            var material = await _context.Materials
-                .FirstOrDefaultAsync(m => m.material_id == id);
-            if (material == null)
-            {
-                return NotFound();
-            }
-
-            return View(material);
+            // Return the document as a FileResult
+            return File(material.data, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", material.name + ".docx");
         }
 
-        // POST: Materials/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var material = await _context.Materials.FindAsync(id);
-            if (material != null)
-            {
-                _context.Materials.Remove(material);
-            }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool MaterialExists(int id)
-        {
-            return _context.Materials.Any(e => e.material_id == id);
-        }
+        // Other actions like Index, Edit, Delete, etc.
     }
 }

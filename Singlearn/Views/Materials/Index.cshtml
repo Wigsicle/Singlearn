@@ -39,6 +39,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.status)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.data)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -71,6 +74,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.data)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.material_id">Edit</a> |
