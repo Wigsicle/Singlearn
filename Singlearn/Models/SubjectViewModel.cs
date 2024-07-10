@@ -13,6 +13,7 @@
         public Singlearn.Models.Entities.SubjectTeacherClass SubjectTeacherClass { get; set; }
         public List<Singlearn.Models.Entities.Announcement> Announcements { get; set; }
         public List<Singlearn.Models.Entities.Material> Materials { get; set; }
+        public List<Singlearn.ViewModels.ChapterViewModel> Chapters { get; set; }
         public string TemplateViewName { get; set; }
     }
 }

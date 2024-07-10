@@ -40,21 +40,6 @@ namespace Singlearn.Data
             modelBuilder.Entity<Template>().ToTable("Templates");
             modelBuilder.Entity<STCTemplate>().ToTable("STCTemplates");
 
-            modelBuilder.Entity<SubjectTeacherClass>()
-                .HasOne(stc => stc.Subject)
-                .WithMany(s => s.SubjectTeacherClasses)
-                .HasForeignKey(stc => stc.subject_id);
-
-            modelBuilder.Entity<SubjectTeacherClass>()
-                .HasOne(stc => stc.Class)
-                .WithMany(c => c.SubjectTeacherClasses)
-                .HasForeignKey(stc => stc.class_id);
-
-            modelBuilder.Entity<SubjectTeacherClass>()
-                .HasOne(stc => stc.Staff)
-                .WithMany(t => t.SubjectTeacherClasses)
-                .HasForeignKey(stc => stc.teacher_id);
-
         }
 
 

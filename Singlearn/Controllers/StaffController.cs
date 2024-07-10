@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Singlearn.Models;
 using Singlearn.ViewModels;
 using Singlearn.Models.Entities;
+using Microsoft.AspNetCore.Hosting;
+
 
 namespace Singlearn.Controllers
 {
@@ -52,19 +54,16 @@ namespace Singlearn.Controllers
 
         public async Task<IActionResult> GetChapters(int subject_id, string class_id)
         {
-            // Set the subject ID and class ID in ViewData for use in the view
             ViewData["SubjectId"] = subject_id;
             ViewData["ClassId"] = class_id;
 
             var subject_name = await dbContext.Subjects
-                .Where(s => s.subject_id.Equals(subject_id))
+                .Where(s => s.subject_id == subject_id)
                 .Select(s => s.name)
                 .FirstOrDefaultAsync();
 
-            // Pass the data to the view
-
             var chapters = await dbContext.ChapterNames
-                .Where(c => c.subject_id.Equals(subject_id))
+                .Where(c => c.subject_id == subject_id)
                 .Select(c => new ChapterViewModel
                 {
                     chapter_name_id = c.chapter_name_id,
@@ -73,12 +72,49 @@ namespace Singlearn.Controllers
                     subject_id = c.subject_id,
                 })
                 .ToListAsync();
-            ViewData["SubjectName"] = subject_name;
 
-            return View("SubjectMain", chapters);
+            var subjectTeacherClass = await dbContext.SubjectTeacherClasses
+                .Include(stc => stc.Subject)
+                .Include(stc => stc.Class)
+                .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id == class_id);
+
+            if (subjectTeacherClass == null)
+            {
+                Console.WriteLine("SubjectTeacherClass is null");
+            }
+            else
+            {
+                Console.WriteLine("SubjectTeacherClass retrieved");
+            }
+
+            var stcTemplate = await dbContext.STCTemplates
+                .Include(st => st.Template)
+                .FirstOrDefaultAsync(st => st.stc_id == subjectTeacherClass.stc_id);
+
+            if (stcTemplate == null)
+            {
+                Console.WriteLine("STCTemplate is null");
+            }
+            else
+            {
+                Console.WriteLine("STCTemplate retrieved");
+            }
+
+            var viewModel = new SubjectViewModel
+            {
+                subject_id = subject_id,
+                class_id = class_id,
+                SubjectTeacherClass = subjectTeacherClass,
+                TemplateViewName = stcTemplate != null ? stcTemplate.Template.view_name : "DefaultTemplate",
+                Chapters = chapters
+            };
+
+            return View("SubjectMain", viewModel);
         }
 
-        public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id, string class_id) 
+
+
+        public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id, string class_id)
         {
             var materials = await dbContext.Materials
                 .Where(m => m.subject_id == subject_id && m.chapter_id == chapter_id && m.class_id == class_id)
@@ -175,7 +211,7 @@ namespace Singlearn.Controllers
             return View();
         }
 
-        
+
 
         public IActionResult homeworkhub_submission()
         {
@@ -309,7 +345,7 @@ namespace Singlearn.Controllers
             }
         }
 
-
+        /*
         [HttpGet]
         public async Task<IActionResult> SubjectPage(int subjectId, string classId)
         {
@@ -351,7 +387,7 @@ namespace Singlearn.Controllers
 
             ViewBag.SubjectTeacherClasses = stc;
             return View(viewModel);
-        }
+        }*/
 
     }
 }

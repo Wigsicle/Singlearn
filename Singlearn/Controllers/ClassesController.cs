@@ -34,7 +34,7 @@ namespace Singlearn.Controllers
             }
 
             var @class = await _context.Classes
-                .FirstOrDefaultAsync(m => m.class_Id == id);
+                .FirstOrDefaultAsync(m => m.class_id == id);
             if (@class == null)
             {
                 return NotFound();
@@ -88,7 +88,7 @@ namespace Singlearn.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("class_Id,name,teacher_id,academic_level,year")] Class @class)
         {
-            if (id != @class.class_Id)
+            if (id != @class.class_id)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace Singlearn.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ClassExists(@class.class_Id))
+                    if (!ClassExists(@class.class_id))
                     {
                         return NotFound();
                     }
@@ -125,7 +125,7 @@ namespace Singlearn.Controllers
             }
 
             var @class = await _context.Classes
-                .FirstOrDefaultAsync(m => m.class_Id == id);
+                .FirstOrDefaultAsync(m => m.class_id == id);
             if (@class == null)
             {
                 return NotFound();
@@ -151,7 +151,7 @@ namespace Singlearn.Controllers
 
         private bool ClassExists(string id)
         {
-            return _context.Classes.Any(e => e.class_Id == id);
+            return _context.Classes.Any(e => e.class_id == id);
         }
     }
 }

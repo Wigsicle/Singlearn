@@ -14,6 +14,5 @@ namespace Singlearn.Models.Entities
         public int no_chapters { get; set; }
         public string image { get; set; }
 
-        public ICollection<SubjectTeacherClass> SubjectTeacherClasses { get; set; }
     }
 }

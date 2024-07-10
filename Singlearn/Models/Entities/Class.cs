@@ -5,7 +5,7 @@ namespace Singlearn.Models.Entities
     public class Class
     {
         [Key]
-        public string class_Id { get; set; }
+        public string class_id { get; set; }
 
         public string name { get; set; }
 
@@ -14,6 +14,5 @@ namespace Singlearn.Models.Entities
         public string academic_level { get; set; }
         public int year { get; set; }
 
-        public ICollection<SubjectTeacherClass> SubjectTeacherClasses { get; set; }
     }
 }
