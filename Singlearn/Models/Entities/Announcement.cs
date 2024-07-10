@@ -30,5 +30,20 @@ namespace Singlearn.Models.Entities
 
         public string SubjectType { get; set; }
 
+        // Initialize the object
+        public Announcement()
+        {
+            title = string.Empty;
+            description = string.Empty;
+            category = string.Empty;
+            Status = string.Empty;
+            image = string.Empty;
+            date = DateTime.Now;
+            url = string.Empty;
+            subject_id = string.Empty;
+            teacher_id = string.Empty;
+            class_id = string.Empty;
+            SubjectType = string.Empty;
+        }
     }
 }

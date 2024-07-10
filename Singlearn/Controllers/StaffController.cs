@@ -89,7 +89,7 @@ namespace Singlearn.Controllers
 
         public async Task<IActionResult> Announcement()
         {
-            var announcements = await dbContext.Announcement.ToListAsync();
+            var announcements = await dbContext.Announcements.ToListAsync();
             return View(announcements);
         }
 
@@ -121,7 +121,7 @@ namespace Singlearn.Controllers
                 return NotFound();
             }
 
-            var announcement = await dbContext.Announcement.FindAsync(id);
+            var announcement = await dbContext.Announcements.FindAsync(id);
             if (announcement == null)
             {
                 return NotFound();
@@ -170,7 +170,7 @@ namespace Singlearn.Controllers
                 return NotFound();
             }
 
-            var announcement = await dbContext.Announcement
+            var announcement = await dbContext.Announcements
                 .FirstOrDefaultAsync(m => m.announcement_id == id);
             if (announcement == null)
             {
@@ -185,15 +185,18 @@ namespace Singlearn.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var announcement = await dbContext.Announcement.FindAsync(id);
-            dbContext.Announcement.Remove(announcement);
-            await dbContext.SaveChangesAsync();
+            var announcement = await dbContext.Announcements.FindAsync(id);
+            if (announcement != null)
+            {
+                dbContext.Announcements.Remove(announcement);
+                await dbContext.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Announcement));
         }
 
         private bool AnnouncementExists(int id)
         {
-            return dbContext.Announcement.Any(e => e.announcement_id == id);
+            return dbContext.Announcements.Any(e => e.announcement_id == id);
         }
 
         // Other existing actions

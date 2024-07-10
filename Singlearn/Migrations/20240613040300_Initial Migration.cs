@@ -57,13 +57,13 @@ namespace Singlearn.Migrations
                    },
                 constraints: table =>
                 {
-                table.PrimaryKey("PK_Classes", x => x.class_id);
-                table.ForeignKey(
-                    name: "FK_Classes_teacher_id",
-                    column: x => x.teacher_id,
-                    principalTable: "Staff",
-                    principalColumn: "staff_id",
-                    onDelete: ReferentialAction.NoAction);
+                    table.PrimaryKey("PK_Classes", x => x.class_id);
+                    table.ForeignKey(
+                        name: "FK_Classes_teacher_id",
+                        column: x => x.teacher_id,
+                        principalTable: "Staff",
+                        principalColumn: "staff_id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -182,8 +182,7 @@ namespace Singlearn.Migrations
                         principalTable: "Classes",
                         principalColumn: "class_id",
                         onDelete: ReferentialAction.NoAction);
-                }
-                );
+                });
 
 
             migrationBuilder.CreateTable(
@@ -225,8 +224,7 @@ namespace Singlearn.Migrations
                         principalTable: "Classes",
                         principalColumn: "class_id",
                         onDelete: ReferentialAction.Cascade);
-                }
-            );
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Announcements_subject_id",
