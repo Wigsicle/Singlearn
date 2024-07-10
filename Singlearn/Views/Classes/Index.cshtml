@@ -88,6 +88,13 @@
             <div class="col-lg-10 pt-3">
                 <h1>List of Classes</h1>
 
+                <!--Alert box-->
+                <div id="alert-message" class="alert alert-dismissible fade show mt-3 mb-3" role="alert" style="display:none;">
+                    <span id="alert-text"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <!--Search Box-->
                 <div class="form-group pt-3 pb-3">
                     <input type="text" class="form-control" id="searchInput" placeholder="Search for classes...">
                 </div>
@@ -157,6 +164,23 @@
             var classes = @Html.Raw(Json.Serialize(Model));
             var currentPage = 1;
             var rowsPerPage = 10;
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            if (successMessage) {
+                showAlert('success', successMessage);
+            } else if (errorMessage) {
+                showAlert('danger', errorMessage);
+            }
+
+            function showAlert(type, message) {
+                var alertBox = document.getElementById('alert-message');
+                var alertText = document.getElementById('alert-text');
+                alertBox.classList.remove('alert-success', 'alert-danger');
+                alertBox.classList.add('alert-' + type);
+                alertText.textContent = message;
+                alertBox.style.display = 'block';
+            }
 
             function updateTable(page) {
                 var startIndex = (page - 1) * rowsPerPage;
@@ -309,7 +333,6 @@
                 updateTable(currentPage);
                 updatePagination();
             });
-
 
             // Initial setup
             updateTable(currentPage);
