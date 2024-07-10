@@ -1,40 +1,16 @@
 ﻿@model Singlearn.ViewModels.SubjectViewModel
 
 @{
-    ViewData["Title"] = Model.SubjectTeacherClass?.Subject?.name ?? "Unknown Subject";
-    var templateViewName = Model.TemplateViewName;
+    ViewData["Title"] = @Model.SubjectTeacherClass.Subject.name;
 }
 
-<h1>@ViewData["SubjectName"]</h1>
+<h1>Subject ID @ViewData["SubjectId"]</h1>
 <h1>Class ID @ViewData["ClassId"]</h1>
 
-<h2>Chapters</h2>
 
-@if (Model.Chapters != null && Model.Chapters.Any())
+@if (!string.IsNullOrEmpty(Model.TemplateViewName))
 {
-    <div class="row">
-        @foreach (var chapter in Model.Chapters)
-        {
-            <div class="col-md-6 col-lg-3 padding-bottom-20">
-                <a asp-controller="Staff" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@ViewData["ClassId"]" class="card-link">
-                    <div class="card mb-2 card-hover-effect">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold py-3 mb-2">Chapter @chapter.chapter_id: @chapter.name</h5>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        }
-    </div>
-}
-else
-{
-    <p>No chapters found for this subject.</p>
-}
-
-@if (!string.IsNullOrEmpty(templateViewName))
-{
-    @await Html.PartialAsync($"~/Views/Templates/{templateViewName}.cshtml", Model.SubjectTeacherClass)
+    @await Html.PartialAsync($"~/Views/Templates/{Model.TemplateViewName}.cshtml", Model)
 }
 
 <style>
@@ -97,7 +73,7 @@ else
     }
 
         .card-hover-effect:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            transform: scale(1.05); /* Increase size on hover */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
         }
 </style>

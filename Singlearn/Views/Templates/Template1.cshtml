@@ -1,4 +1,4 @@
-﻿@model Singlearn.Models.Entities.SubjectTeacherClass
+﻿@model Singlearn.ViewModels.SubjectViewModel
 
 <!DOCTYPE html>
 <html>
@@ -29,14 +29,11 @@
                     text-decoration: underline;
                 }
 
-        .container {
-            margin-left: 50px;
-        }
-
         .card-title {
-            background-color: #f8f9fa; /* Light gray background for card titles */
+            background-color: #f8f9fa; /* Light gray background */
             padding: 10px;
-            border-radius: 5px;
+            margin-bottom: 0;
+            border-bottom: 1px solid #e9ecef;
         }
     </style>
 </head>
@@ -51,6 +48,51 @@
                     <li class="nav-item"><a class="nav-link" href="/Assessments">Assessments</a></li>
                     <li class="nav-item"><a class="nav-link" href="/ClassMatters">Class Matters</a></li>
                 </ul>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">Subject Announcements</h5>
+                @* Loop through announcements if available *@
+                @if (Model.Announcements != null && Model.Announcements.Any())
+                {
+                    foreach (var announcement in Model.Announcements)
+                    {
+                        
+                    }
+                }
+                else
+                {
+                    <p>No announcements available.</p>
+                }
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">Subject Materials</h5>
+                <div class="row">
+                    @if (Model.Chapters != null && Model.Chapters.Any())
+                    {
+                        <div class="row">
+                            @foreach (var chapter in Model.Chapters)
+                            {
+                                <div class="col-md-6 col-lg-3 padding-bottom-20">
+                                    <a asp-controller="Staff" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@Model.class_id" class="card-link">
+                                        <div class="card mb-2 card-hover-effect">
+                                            <div class="card-body">
+                                                <h5 class="card-title fw-bold py-3 mb-2">Chapter @chapter.chapter_id: @chapter.name</h5>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p>No chapters found.</p>
+                    }
+                </div>
             </div>
         </div>
     </div>

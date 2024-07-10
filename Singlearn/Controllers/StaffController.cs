@@ -54,16 +54,18 @@ namespace Singlearn.Controllers
 
         public async Task<IActionResult> GetChapters(int subject_id, string class_id)
         {
+            // Set the subject ID and class ID in ViewData for use in the view
             ViewData["SubjectId"] = subject_id;
             ViewData["ClassId"] = class_id;
 
             var subject_name = await dbContext.Subjects
-                .Where(s => s.subject_id == subject_id)
+                .Where(s => s.subject_id.Equals(subject_id))
                 .Select(s => s.name)
                 .FirstOrDefaultAsync();
 
+            // Fetch chapters for the given subject
             var chapters = await dbContext.ChapterNames
-                .Where(c => c.subject_id == subject_id)
+                .Where(c => c.subject_id.Equals(subject_id))
                 .Select(c => new ChapterViewModel
                 {
                     chapter_name_id = c.chapter_name_id,
@@ -73,44 +75,30 @@ namespace Singlearn.Controllers
                 })
                 .ToListAsync();
 
-            var subjectTeacherClass = await dbContext.SubjectTeacherClasses
+            ViewData["SubjectName"] = subject_name;
+
+            // Fetch the template associated with the subject and class
+            var stc = await dbContext.SubjectTeacherClasses
                 .Include(stc => stc.Subject)
                 .Include(stc => stc.Class)
                 .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id == class_id);
 
-            if (subjectTeacherClass == null)
-            {
-                Console.WriteLine("SubjectTeacherClass is null");
-            }
-            else
-            {
-                Console.WriteLine("SubjectTeacherClass retrieved");
-            }
-
             var stcTemplate = await dbContext.STCTemplates
                 .Include(st => st.Template)
-                .FirstOrDefaultAsync(st => st.stc_id == subjectTeacherClass.stc_id);
-
-            if (stcTemplate == null)
-            {
-                Console.WriteLine("STCTemplate is null");
-            }
-            else
-            {
-                Console.WriteLine("STCTemplate retrieved");
-            }
+                .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
 
             var viewModel = new SubjectViewModel
             {
-                subject_id = subject_id,
-                class_id = class_id,
-                SubjectTeacherClass = subjectTeacherClass,
-                TemplateViewName = stcTemplate != null ? stcTemplate.Template.view_name : "DefaultTemplate",
-                Chapters = chapters
+                SubjectTeacherClass = stc,
+                TemplateViewName = stcTemplate?.Template?.view_name,
+                Chapters = chapters,
+                Announcements = new List<Announcement>(), // Add Announcements if needed
+                Materials = new List<Material>() // Add Materials if needed
             };
 
             return View("SubjectMain", viewModel);
         }
+
 
 
 
@@ -345,49 +333,7 @@ namespace Singlearn.Controllers
             }
         }
 
-        /*
-        [HttpGet]
-        public async Task<IActionResult> SubjectPage(int subjectId, string classId)
-        {
-            var stc = await dbContext.SubjectTeacherClasses
-                .Include(stc => stc.Subject)
-                .Include(stc => stc.Class)
-                .Include(stc => stc.Staff)
-                .FirstOrDefaultAsync(stc => stc.subject_id == subjectId && stc.class_id.Equals(classId));
-
-            if (stc == null)
-            {
-                return NotFound("Subject or Class not found.");
-            }
-
-            var stcTemplate = await dbContext.STCTemplates
-                .Include(st => st.Template)
-                .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
-
-            if (stcTemplate == null)
-            {
-                return NotFound("Template not found.");
-            }
-
-            var announcements = await dbContext.Announcements
-                .Where(a => a.subject_id == subjectId)
-                .ToListAsync();
-
-            var materials = await dbContext.Materials
-                .Where(m => m.subject_id == subjectId)
-                .ToListAsync();
-
-            var viewModel = new SubjectViewModel
-            {
-                SubjectTeacherClass = stc,
-                TemplateViewName = stcTemplate.Template.view_name,
-                Announcements = announcements,
-                Materials = materials
-            };
-
-            ViewBag.SubjectTeacherClasses = stc;
-            return View(viewModel);
-        }*/
+       
 
     }
 }
