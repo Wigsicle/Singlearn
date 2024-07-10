@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SinglearnWeb.Models.Entities
+namespace Singlearn.Models.Entities
 {
     public class User
     {

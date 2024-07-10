@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Singlearn.Models.Entities
+﻿namespace Singlearn.ViewModels
 {
-    public class Material
+    public class MaterialViewModel
     {
-        [Key]
         public int material_id { get; set; }
 
         public int subject_id { get; set; }
@@ -23,6 +20,5 @@ namespace Singlearn.Models.Entities
         public string link { get; set; }
 
         public string status { get; set; }
-
     }
 }
