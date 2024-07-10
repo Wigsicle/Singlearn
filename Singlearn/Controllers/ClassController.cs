@@ -60,8 +60,10 @@ namespace Singlearn.Controllers
             {
                 _context.Add(classes);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Class created successfully!";
                 return RedirectToAction(nameof(Index));
             }
+            TempData["ErrorMessage"] = "Error creating material. Please try again.";
             ViewBag.TeacherList = new SelectList(_context.Staff, "staff_id", "name", @classes.teacher_id);
             return View(classes);
         }
@@ -88,10 +90,11 @@ namespace Singlearn.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("class_id,name,teacher_id,academic_level,year")] Class @class)
         {
-            //if (id != @class.class_id)
-            //{
-            //    return NotFound();
-            //}
+            if (id != @class.class_id)
+            {
+                TempData["ErrorMessage"] = "Class not found.";
+                return NotFound();
+            }
 
             if (ModelState.IsValid)
             {
@@ -99,12 +102,14 @@ namespace Singlearn.Controllers
                 {
                     _context.Update(@class);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Class updated successfully!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ClassExists(@class.class_id))
                     {
+                        TempData["ErrorMessage"] = "Class not found.";
                         return NotFound();
                     }
                     else
@@ -113,6 +118,7 @@ namespace Singlearn.Controllers
                     }
                 }
             }
+            TempData["ErrorMessage"] = "Error updating material. Please try again.";
             ViewBag.TeacherList = new SelectList(_context.Staff, "staff_id", "name", @class.teacher_id);
             return View(@class);
         }
@@ -144,9 +150,14 @@ namespace Singlearn.Controllers
             if (@class != null)
             {
                 _context.Classes.Remove(@class);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Class deleted successfully!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Error deleting class. Please try again.";
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
