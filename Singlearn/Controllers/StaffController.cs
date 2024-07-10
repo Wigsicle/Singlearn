@@ -219,5 +219,11 @@ namespace Singlearn.Controllers
         {
             return View();
         }
+
+        public IActionResult announcement()
+        {
+            return View();
+        }
+
     }
 }

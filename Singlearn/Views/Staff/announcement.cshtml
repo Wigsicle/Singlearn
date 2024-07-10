@@ -85,51 +85,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>1</strong></td>
-                            <td>Welcome to School Term 3!</td>
-                            <td class="description">In Term 3, we are going to embark on a new school timetable system...</td>
-                            <td>2024-07-05</td>
-                            <td>News</td>
-                            <td><b>Visible</b></td>
-                            <td><img src="../assets/images/poop.png" alt="Avatar" class="rounded-circle" style="max-width: 100px; max-height: 100px;" /></td>
-                            <td>NIL</td>
-                            <td>
-                                <i class="fa fa-eye action-icons" title="View" data-toggle="modal" data-target="#viewModal" data-content="Welcome to School Term 3!"></i>
-                                <i class="fa fa-edit action-icons" title="Edit" data-toggle="modal" data-target="#editModal" data-content="Welcome to School Term 3!"></i>
-                                <i class="fa fa-trash action-icons" title="Delete" data-toggle="modal" data-target="#deleteModal" data-content="Welcome to School Term 3!"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>2</strong></td>
-                            <td>Chinese New Year Celebration</td>
-                            <td class="description">In this year of Dragon, we will have a dragon-themed fiesta happening...</td>
-                            <td>2024-07-05</td>
-                            <td>Events</td>
-                            <td><b>Visible</b></td>
-                            <td><img src="../assets/images/poop.png" alt="Avatar" class="rounded-circle" style="max-width: 100px; max-height: 100px;" /></td>
-                            <td>NIL</td>
-                            <td>
-                                <i class="fa fa-eye action-icons" title="View" data-toggle="modal" data-target="#viewModal" data-content="Chinese New Year Celebration"></i>
-                                <i class="fa fa-edit action-icons" title="Edit" data-toggle="modal" data-target="#editModal" data-content="Chinese New Year Celebration"></i>
-                                <i class="fa fa-trash action-icons" title="Delete" data-toggle="modal" data-target="#deleteModal" data-content="Chinese New Year Celebration"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>3</strong></td>
-                            <td>Reminder to Submit Math Homework 2</td>
-                            <td class="description">It has come to my notice that 40% of the class has yet to submit their Math Homework...</td>
-                            <td>2024-07-05</td>
-                            <td>Subject</td>
-                            <td><b>Visible</b></td>
-                            <td><img src="../assets/images/poop.png" alt="Avatar" class="rounded-circle" style="max-width: 100px; max-height: 100px;" /></td>
-                            <td>Mathematics</td>
-                            <td>
-                                <i class="fa fa-eye action-icons" title="View" data-toggle="modal" data-target="#viewModal" data-content="Reminder to Submit Math Homework 2"></i>
-                                <i class="fa fa-edit action-icons" title="Edit" data-toggle="modal" data-target="#editModal" data-content="Reminder to Submit Math Homework 2"></i>
-                                <i class="fa fa-trash action-icons" title="Delete" data-toggle="modal" data-target="#deleteModal" data-content="Reminder to Submit Math Homework 2"></i>
-                            </td>
-                        </tr>
+                        @foreach (var announcement in Model)
+                        {
+                            <tr>
+                                <td>@announcement.announcement_id</td>
+                                <td>@announcement.title</td>
+                                <td class="description">@announcement.description</td>
+                                <td>@announcement.date.ToShortDateString()</td>
+                                <td>@announcement.category</td>
+                                <td><b>@announcement.Status</b></td>
+                                <td>
+                                    <img src="@Url.Content("~/uploads/" + announcement.image)" alt="Image" class="rounded-circle" style="max-width: 100px; max-height: 100px;" />
+                                </td>
+                                <td>@announcement.SubjectType</td>
+                                <td>
+                                    <i class="fa fa-eye action-icons" title="View" data-toggle="modal" data-target="#viewModal" data-content="@announcement.description"></i>
+                                    <i class="fa fa-edit action-icons" title="Edit" data-toggle="modal" data-target="#editModal" data-id="@announcement.announcement_id"></i>
+                                    <i class="fa fa-trash action-icons" title="Delete" data-toggle="modal" data-target="#deleteModal" data-id="@announcement.announcement_id"></i>
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
@@ -247,15 +222,6 @@
                                 <option value="Subject">Subject</option>
                             </select>
                         </div>
-                        <div class="form-group subject-type-field" id="subjectTypeField">
-                            <label for="subjectType">Your Classes</label>
-                            <div id="announcementSubjectType">
-                                <label style="padding-right: 10px"><input type="checkbox" value="Mathematics"> Mathematics</label>
-                                <label style="padding-right: 10px"><input type="checkbox" value="Science"> Science</label>
-                                <label style="padding-right: 10px"><input type="checkbox" value="History"> History</label>
-                                <label><input type="checkbox" value="English"> English</label>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="announcementStatus">Status</label>
                             <select class="form-control" id="announcementStatus">
@@ -278,56 +244,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script>
-        // jQuery to handle the modal content
-        $(document).ready(function () {
-            $('.action-icons').on('click', function () {
-                var actionType = $(this).attr('title'); // Get the title attribute which is "View", "Edit", or "Delete"
-                var row = $(this).closest('tr'); // Get the closest table row
-                var id = row.find('strong').text(); // Get the ID from the row
-                var title = row.find('td:eq(1)').text(); // Get the Title from the second column
-                var description = row.find('td:eq(2)').text(); // Get the Description from the third column
-                var date = row.find('td:eq(3)').text(); // Get the Date from the fourth column
-                var type = row.find('td:eq(4)').text(); // Get the Type from the fifth column
-                var status = row.find('td:eq(5)').text(); // Get the Status from the sixth column
-                var image = row.find('td:eq(6) img').attr('src'); // Get the Image source from the seventh column
-                var subjectType = row.find('td:eq(7)').text(); // Get the Subject Type from the eighth column
-
-                if (actionType === 'View') {
-                    $('#viewModalLabel').text('View Announcement ' + id);
-                    $('#viewContent').html('<b>Title:</b> ' + title + '<br><b>Description:</b> ' + description + '<br><b>Date:</b> ' + date + '<br><b>Type:</b> ' + type + '<br><b>Status:</b> ' + status + '<br><b>Image:</b> <img src="' + image + '" class="rounded-circle" alt="Image"><br><b>Subject Type:</b> ' + subjectType);
-                } else if (actionType === 'Edit') {
-                    $('#editModalLabel').text('Edit Announcement ' + id);
-                    $('#editAnnouncementTitle').val(title);
-                    $('#editAnnouncementDescription').val(description);
-                    $('#editAnnouncementType').val(type);
-                    $('#editAnnouncementStatus').val(status);
-                    $('#editSubjectType').val(subjectType);
-
-                    // Show the modal
-                    $('#editModal').modal('show');
-                } else if (actionType === 'Delete') {
-                    $('#deleteModalLabel').text('Delete Announcement ' + id);
-                    $('#deleteContent').html('<p>Are you sure you want to delete this entry?</p>');
-
-                    // Center the delete modal
-                    $('#deleteModal').on('shown.bs.modal', function () {
-                        var dialog = $(this).find('.modal-dialog');
-                        var modalHeight = $(window).height() / 2 - dialog.height() / 2;
-                        dialog.css('margin-top', modalHeight);
-                    });
-
-                    // Show the modal
-                    $('#deleteModal').modal('show');
-                }
-
-                // Show the modal
-                $('#' + actionType.toLowerCase() + 'Modal').modal('show');
-            });
-
-            $('#viewModal, #editModal, #deleteModal').on('hidden.bs.modal', function () {
-                $('body').removeClass('modal-open');
-                $('.modal-backdrop').remove();
-            });
+        $('#viewModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var content = button.data('content');
+            var modal = $(this);
+            modal.find('.modal-body #viewContent').text(content);
+        });
 
             // Make the Add Announcement modal fields match the table
             $('#addAnnouncementForm').on('submit', function (e) {
@@ -361,23 +283,24 @@
                 // Close the modal
                 $('#editModal').modal('hide');
             });
+        });
 
-            // Handle Confirm button click
-            $('#confirmDeleteBtn').on('click', function () {
-                // Add your implementation for delete functionality here
-                console.log('Delete confirmed'); // Example: Log message
-                $('#deleteModal').modal('hide'); // Close modal after confirmation
-            });
+        $('#addAnnouncementType, #editAnnouncementType').on('change', function () {
+            var selectedType = $(this).val();
+            if (selectedType === "Subject") {
+                $(this).closest('form').find('.subject-type-field').show();
+            } else {
+                $(this).closest('form').find('.subject-type-field').hide();
+            }
+        });
 
-            // Handle close button click on delete modal (X icon)
-            $('#deleteModal .close').on('click', function () {
-                $('#deleteModal').modal('hide');
-            });
-
-            // Handle "Close" button click on delete modal
-            $('#deleteModal .btn-secondary').on('click', function () {
-                $('#deleteModal').modal('hide');
-            });
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var modal = $(this);
+            modal.find('#deleteContent').text('Are you sure you want to delete announcement with ID ' + id + '?');
+            $('#confirmDeleteBtn').data('id', id);
+        });
 
             // Handle Confirm button click
             $('#confirmDeleteBtn').on('click', function () {
@@ -386,16 +309,6 @@
                 $('#deleteModal').modal('hide'); // Close modal after confirmation
             });
         });
-
-        function toggleSubjectTypeField() {
-            var typeField = document.getElementById('announcementType');
-            var subjectTypeField = document.getElementById('subjectTypeField');
-            if (typeField.value === 'Subject') {
-                subjectTypeField.style.display = 'block';
-            } else {
-                subjectTypeField.style.display = 'none';
-            }
-        }
     </script>
 </body>
 </html>
