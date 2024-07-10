@@ -13,5 +13,7 @@ namespace Singlearn.Models.Entities
 
         public string academic_level { get; set; }
         public int year { get; set; }
+
+        public ICollection<SubjectTeacherClass> SubjectTeacherClasses { get; set; }
     }
 }

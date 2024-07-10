@@ -12,5 +12,7 @@ namespace Singlearn.Models.Entities
         public string name { get; set; }
 
         public string contact_no { get; set; }
+
+        public ICollection<SubjectTeacherClass> SubjectTeacherClasses { get; set; }
     }
 }
