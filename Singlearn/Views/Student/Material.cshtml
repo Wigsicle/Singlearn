@@ -28,7 +28,7 @@
                         <!-- Use iframe to embed PDF -->
                         <iframe src="data:application/pdf;base64,@(Convert.ToBase64String(Model.data))" width="100%" height="600px"></iframe>
                         <br />
-                        <a href="@Url.Action("DownloadDocument", "Materials", new { id = Model.material_id, format = "docx" })" class="btn btn-primary mt-3">Download Document (.docx)</a>
+                        <a href="@Url.Action("DownloadDocument", "Materials", new { id = Model.material_id, format = Model.file_type })" class="btn btn-primary mt-3">Download Document</a>
                     }
                     else
                     {
