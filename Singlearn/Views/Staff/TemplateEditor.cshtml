@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
     ViewData["Title"] = "Template Editor";
-    var teacherId = Context.Request.Query["teacherId"].ToString(); // Get teacherId from the query string
+    var teacherId = Context.Request.Query["teacher_id"].ToString(); // Get teacherId from the query string
 }
 
 <!DOCTYPE html>
@@ -52,7 +52,7 @@
     <div class="container main-body">
         <div class="container-flex">
             <div class="form-container centered-form">
-                <input type="hidden" id="teacherId" value="@teacherId" />
+                <input type="hidden" id="teacher_id" value="@teacherId" />
                 <div class="form-group">
                     <label for="subjectSelect">Select Subject:</label>
                     <select id="subjectSelect" class="form-control">
@@ -90,12 +90,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            var teacherId = $('#teacherId').val(); // Get the teacherId from the hidden input
+            var teacher_id = $('#teacher_id').val(); // Get the teacherId from the hidden input
 
             $('#subjectSelect').change(function () {
-                var subjectId = $(this).val();
-                if (subjectId) {
-                    $.get('/Staff/GetClassesForSubject', { subjectId: subjectId, teacherId: teacherId }, function (data) {
+                var subject_id = $(this).val();
+                if (subject_id) {
+                    $.get('/Staff/GetClassesForSubject', { subject_id: subject_id, teacher_id: teacher_id }, function (data) {
                         var classSelect = $('#classSelect');
                         classSelect.empty();
                         classSelect.append('<option value="">--Select a Class--</option>');
@@ -110,11 +110,11 @@
             });
 
             $('#templateSelect').change(function () {
-                var templateId = $(this).val();
-                var subjectId = $('#subjectSelect').val();
-                var classId = $('#classSelect').val();
-                if (templateId && subjectId && classId) {
-                    $.get('/Staff/LoadTemplatePreview', { templateId: templateId, subjectId: subjectId, classId: classId }, function (data) {
+                var template_id = $(this).val();
+                var subject_id = $('#subjectSelect').val();
+                var class_id = $('#classSelect').val();
+                if (template_id && subject_id && class_id) {
+                    $.get('/Staff/LoadTemplatePreview', { template_id: template_id, subject_id: subject_id, class_id: class_id }, function (data) {
                         $('#templatePreview').html(data);
                     }).fail(function () {
                         $('#templatePreview').html('<p class="text-center text-danger">Error loading template preview.</p>');
@@ -125,11 +125,11 @@
             });
 
             $('#saveTemplate').click(function () {
-                var subjectId = $('#subjectSelect').val();
-                var classId = $('#classSelect').val();
-                var templateId = $('#templateSelect').val();
-                if (subjectId && classId && templateId) {
-                    $.post('/Staff/SaveTemplateSelection', { subjectId: subjectId, classId: classId, templateId: templateId }, function () {
+                var subject_id = $('#subjectSelect').val();
+                var class_id = $('#classSelect').val();
+                var template_id = $('#templateSelect').val();
+                if (subject_id && class_id && template_id) {
+                    $.post('/Staff/SaveTemplateSelection', { subject_id: subject_id, class_id: class_id, template_id: template_id }, function () {
                         alert('Template saved successfully!');
                     }).fail(function () {
                         alert('Error saving template.');
