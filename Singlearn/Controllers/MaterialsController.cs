@@ -38,11 +38,12 @@ namespace Singlearn.Controllers
             if (ModelState.IsValid)
             {
                 // Process uploaded file if present
-                if (model.DataFile != null && model.DataFile.Length > 0)
+                if (model.DataFile != null && model.DataFile.Length > 0 && model.PDFFile != null && model.PDFFile.Length > 0)
                 {
                     using (var memoryStream = new MemoryStream())
                     {
                         await model.DataFile.CopyToAsync(memoryStream);
+                        await model.PDFFile.CopyToAsync(memoryStream);
                         var material = new Material
                         {
                             subject_id = model.subject_id,
@@ -55,7 +56,8 @@ namespace Singlearn.Controllers
                             link = model.link,
                             status = model.status,
                             data = memoryStream.ToArray(),
-                            file_type = model.file_type
+                            file_type = model.file_type,
+                            pdf_file = memoryStream.ToArray()
                         };
 
                         _context.Add(material);

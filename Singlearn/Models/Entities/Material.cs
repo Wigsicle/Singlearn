@@ -17,5 +17,6 @@ namespace Singlearn.Models.Entities
         public string status { get; set; }
         public byte[] data { get; set; } // For storing varbinary(max) in the database
         public string file_type { get; set; }
+        public byte[] pdf_file { get; set; }
     }
 }

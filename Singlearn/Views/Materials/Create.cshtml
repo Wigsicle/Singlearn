@@ -63,6 +63,11 @@
                 <span asp-validation-for="DataFile" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="PDFFile" class="control-label"></label>
+                <input asp-for="PDFFile" type="file" class="form-control"/>
+                <span asp-validation-for="PDFFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="file_type" class="control-label">Select File Type For The Downloadable File:</label>
                 <input asp-for="file_type" id="fileExtensionDisplay" class="form-control" readonly />
                 <span asp-validation-for="file_type" class="text-danger"></span>

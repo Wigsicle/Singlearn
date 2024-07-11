@@ -15,6 +15,7 @@ namespace Singlearn.ViewModels
         public string status { get; set; }
         public IFormFile DataFile { get; set; } // For file upload
         public string file_type { get; set; }
+        public IFormFile PDFFile { get; set; }
     }
 }
 
