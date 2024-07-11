@@ -227,10 +227,18 @@ namespace Singlearn.Controllers
                 var stc = await dbContext.SubjectTeacherClasses
                     .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id == class_id);
 
+                var subject_name = await dbContext.Subjects
+                .Where(s => s.subject_id.Equals(subject_id))
+                .Select(s => s.name)
+                .FirstOrDefaultAsync();
+
+                ViewData["SubjectName"] = subject_name;
+
                 var viewModel = new SubjectViewModel
                 {
                     subject_id = subject_id,
                     class_id = class_id,
+                    name = subject_name,
                     TemplateViewName = template.view_name
                 };
 

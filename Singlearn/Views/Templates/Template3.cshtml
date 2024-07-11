@@ -45,7 +45,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-success">@Model.name - @Model.class_id</h2>
+        <h2 class="text-success">@ViewData["SubjectName"] - @Model.class_id</h2>
         <div class="row mt-3">
             <div class="col-md-4">
                 <div class="card link-panel">
@@ -90,7 +90,7 @@
                                     @foreach (var chapter in Model.Chapters)
                                     {
                                         <div class="col-md-6 col-lg-3 padding-bottom-20">
-                                            <a asp-controller="Staff" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@Model.class_id" class="card-link">
+                                            <a asp-controller="Staff" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@ViewData["ClassId"]" class="card-link">
                                                 <div class="card mb-2 card-hover-effect">
                                                     <div class="card-body">
                                                         <h5 class="card-title fw-bold py-3 mb-2">Chapter @chapter.chapter_id: @chapter.name</h5>
