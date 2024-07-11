@@ -3,16 +3,11 @@
 @{
     ViewData["Title"] = "Material";
 }
-
-<div class="container">
-    <div class="row text-center">
-        <h1>Subject ID @ViewData["SubjectId"]</h1>
-        <h1>Class ID @ViewData["ClassId"]</h1>
-    </div>
-
+ 
+<div class="container" style="padding-top: 100px;">
     <div class="row">
         <div class="col-md-12 text-center">
-            <h2 class="fw-bold py-3 mb-2">Material Details</h2>
+            <h2 class="fw-bold py-3 mb-2">@Model.name</h2>
         </div>
     </div>
 
@@ -20,8 +15,6 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-body text-center">
-                    <h5 class="card-title">@Model.name</h5>
-
                     <!-- Display PDF if available -->
                     @if (Model.pdf_file != null && Model.pdf_file.Length > 0)
                     {
