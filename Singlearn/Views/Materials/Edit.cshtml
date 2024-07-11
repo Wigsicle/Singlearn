@@ -1,65 +1,77 @@
-﻿@model Singlearn.ViewModels.AnnouncementViewModel
+﻿@model Singlearn.ViewModels.MaterialEditViewModel
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit Announcement</h1>
+<h1>Edit</h1>
 
-<h4>Announcement</h4>
+<h4>Material</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="material_id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <label asp-for="subject_id" class="control-label"></label>
+                <input asp-for="subject_id" class="form-control" />
+                <span asp-validation-for="subject_id" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="teacher_id" class="control-label"></label>
+                <input asp-for="teacher_id" class="form-control" />
+                <span asp-validation-for="teacher_id" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Category" class="control-label"></label>
-                <input asp-for="Category" class="form-control" />
-                <span asp-validation-for="Category" class="text-danger"></span>
+                <label asp-for="class_id" class="control-label"></label>
+                <input asp-for="class_id" class="form-control" />
+                <span asp-validation-for="class_id" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
+                <label asp-for="name" class="control-label"></label>
+                <input asp-for="name" class="form-control" />
+                <span asp-validation-for="name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
+                <label asp-for="description" class="control-label"></label>
+                <input asp-for="description" class="form-control" />
+                <span asp-validation-for="description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
+                <label asp-for="chapter_id" class="control-label"></label>
+                <input asp-for="chapter_id" class="form-control" />
+                <span asp-validation-for="chapter_id" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Url" class="control-label"></label>
-                <input asp-for="Url" class="form-control" />
-                <span asp-validation-for="Url" class="text-danger"></span>
+                <label asp-for="type" class="control-label"></label>
+                <input asp-for="type" class="form-control" />
+                <span asp-validation-for="type" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SubjectId" class="control-label"></label>
-                <input asp-for="SubjectId" class="form-control" />
-                <span asp-validation-for="SubjectId" class="text-danger"></span>
+                <label asp-for="link" class="control-label"></label>
+                <input asp-for="link" class="form-control" />
+                <span asp-validation-for="link" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StaffId" class="control-label"></label>
-                <input asp-for="StaffId" class="form-control" />
-                <span asp-validation-for="StaffId" class="text-danger"></span>
+                <label asp-for="status" class="control-label"></label>
+                <input asp-for="status" class="form-control" />
+                <span asp-validation-for="status" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ClassId" class="control-label"></label>
-                <input asp-for="ClassId" class="form-control" />
-                <span asp-validation-for="ClassId" class="text-danger"></span>
+                <label asp-for="DataFile" class="control-label"></label>
+                <input asp-for="DataFile" type="file" class="form-control" onchange="showFileExtension(this)" />
+                <span asp-validation-for="DataFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PDFFile" class="control-label"></label>
+                <input asp-for="PDFFile" type="file" class="form-control" />
+                <span asp-validation-for="PDFFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="file_type" class="control-label">Select File Type For The Downloadable File:</label>
+                <input asp-for="file_type" id="fileExtensionDisplay" class="form-control" readonly />
+                <span asp-validation-for="file_type" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -74,6 +86,14 @@
 </div>
 
 @section Scripts {
+    <script>
+        function showFileExtension(input) {
+            if (input.files && input.files.length > 0) {
+                var fileExtension = input.files[0].name.split('.').pop().toUpperCase();
+                document.getElementById('fileExtensionDisplay').value = fileExtension;
+            }
+        }
+    </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
