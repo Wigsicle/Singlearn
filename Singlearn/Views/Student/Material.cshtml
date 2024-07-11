@@ -11,8 +11,8 @@
 
 <div class="row">
     <h1 class="fw-bold py-3 mb-2">Material Details</h1>
-    <div class="col-md-8">
-        <div class="card card-hover-effect">
+    <div class="col-md-12 ">
+        <div class="card">
             <div class="card-body">
                 <h5 class="card-title">@Model.name</h5>
 
@@ -34,24 +34,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    /* Your existing styles */
-    .card-img-custom {
-        height: 225px;
-        width: 100%;
-        object-fit: fit;
-    }
-
-    .card-hover-effect {
-        overflow: hidden;
-        position: relative;
-        border-radius: 0.5rem;
-        transition: transform 0.25s ease-in-out;
-    }
-
-        .card-hover-effect:hover {
-            transform: scale(1.05); /* Increase size on hover */
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
-        }
-</style>
