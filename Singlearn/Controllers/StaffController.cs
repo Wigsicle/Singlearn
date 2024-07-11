@@ -184,11 +184,6 @@ namespace Singlearn.Controllers
             return View();
         }
 
-        public IActionResult announcement()
-        {
-            return View();
-        }
-
         public IActionResult homeworkhub_subject()
         {
             return View();
@@ -198,8 +193,6 @@ namespace Singlearn.Controllers
         {
             return View();
         }
-
-
 
         public IActionResult homeworkhub_submission()
         {

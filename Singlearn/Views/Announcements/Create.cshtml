@@ -1,0 +1,181 @@
+﻿@model Singlearn.Models.Entities.Announcement
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Announcement</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        body {
+            background-color: #f7f7f9; /* Light pastel background color */
+        }
+
+        .main-container {
+            margin-top: 50px; /* Additional padding from the header */
+            padding: 150px;
+        }
+
+        .header-container {
+            text-align: left;
+            margin-right: 20px;
+            display: flex;
+            align-items: center; /* Center vertically */
+            height: 100%; /* Full height of parent */
+        }
+
+        .form-container {
+            background-color: #ffffff; /* White background for the form */
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            max-width: 500px; /* Smaller width */
+        }
+
+        .btn-primary {
+            display: block;
+            width: 100%;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .content-wrapper {
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
+
+        ::placeholder {
+            color: lightgray;
+            opacity: 1; /* Firefox */
+        }
+
+        .form-group.hidden {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 20px; /* Add space between form groups */
+        }
+
+        .checkbox-group {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-container">
+        <div class="content-wrapper">
+            <div class="header-container">
+                <div>
+                    <h1>Create</h1>
+                    <h4>Announcement</h4>
+                </div>
+            </div>
+            <div class="form-container">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="title" class="control-label"></label>
+                        <input asp-for="title" class="form-control" placeholder="Insert your Title Here" />
+                        <span asp-validation-for="title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="description" class="control-label"></label>
+                        <input asp-for="description" class="form-control" placeholder="Insert your Description Here" />
+                        <span asp-validation-for="description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="category" class="control-label"></label>
+                        <select asp-for="category" class="form-control" id="categorySelect">
+                            <option value="News">News</option>
+                            <option value="Events">Events</option>
+                            <option value="Subject">Subject</option>
+                        </select>
+                        <span asp-validation-for="category" class="text-danger"></span>
+                    </div>
+                    <div class="form-group hidden" id="classesRow">
+                        <label>Your Classes</label>
+                        <div class="checkbox-group">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="P1ENG" name="classes[]" value="P1 ENG">
+                                <label class="form-check-label" for="P1ENG">P1 ENG</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="P3ENG" name="classes[]" value="P3 ENG">
+                                <label class="form-check-label" for="P3ENG">P3 ENG</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="P5ENG" name="classes[]" value="P5 ENG">
+                                <label class="form-check-label" for="P5ENG">P5 ENG</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Status" class="control-label"></label>
+                        <select asp-for="Status" class="form-control">
+                            <option value="Visible">Visible</option>
+                            <option value="Non Visible">Non Visible</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="image" class="control-label"></label>
+                        <input asp-for="image" class="form-control" placeholder="www.referencedwebsite.com" />
+                        <span asp-validation-for="image" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="date" class="control-label"></label>
+                        <input asp-for="date" class="form-control" />
+                        <span asp-validation-for="date" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="url" class="control-label"></label>
+                        <input asp-for="url" class="form-control" placeholder="www.referencedwebsite.com" />
+                        <span asp-validation-for="url" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" asp-for="subject_id" value="1" />
+                        <input type="hidden" asp-for="staff_id" value="1" />
+                        <input type="hidden" asp-for="class_id" value="1" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="back-link">
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('categorySelect').addEventListener('change', function () {
+            var classesRow = document.getElementById('classesRow');
+            if (this.value === 'Subject') {
+                classesRow.classList.remove('hidden');
+            } else {
+                classesRow.classList.add('hidden');
+            }
+        });
+    </script>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>

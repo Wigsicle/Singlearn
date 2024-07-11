@@ -41,10 +41,5 @@ namespace Singlearn.Data
             modelBuilder.Entity<STCTemplate>().ToTable("STCTemplates");
 
         }
-
-
-
-
-
     }
 }
