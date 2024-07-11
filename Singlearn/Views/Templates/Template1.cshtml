@@ -12,7 +12,7 @@
             margin-bottom: 20px;
             padding-left: 0;
             list-style: none;
-            width: 800px;
+            width: 100%;
         }
 
             .horizontal-links .nav-item {
@@ -35,6 +35,18 @@
             margin-bottom: 0;
             border-bottom: 1px solid #e9ecef;
         }
+
+        .card-hover-effect {
+            overflow: hidden;
+            position: relative;
+            border-radius: 0.5rem;
+            transition: transform 0.25s ease-in-out;
+        }
+
+            .card-hover-effect:hover {
+                transform: scale(1.05); /* Increase size on hover */
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
+            }
     </style>
 </head>
 <body>
@@ -58,7 +70,10 @@
                 {
                     foreach (var announcement in Model.Announcements)
                     {
-                        
+                        <div class="announcement-item">
+                           @* <h6>@announcement.Title</h6>
+                            <p>@announcement.Content</p> *@
+                        </div>
                     }
                 }
                 else
@@ -69,7 +84,7 @@
         </div>
         <div class="card mt-3">
             <div class="card-body">
-                <h5 class="card-title text-center">Subject Materials</h5>
+                <h5 class="card-title text-center">Subject Chapters</h5>
                 <div class="row">
                     @if (Model.Chapters != null && Model.Chapters.Any())
                     {
