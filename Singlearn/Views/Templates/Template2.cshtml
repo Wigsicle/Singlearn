@@ -1,4 +1,4 @@
-﻿@model Singlearn.Models.Entities.SubjectTeacherClass
+﻿@model Singlearn.ViewModels.SubjectViewModel
 
 <!DOCTYPE html>
 <html>
@@ -9,26 +9,58 @@
 <body>
     <div class="container mt-5">
         <div class="jumbotron">
-            <h2 class="display-4">@Model.Subject.name with Different Style</h2>
+            <h2 class="display-4">@Model.SubjectTeacherClass.Subject.name - @Model.SubjectTeacherClass.Class.name</h2>
         </div>
         <div class="card mt-3">
             <div class="card-body">
                 <h5 class="card-title">Link Panel</h5>
                 <div class="list-group">
                     <a href="/" class="list-group-item list-group-item-action">Home</a>
-                    <a href="/Discussions" class="list-group-item list-group-item-action">Discussions</a>
-                    <a href="/Assessments" class="list-group-item list-group-item-action">Assessments</a>
-                    <a href="/ClassMatters" class="list-group-item list-group-item-action">Class Matters</a>
+                    <a href="/" class="list-group-item list-group-item-action">Subjects</a>
+                    <a href="/" class="list-group-item list-group-item-action">Announcements</a>
+                    <a href="/" class="list-group-item list-group-item-action">Homework Hub</a>
                 </div>
             </div>
         </div>
         <div class="alert alert-info mt-3" role="alert">
             <h5 class="alert-heading">Subject Announcements</h5>
-            <!-- Add announcements logic here -->
+            @if (Model.Announcements != null && Model.Announcements.Any())
+            {
+                foreach (var announcement in Model.Announcements)
+                {
+                   
+                }
+            }
+            else
+            {
+                <p>No announcements available.</p>
+            }
         </div>
         <div class="alert alert-warning mt-3" role="alert">
-            <h5 class="alert-heading">Subject Materials</h5>
-            <!-- Add materials logic here -->
+            <h5 class="alert-heading">Subject Chapters</h5>
+            <div class="row">
+                @if (Model.Chapters != null && Model.Chapters.Any())
+                {
+                    <div class="row">
+                        @foreach (var chapter in Model.Chapters)
+                        {
+                            <div class="col-md-6 col-lg-3 padding-bottom-20">
+                                <a asp-controller="Staff" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@Model.class_id" class="card-link">
+                                    <div class="card mb-2 card-hover-effect">
+                                        <div class="card-body">
+                                            <h5 class="card-title fw-bold py-3 mb-2">Chapter @chapter.chapter_id: @chapter.name</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p>No chapters found.</p>
+                }
+            </div>
         </div>
     </div>
 </body>

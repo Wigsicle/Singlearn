@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
 
-namespace Singlearn.Models.Entities
+namespace Singlearn.ViewModels
 {
-    public class Material
-    {
-        [Key]
+    public class MaterialEditViewModel
+    {   
         public int material_id { get; set; }
         public int subject_id { get; set; }
         public string teacher_id { get; set; }
@@ -15,8 +14,9 @@ namespace Singlearn.Models.Entities
         public string type { get; set; }
         public string link { get; set; }
         public string status { get; set; }
-        public byte[] data { get; set; } // For storing varbinary(max) in the database
+        public IFormFile DataFile { get; set; } // For file upload
         public string file_type { get; set; }
-        public byte[] pdf_file { get; set; }
+        public IFormFile PDFFile { get; set; }
     }
 }
+
