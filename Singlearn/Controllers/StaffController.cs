@@ -125,7 +125,7 @@ namespace Singlearn.Controllers
         }*/
 
         [HttpGet]
-        public async Task<IActionResult> homeworkhub_homework(int subjectId)
+        /*public async Task<IActionResult> homeworkhub_homework(int subjectId)
         {
             var homeworks = await dbContext.Homeworks
                 .Where(h => h.subject_id == subjectId)
@@ -144,10 +144,10 @@ namespace Singlearn.Controllers
             ViewData["SubjectId"] = subjectId;
 
             return View(homeworks);
-        }
+        }*/
 
         [HttpPost]
-        public async Task<IActionResult> CreateHomework(HomeworkViewModel model)
+        /*public async Task<IActionResult> CreateHomework(HomeworkViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -178,7 +178,7 @@ namespace Singlearn.Controllers
                 return RedirectToAction("homeworkhub_homework", "Staff", new { subjectId = model.subject_id });
             }
             return View(model);
-        }
+        }*/
         public IActionResult profile()
         {
             return View();
