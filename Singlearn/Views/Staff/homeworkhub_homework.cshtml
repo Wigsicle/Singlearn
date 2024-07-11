@@ -27,7 +27,7 @@
                 <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
-                            <form asp-action="CreateHomework" asp-controller="Staff" method="post" enctype="multipart/form-data">
+                            <form asp-action="CreateHomework" asp-controller="HomeworkHub" method="post" enctype="multipart/form-data">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="modalCenterTitle">Create new homework</h5>
                                     <button type="button"
@@ -73,6 +73,52 @@
                         </div>
                     </div>
                 </div>
+                <!--Edit modal-->
+                <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <form asp-action="Edit" asp-controller="HomeworkHub" method="post" enctype="multipart/form-data">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edit homework</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" id="editHomeworkId" name="homework_id" value="" />
+                                    <!-- Form fields for editing homework -->
+                                    <div class="form-group">
+                                        <label class="control-label">Title</label>
+                                        <input class="form-control" id="editTitle" name="title" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Description</label>
+                                        <textarea class="form-control" id="editDescription" name="description"></textarea>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Start date</label>
+                                        <input class="form-control" id="editStartDate" name="startdate" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">End date</label>
+                                        <input class="form-control" id="editEndDate" name="enddate" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Attachment</label>
+                                        <input class="form-control" type="file" id="editAttachment" name="attachment" />
+                                        <span  class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- Basic Bootstrap Table -->
@@ -100,6 +146,10 @@
                                 <td>@homework.description</td>
                                 <td>@homework.startdate.ToString("yyyy-MM-dd")</td>
                                 <td>@homework.enddate.ToString("yyyy-MM-dd")</td>
+                                <td></td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal" data-id="@homework.homework_id">Edit</button>
+                                </td>
                             </tr>
                         }
 

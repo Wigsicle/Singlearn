@@ -1,4 +1,4 @@
-﻿@model Singlearn.Models.Entities.Material
+﻿@model Singlearn.ViewModels.MaterialEditViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,9 +10,9 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <input type="hidden" asp-for="material_id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="subject_id" class="control-label"></label>
                 <input asp-for="subject_id" class="form-control" />
@@ -59,10 +59,21 @@
                 <span asp-validation-for="status" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="data" class="control-label"></label>
-                <input asp-for="data" class="form-control" />
-                <span asp-validation-for="data" class="text-danger"></span>
+                <label asp-for="DataFile" class="control-label"></label>
+                <input asp-for="DataFile" type="file" class="form-control" onchange="showFileExtension(this)" />
+                <span asp-validation-for="DataFile" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="PDFFile" class="control-label"></label>
+                <input asp-for="PDFFile" type="file" class="form-control" />
+                <span asp-validation-for="PDFFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="file_type" class="control-label">Select File Type For The Downloadable File:</label>
+                <input asp-for="file_type" id="fileExtensionDisplay" class="form-control" readonly />
+                <span asp-validation-for="file_type" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -75,5 +86,15 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function showFileExtension(input) {
+            if (input.files && input.files.length > 0) {
+                var fileExtension = input.files[0].name.split('.').pop().toUpperCase();
+                document.getElementById('fileExtensionDisplay').value = fileExtension;
+            }
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

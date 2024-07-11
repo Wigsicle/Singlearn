@@ -11,5 +11,7 @@
         public DateTime enddate { get; set; }
 
         public IFormFile attachment { get; set; }
+
+        
     }
 }

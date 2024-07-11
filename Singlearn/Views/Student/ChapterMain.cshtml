@@ -50,7 +50,7 @@
                 <div class="tab-content px-0 mt-0">
                     <div class="tab-pane fade show active" id="vidlesson">
                         <div class="row" style="width:1000px; margin: 0 auto;">
-                            @foreach (var material in Model.Where(m => m.type == "Video Lesson" && m.status == "visible"))
+                            @foreach (var material in Model.Where(m => m.type == "Video Lessons" && m.status == "Visible"))
                             {
                                 <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
                                 <div class="col-md-6 col-lg-3 mb-5">
@@ -67,7 +67,7 @@
                     </div>
                     <div class="tab-pane fade" id="lessnotes">
                         <div class="row" style="width: 1000px; margin: 0 auto;">
-                            @foreach (var material in Model.Where(m => m.type == "Lesson Notes" && m.status == "visible"))
+                            @foreach (var material in Model.Where(m => m.type == "Lesson Notes" && m.status == "Visible"))
                             {
                                 <div class="col-md-6 col-lg-3 mb-5">
                                     <div class="card mb-4" style="width:100%;">
@@ -82,7 +82,7 @@
                     </div>
                     <div class="tab-pane fade" id="classwork">
                         <div class="row" style="width: 1000px; margin: 0 auto;">
-                            @foreach (var material in Model.Where(m => m.type == "Classwork" && m.status == "visible"))
+                            @foreach (var material in Model.Where(m => m.type == "Classwork" && m.status == "Visible"))
                             {
                                 <div class="col-md-6 col-lg-3 mb-5">
                                     <div class="card mb-4" style="width:100%;">
@@ -97,7 +97,7 @@
                     </div>
                     <div class="tab-pane fade" id="homework">
                         <div class="row" style="width: 1000px; margin: 0 auto;">
-                            @foreach (var material in Model.Where(m => m.type == "Homework" && m.status == "visible"))
+                            @foreach (var material in Model.Where(m => m.type == "Homework" && m.status == "Visible"))
                             {
                                 <div class="col-md-6 col-lg-3 mb-5">
                                     <div class="card mb-4" style="width:100%;">

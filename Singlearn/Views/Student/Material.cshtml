@@ -4,54 +4,40 @@
     ViewData["Title"] = "Material";
 }
 
-<h1>Subject ID @ViewData["SubjectId"]</h1>
-<h1>Class ID @ViewData["ClassId"]</h1>
+<div class="container">
+    <div class="row text-center">
+        <h1>Subject ID @ViewData["SubjectId"]</h1>
+        <h1>Class ID @ViewData["ClassId"]</h1>
+    </div>
 
-<h2>Lesson Document</h2>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2 class="fw-bold py-3 mb-2">Material Details</h2>
+        </div>
+    </div>
 
-<div class="row">
-    <h1 class="fw-bold py-3 mb-2">Material Details</h1>
-    <div class="col-md-8">
-        <div class="card card-hover-effect">
-            <div class="card-body">
-                <h5 class="card-title">@Model.name</h5>
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">@Model.name</h5>
 
-                <!-- Display PDF if available -->
-                @if (Model.data != null && Model.data.Length > 0)
-                {
-                    <!-- Use iframe to embed PDF -->
-                    <iframe src="data:application/pdf;base64,@(Convert.ToBase64String(Model.data))" width="100%" height="600px"></iframe>
-                    <br />
-                    <a href="@Url.Action("DownloadDocument", "Materials", new { id = Model.material_id, format = "docx" })" class="btn btn-primary mt-3">Download Document (.docx)</a>
-                }
-                else
-                {
-                    <p>No document available</p>
-                }
+                    <!-- Display PDF if available -->
+                    @if (Model.pdf_file != null && Model.pdf_file.Length > 0)
+                    {
+                        <!-- Use iframe to embed PDF -->
+                        <iframe src="data:application/pdf;base64,@(Convert.ToBase64String(Model.pdf_file))" width="100%" height="600px"></iframe>
+                        <br />
+                        <a href="@Url.Action("DownloadDocument", "Materials", new { id = Model.material_id, format = Model.file_type })" class="btn btn-primary mt-3">Download Document</a>
+                    }
+                    else
+                    {
+                        <p>No document available</p>
+                    }
 
-                <!-- Add other properties as needed -->
+                    <!-- Add other properties as needed -->
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    /* Your existing styles */
-    .card-img-custom {
-        height: 225px;
-        width: 100%;
-        object-fit: fit;
-    }
-
-    .card-hover-effect {
-        overflow: hidden;
-        position: relative;
-        border-radius: 0.5rem;
-        transition: transform 0.25s ease-in-out;
-    }
-
-        .card-hover-effect:hover {
-            transform: scale(1.05); /* Increase size on hover */
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
-        }
-</style>

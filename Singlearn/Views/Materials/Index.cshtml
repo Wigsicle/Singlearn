@@ -40,7 +40,7 @@
                 @Html.DisplayNameFor(model => model.status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.data)
+                @Html.DisplayNameFor(model => model.file_type)
             </th>
             <th></th>
         </tr>
@@ -75,9 +75,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.status)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.data)
-            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.file_type)
+                </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.material_id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.material_id">Details</a> |
