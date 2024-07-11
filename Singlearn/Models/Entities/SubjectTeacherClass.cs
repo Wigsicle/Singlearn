@@ -14,13 +14,6 @@ namespace Singlearn.Models.Entities
 
         public string class_id { get; set; }
 
-        [ForeignKey("subject_id")]
-        public Subject Subject { get; set; }
-
-        [ForeignKey("teacher_id")]
-        public Staff Staff { get; set; }
-
-        [ForeignKey("class_id")]
-        public Class Class { get; set; }
+       
     }
 }
