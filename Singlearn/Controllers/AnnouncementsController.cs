@@ -52,12 +52,12 @@ namespace Singlearn.Controllers
                 Title = announcement.title,
                 Description = announcement.description,
                 Category = announcement.category,
-                Status = announcement.Status,
+                Status = announcement.status,
                 Image = announcement.image,
                 Date = announcement.date,
                 Url = announcement.url,
                 SubjectId = announcement.subject_id,
-                StaffId = announcement.staff_id,
+                StaffId = announcement.teacher_id,
                 ClassId = announcement.class_id
             };
 
@@ -87,12 +87,12 @@ namespace Singlearn.Controllers
                     title = model.Title,
                     description = model.Description,
                     category = model.Category,
-                    Status = model.Status,
+                    status = model.Status,
                     image = model.Image,
                     date = model.Date,
                     url = model.Url,
                     subject_id = model.SubjectId,
-                    staff_id = model.StaffId,
+                    teacher_id = model.StaffId,
                     class_id = model.ClassId
                 };
 
@@ -125,11 +125,11 @@ namespace Singlearn.Controllers
                 Title = announcement.title,
                 Description = announcement.description,
                 Category = announcement.category,
-                Status = announcement.Status,
+                Status = announcement.status,
                 Image = announcement.image,
                 Date = announcement.date,
                 SubjectId = announcement.subject_id,
-                StaffId = announcement.staff_id,
+                StaffId = announcement.teacher_id,
                 ClassId = announcement.class_id,
                 Url = announcement.url
             };
@@ -163,11 +163,11 @@ namespace Singlearn.Controllers
                 announcement.title = model.Title;
                 announcement.description = model.Description;
                 announcement.category = model.Category;
-                announcement.Status = model.Status;
+                announcement.status = model.Status;
                 announcement.image = model.Image;
                 announcement.date = model.Date;
                 announcement.subject_id = model.SubjectId;
-                announcement.staff_id = model.StaffId;
+                announcement.teacher_id = model.StaffId;
                 announcement.class_id = model.ClassId;
                 announcement.url = model.Url;
 
@@ -224,12 +224,12 @@ namespace Singlearn.Controllers
                 Title = announcement.title,
                 Description = announcement.description,
                 Category = announcement.category,
-                Status = announcement.Status,
+                Status = announcement.status,
                 Image = announcement.image,
                 Date = announcement.date,
                 Url = announcement.url,
                 SubjectId = announcement.subject_id,
-                StaffId = announcement.staff_id,
+                StaffId = announcement.teacher_id,
                 ClassId = announcement.class_id
             };
 
