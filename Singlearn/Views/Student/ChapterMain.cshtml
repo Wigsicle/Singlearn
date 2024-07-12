@@ -101,6 +101,7 @@
                         <div class="row" style="width: 1000px; margin: 0 auto;">
                             @foreach (var material in Model.Where(m => m.type == "Homework" && m.status == "Visible"))
                             {
+                                <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
                                 <div class="col-md-6 col-lg-3 mb-5">
                                     <div class="card mb-4" style="width:100%;">
                                         <div class="card-body">
@@ -109,6 +110,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                </a>
                             }
                         </div>
                     </div>

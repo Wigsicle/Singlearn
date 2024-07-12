@@ -1,8 +1,30 @@
 ﻿@model Singlearn.Models.Entities.Material
+@using System
+@using System.Web
 
 @{
     ViewData["Title"] = "Material";
 }
+
+@{
+    // Example: Original link "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    var originalLink = @Model.link;
+    var embedLink = "";
+
+    if (!string.IsNullOrEmpty(originalLink))
+    {
+        var uri = new Uri(originalLink);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        var videoId = query["v"];
+
+        // Construct the embed link
+        if (!string.IsNullOrEmpty(videoId))
+        {
+            embedLink = $"https://www.youtube.com/embed/{videoId}";
+        }
+    }
+}
+
  
 <div class="container" style="padding-top: 100px;">
     <div class="row">
@@ -25,7 +47,7 @@
                     }
                     else if (Model.link != null && Model.type == "Video Lessons")
                     {
-                        <iframe width="420" height="315" src="@Model.link"></iframe>
+                        <iframe width="560" height="315" src="@embedLink" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     }
                     else
                     {
