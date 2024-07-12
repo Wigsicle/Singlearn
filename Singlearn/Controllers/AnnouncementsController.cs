@@ -67,13 +67,18 @@ namespace Singlearn.Controllers
         // GET: Announcements/Create
         public IActionResult Create()
         {
-            return View();
+            var model = new AnnouncementViewModel
+            {
+                Date = DateTime.Now
+            };
+            return View(model);
         }
+
 
         // POST: Announcements/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(AnnouncementViewModel model)
+        public async Task<IActionResult> Create(AnnouncementViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -92,15 +97,15 @@ namespace Singlearn.Controllers
                 };
 
                 _context.Announcements.Add(announcement);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             return View(model);
         }
 
-        // GET: Announcements/Edit/5
+        // GET: Announcements/Edit
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -123,72 +128,80 @@ namespace Singlearn.Controllers
                 Status = announcement.Status,
                 Image = announcement.image,
                 Date = announcement.date,
-                Url = announcement.url,
                 SubjectId = announcement.subject_id,
                 StaffId = announcement.staff_id,
                 ClassId = announcement.class_id,
+                Url = announcement.url
             };
+
+            // Log details for debugging
+            Console.WriteLine($"GET Edit: Found announcement with ID {id}");
+            Console.WriteLine($"Title: {announcement.title}, Description: {announcement.description}");
 
             return View(model);
         }
 
-        // POST: Announcements/Edit/5
+        // POST: Announcements/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, AnnouncementViewModel model)
         {
-            if (id != model.AnnouncementId)
+
+            try
             {
-                return NotFound();
+                var announcement = await _context.Announcements.FindAsync(id);
+                if (announcement == null)
+                {
+                    Console.WriteLine($"Announcement with ID {id} not found in the database.");
+                    return NotFound();
+                }
+
+                // Log the current state of the announcement
+                Console.WriteLine($"POST Edit: Editing announcement with ID {id}");
+                Console.WriteLine($"Old Title: {announcement.title}, New Title: {model.Title}");
+
+                announcement.title = model.Title;
+                announcement.description = model.Description;
+                announcement.category = model.Category;
+                announcement.Status = model.Status;
+                announcement.image = model.Image;
+                announcement.date = model.Date;
+                announcement.subject_id = model.SubjectId;
+                announcement.staff_id = model.StaffId;
+                announcement.class_id = model.ClassId;
+                announcement.url = model.Url;
+
+                _context.Update(announcement);
+                await _context.SaveChangesAsync();
+
+                Console.WriteLine("Announcement successfully updated.");
+                return RedirectToAction("Index", "Announcements");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AnnouncementExists(model.AnnouncementId))
+                {
+                    Console.WriteLine($"Concurrency error: Announcement with ID {model.AnnouncementId} no longer exists.");
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var announcement = await _context.Announcements.FindAsync(id);
-                    if (announcement == null)
-                    {
-                        return NotFound();
-                    }
 
-                    announcement.title = model.Title;
-                    announcement.description = model.Description;
-                    announcement.category = model.Category;
-                    announcement.Status = model.Status;
-                    announcement.image = model.Image;
-                    announcement.date = model.Date;
-                    announcement.url = model.Url;
-                    announcement.subject_id = model.SubjectId;
-                    announcement.staff_id = model.StaffId;
-                    announcement.class_id = model.ClassId;
-
-                    _context.Update(announcement);
-                    await _context.SaveChangesAsync();
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AnnouncementExists(model.AnnouncementId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-
+            // Log validation errors
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
             foreach (var error in errors)
             {
-                Console.WriteLine(error);
+                Console.WriteLine($"Validation error: {error}");
             }
 
             return View(model);
         }
+
+
 
         // GET: Announcements/Delete/5
         public async Task<IActionResult> Delete(int? id)

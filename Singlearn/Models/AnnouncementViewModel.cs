@@ -20,7 +20,6 @@ namespace Singlearn.ViewModels
 
 		public DateTime Date { get; set; }
 
-		public string Url { get; set; }
 
 		// Foreign Key
 		public int SubjectId { get; set; }
@@ -29,11 +28,8 @@ namespace Singlearn.ViewModels
 
 		public string ClassId { get; set; }
 
-		// Additional properties for view
-		public string SubjectName { get; set; }
+        // Additional properties for view
 
-		public string StaffName { get; set; }
-
-		public string ClassName { get; set; }
+        public string Url { get; set; }
 	}
 }

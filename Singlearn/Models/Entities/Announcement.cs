@@ -20,7 +20,7 @@ namespace Singlearn.Models.Entities
 
         public DateTime date { get; set; }
 
-        public string url { get; set; }
+
 
         // Foreign Key
         public int subject_id { get; set; }
@@ -29,5 +29,9 @@ namespace Singlearn.Models.Entities
 
         public string class_id { get; set; }
 
+
+
+        // Additional properties for view
+        public string url { get; set; }
     }
 }
