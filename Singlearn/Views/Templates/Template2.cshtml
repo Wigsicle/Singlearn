@@ -5,11 +5,28 @@
 <head>
     <title>Template 2</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card-hover-effect {
+            overflow: hidden;
+            position: relative;
+            border-radius: 0.5rem;
+            transition: transform 0.25s ease-in-out;
+        }
+
+            .card-hover-effect:hover {
+                transform: scale(1.05); /* Increase size on hover */
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
+            }
+
+        .padding-bottom-20 {
+            padding-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
         <div class="jumbotron">
-            <h2 class="display-4">@Model.SubjectTeacherClass.Subject.name - @Model.SubjectTeacherClass.Class.name</h2>
+            <h2 class="display-4">@ViewData["SubjectName"] - @Model.class_id</h2>
         </div>
         <div class="card mt-3">
             <div class="card-body">
@@ -28,7 +45,10 @@
             {
                 foreach (var announcement in Model.Announcements)
                 {
-                   
+                    <div class="announcement-item">
+                      @*  <h6>@announcement.Title</h6> 
+                        <p>@announcement.Content</p> *@
+                    </div>
                 }
             }
             else
@@ -45,7 +65,7 @@
                         @foreach (var chapter in Model.Chapters)
                         {
                             <div class="col-md-6 col-lg-3 padding-bottom-20">
-                                <a asp-controller="Staff" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@Model.class_id" class="card-link">
+                                <a asp-controller="Staff" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@ViewData["ClassId"]" class="card-link">
                                     <div class="card mb-2 card-hover-effect">
                                         <div class="card-body">
                                             <h5 class="card-title fw-bold py-3 mb-2">Chapter @chapter.chapter_id: @chapter.name</h5>

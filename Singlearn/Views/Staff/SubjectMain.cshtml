@@ -1,9 +1,8 @@
 ﻿@model Singlearn.ViewModels.SubjectViewModel
 
 @{
-    ViewData["Title"] = @Model.SubjectTeacherClass.Subject.name;
+    ViewData["Title"] = @ViewData["SubjectName"];
 }
-
 
 @if (!string.IsNullOrEmpty(Model.TemplateViewName))
 {
@@ -11,6 +10,7 @@
 }
 
 <style>
+
     .carousel-img {
         height: 300px;
         width: 100%;

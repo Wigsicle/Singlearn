@@ -1,63 +1,14 @@
-﻿@using Singlearn.Models.Entities
-
-@model List<Singlearn.ViewModels.ChapterViewModel>
+﻿@model Singlearn.ViewModels.SubjectViewModel
 
 @{
     ViewData["Title"] = @ViewData["SubjectName"];
 }
 
-<h1>Subject ID @ViewData["SubjectId"]</h1>
-<h1>Class ID @ViewData["ClassId"]</h1>
 
-<h2>Chapters</h2>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Chapter Name Id</th>
-            <th>Name</th>
-            <th>Chapter Id</th>
-            <th>Subject Id</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var chapter in Model)
-        {
-            <tr>
-                <td>@chapter.chapter_name_id</td>
-                <td>@chapter.name</td>
-                <td>@chapter.chapter_id</td>
-                <td>@chapter.subject_id</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-
-<div class="row">
-    <h1 class="fw-bold py-3 mb-2">Chapters</h1>
-    @if (Model != null && Model.Any())
-    {
-        <div class="row">
-            @foreach (var chapter in Model)
-            {
-                <div class="col-md-6 col-lg-3 padding-bottom-20">
-                    <a asp-controller="Student" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@ViewData["ClassId"]" class="card-link">
-                        <div class="card mb-2 card-hover-effect">
-                            <div class="card-body">
-                                <h5 class="card-title fw-bold py-3 mb-2">Chapter @chapter.chapter_id: @chapter.name</h5>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <p>No subjects found for this student.</p>
-    }
-</div>
+@if (!string.IsNullOrEmpty(Model.TemplateViewName))
+{
+    @await Html.PartialAsync($"~/Views/Templates/{Model.TemplateViewName}.cshtml", Model)
+}
 
 <style>
     .carousel-img {

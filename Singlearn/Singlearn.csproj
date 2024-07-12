@@ -19,4 +19,11 @@
     <Folder Include="wwwroot\attachments\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Staff\ChapterMain.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
