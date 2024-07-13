@@ -2,8 +2,9 @@
 
 namespace Singlearn.ViewModels
 {
-    public class MaterialCreateViewModel
-    {
+    public class MaterialEditViewModel
+    {   
+        public int material_id { get; set; }
         public int subject_id { get; set; }
         public string teacher_id { get; set; }
         public string? class_id { get; set; }

@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +22,27 @@ namespace Singlearn.Controllers
         // GET: Materials
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Materials.ToListAsync());
+            var materials = await _context.Materials.ToListAsync();
+            return View(materials);
+        }
+
+        // GET: Materials/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var material = await _context.Materials
+                .FirstOrDefaultAsync(m => m.material_id == id);
+
+            if (material == null)
+            {
+                return NotFound();
+            }
+
+            return View(material);
         }
 
         // GET: Materials/Create
@@ -53,7 +75,9 @@ namespace Singlearn.Controllers
                             type = model.type,
                             link = model.link,
                             status = model.status,
-                            data = memoryStream.ToArray()
+                            data = memoryStream.ToArray(),
+                            file_type = model.file_type,
+                            pdf_file = model.PDFFile != null ? await GetPdfFileBytesAsync(model.PDFFile) : null
                         };
 
                         _context.Add(material);
@@ -71,19 +95,195 @@ namespace Singlearn.Controllers
             return View(model);
         }
 
-        public IActionResult DownloadDocument(int id)
+        // GET: Materials/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
-            var material = _context.Materials.Find(id);
-            if (material == null || material.data == null || material.data.Length == 0)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            // Return the document as a FileResult
-            return File(material.data, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", material.name + ".docx");
+            var material = await _context.Materials.FindAsync(id);
+            if (material == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new MaterialEditViewModel
+            {
+                material_id = material.material_id,
+                subject_id = material.subject_id,
+                teacher_id = material.teacher_id,
+                class_id = material.class_id,
+                name = material.name,
+                description = material.description,
+                chapter_id = material.chapter_id,
+                type = material.type,
+                link = material.link,
+                status = material.status
+                // You don't need to set file_type, DataFile, or PDFFile here
+            };
+
+            return View(viewModel);
         }
 
 
-        // Other actions like Index, Edit, Delete, etc.
+
+
+        // POST: Materials/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, MaterialEditViewModel material)
+        {
+            if (id != material.material_id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var existingMaterial = await _context.Materials.FindAsync(id);
+                    if (existingMaterial == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update non-file properties
+                    existingMaterial.subject_id = material.subject_id;
+                    existingMaterial.teacher_id = material.teacher_id;
+                    existingMaterial.class_id = material.class_id;
+                    existingMaterial.name = material.name;
+                    existingMaterial.description = material.description;
+                    existingMaterial.chapter_id = material.chapter_id;
+                    existingMaterial.type = material.type;
+                    existingMaterial.link = material.link;
+                    existingMaterial.status = material.status;
+                    existingMaterial.file_type = material.file_type;
+
+                    // Process updated data file if present
+                    if (material.DataFile != null && material.DataFile.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await material.DataFile.CopyToAsync(memoryStream);
+                            existingMaterial.data = memoryStream.ToArray();
+                        }
+                    }
+
+                    // Update PDF file if provided
+                    if (material.PDFFile != null && material.PDFFile.Length > 0)
+                    {
+                        existingMaterial.pdf_file = await GetPdfFileBytesAsync(material.PDFFile);
+                    }
+
+                    _context.Update(existingMaterial);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MaterialExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(material);
+        }
+
+
+        // GET: Materials/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var material = await _context.Materials
+                .FirstOrDefaultAsync(m => m.material_id == id);
+            if (material == null)
+            {
+                return NotFound();
+            }
+
+            return View(material);
+        }
+
+        // POST: Materials/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var material = await _context.Materials.FindAsync(id);
+            _context.Materials.Remove(material);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Materials/DownloadDocument/5
+        public IActionResult DownloadDocument(int id)
+        {
+            try
+            {
+                var material = _context.Materials.Find(id);
+
+                if (material == null || material.data == null || material.data.Length == 0)
+                {
+                    return NotFound();
+                }
+
+                string contentType;
+                string fileExtension;
+
+                switch (material.file_type)
+                {
+                    case "DOCX":
+                        contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                        fileExtension = ".docx";
+                        break;
+                    case "PPTX":
+                        contentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                        fileExtension = ".pptx";
+                        break;
+                    case "XLSX":
+                        contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        fileExtension = ".xlsx";
+                        break;
+                    default:
+                        contentType = "application/pdf";
+                        fileExtension = ".pdf";
+                        break;
+                }
+
+                return File(material.data, contentType, material.name + fileExtension);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                // Handle the exception (e.g., return a 500 error)
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        private bool MaterialExists(int id)
+        {
+            return _context.Materials.Any(e => e.material_id == id);
+        }
+
+        private async Task<byte[]> GetPdfFileBytesAsync(IFormFile pdfFile)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await pdfFile.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Singlearn.Models.Entities.Material>
+﻿@model IEnumerable<Singlearn.Models.Entities.Announcement>
 
 @{
     ViewData["Title"] = "Index";
@@ -22,25 +22,28 @@
                 @Html.DisplayNameFor(model => model.class_id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.name)
+                @Html.DisplayNameFor(model => model.title)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.chapter_id)
+                @Html.DisplayNameFor(model => model.image)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.type)
+                @Html.DisplayNameFor(model => model.date)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.link)
+                @Html.DisplayNameFor(model => model.message_body)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.url)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.category)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.file_type)
             </th>
             <th></th>
         </tr>
@@ -58,30 +61,33 @@
                 @Html.DisplayFor(modelItem => item.class_id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.name)
+                @Html.DisplayFor(modelItem => item.title)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.chapter_id)
+                @Html.DisplayFor(modelItem => item.image)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.type)
+                @Html.DisplayFor(modelItem => item.date)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.link)
+                @Html.DisplayFor(modelItem => item.message_body)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.url)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.category)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.status)
             </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.file_type)
-                </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.material_id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.material_id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.material_id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.announcement_id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.announcement_id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.announcement_id">Delete</a>
             </td>
         </tr>
 }

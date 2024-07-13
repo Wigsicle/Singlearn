@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Singlearn.Data;
+using Singlearn.Models.Entities;
 using Singlearn.ViewModels;
 
 namespace Singlearn.Controllers
@@ -56,7 +57,6 @@ namespace Singlearn.Controllers
 
         public async Task<IActionResult> GetChapters(int subject_id, string class_id)
         {
-            // Set the subject ID and class ID in ViewData for use in the view
             ViewData["SubjectId"] = subject_id;
             ViewData["ClassId"] = class_id;
 
@@ -64,8 +64,6 @@ namespace Singlearn.Controllers
                 .Where(s => s.subject_id.Equals(subject_id))
                 .Select(s => s.name)
                 .FirstOrDefaultAsync();
-
-            // Pass the data to the view
 
             var chapters = await dbContext.ChapterNames
                 .Where(c => c.subject_id.Equals(subject_id))
@@ -77,9 +75,29 @@ namespace Singlearn.Controllers
                     subject_id = c.subject_id,
                 })
                 .ToListAsync();
+
             ViewData["SubjectName"] = subject_name;
 
-            return View("SubjectMain", chapters);
+            var stc = await dbContext.SubjectTeacherClasses
+                .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id == class_id);
+
+            var stcTemplate = await dbContext.STCTemplates
+                .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
+
+            var template = await dbContext.Templates
+                .FirstOrDefaultAsync(t => t.template_id == stcTemplate.template_id);
+
+            var viewModel = new SubjectViewModel
+            {
+                subject_id = subject_id,
+                class_id = class_id,
+                TemplateViewName = template?.view_name,
+                Chapters = chapters,
+                Announcements = new List<Announcement>(),
+                Materials = new List<Material>()
+            };
+
+            return View("SubjectMain", viewModel);
         }
 
         public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id, string class_id)

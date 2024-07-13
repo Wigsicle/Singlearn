@@ -151,14 +151,16 @@ namespace Singlearn.Migrations
                 {
                     announcement_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    subject_id = table.Column<int>(type: "int", nullable: false),
-                    teacher_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    class_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     date = table.Column<DateTime>(type: "DateTime", nullable : false),
-                    message_body = table.Column<string>(type: "nvarchar(max)", nullable: false)
+/*                    url = table.Column<string>(type: "nvarchar(max)", nullable: false),*/
+                    subject_id = table.Column<int>(type: "int", nullable: false),
+                    staff_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    class_id = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -171,7 +173,7 @@ namespace Singlearn.Migrations
                         onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Announcements_teacher_id",
-                        column: x => x.teacher_id,
+                        column: x => x.staff_id,
                         principalTable: "Staff",
                         principalColumn: "staff_id",
                         onDelete: ReferentialAction.NoAction);

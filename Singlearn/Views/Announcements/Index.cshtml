@@ -1,0 +1,94 @@
+﻿@model IEnumerable<Singlearn.Models.Entities.Announcement>
+
+@{
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    ViewData["Title"] = "Index";
+}
+
+
+<div style="padding-top: 200px">
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.image)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.url)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.subject_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.teacher_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.class_id)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.image)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.url)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.subject_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.teacher_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.class_id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.announcement_id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.announcement_id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.announcement_id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

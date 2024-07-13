@@ -1,4 +1,4 @@
-﻿@model Singlearn.Models.Entities.Material
+﻿@model Singlearn.Models.Entities.Announcement
 
 @{
     ViewData["Title"] = "Details";
@@ -7,7 +7,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Material</h4>
+    <h4>Announcement</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -29,10 +29,10 @@
             @Html.DisplayFor(model => model.class_id)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
+            @Html.DisplayNameFor(model => model.title)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.name)
+            @Html.DisplayFor(model => model.title)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.description)
@@ -41,22 +41,34 @@
             @Html.DisplayFor(model => model.description)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.chapter_id)
+            @Html.DisplayNameFor(model => model.image)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.chapter_id)
+            @Html.DisplayFor(model => model.image)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.type)
+            @Html.DisplayNameFor(model => model.date)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.type)
+            @Html.DisplayFor(model => model.date)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.link)
+            @Html.DisplayNameFor(model => model.message_body)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.link)
+            @Html.DisplayFor(model => model.message_body)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.url)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.url)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.category)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.category)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.status)
@@ -67,6 +79,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.material_id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model?.announcement_id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

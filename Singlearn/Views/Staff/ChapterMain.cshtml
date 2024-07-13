@@ -6,26 +6,116 @@
 }
 
 <h1>Subject ID @ViewData["SubjectId"]</h1>
-<h1>Class ID @ViewData["ClassId"]</h1>
-<div class="row">
-    <h1 class="fw-bold py-3 mb-2">Materials</h1>
-    @if (Model != null && Model.Any())
-    {
-        <div class="row">
-            @foreach (var material in Model)
-            {
-                <div class="col-md-6 col-lg-3 padding-bottom-20">
-                    <div class="card mb-2 card-hover-effect">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold py-3 mb-2">@material.name @material.class_id @material.teacher_id</h5>
+
+
+<style>
+    .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .card-body {
+        flex: 1;
+    }
+</style>
+
+@if (Model != null && Model.Any())
+{
+    <div class="container-fluid" style="padding-top: 150px;">
+        <div class="row mb-12">
+            <h1></h1>
+        </div>
+        <div class="col-lg-12">
+            <div class="demo-inline-spacing mt-3">
+                <div class="list-group list-group-horizontal-md text-md-center" style="width: 1000px; margin: 0 auto;">
+                    <a class="list-group-item list-group-item-action active"
+                       id="home-list-item"
+                       data-bs-toggle="list"
+                       href="#vidlesson">Video Lessons</a>
+                    <a class="list-group-item list-group-item-action"
+                       id="profile-list-item"
+                       data-bs-toggle="list"
+                       href="#lessnotes">Lesson Notes</a>
+                    <a class="list-group-item list-group-item-action"
+                       id="messages-list-item"
+                       data-bs-toggle="list"
+                       href="#classwork">Classwork</a>
+                    <a class="list-group-item list-group-item-action"
+                       id="settings-list-item"
+                       data-bs-toggle="list"
+                       href="#homework">Homework</a>
+                </div>
+                <br />
+                <div class="tab-content px-0 mt-0">
+                    <div class="tab-pane fade show active" id="vidlesson">
+                        <div class="row" style="width:1000px; margin: 0 auto;">
+                            @foreach (var material in Model.Where(m => m.type == "Video Lessons" && m.status == "Visible"))
+                            {
+                                <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
+                                <div class="col-md-6 col-lg-3 mb-5">
+                                    <div class="card mb-4" style="width:100%;">
+                                        <div class="card-body">
+                                            <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
+                                            <p class="card-text">@material.description</p>
+                                        </div>
+                                    </div>
+                                </div>
+                              </a>
+                            }
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="lessnotes">
+                        <div class="row" style="width: 1000px; margin: 0 auto;">
+                            @foreach (var material in Model.Where(m => m.type == "Lesson Notes" && m.status == "Visible"))
+                            {
+                                <div class="col-md-6 col-lg-3 mb-5">
+                                    <div class="card mb-4" style="width:100%;">
+                                        <div class="card-body">
+                                            <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
+                                            <p class="card-text">@material.description</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="classwork">
+                        <div class="row" style="width: 1000px; margin: 0 auto;">
+                            @foreach (var material in Model.Where(m => m.type == "Classwork" && m.status == "Visible"))
+                            {
+                                <div class="col-md-6 col-lg-3 mb-5">
+                                    <div class="card mb-4" style="width:100%;">
+                                        <div class="card-body">
+                                            <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
+                                            <p class="card-text">@material.description</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="homework">
+                        <div class="row" style="width: 1000px; margin: 0 auto;">
+                            @foreach (var material in Model.Where(m => m.type == "Homework" && m.status == "Visible"))
+                            {
+                                <div class="col-md-6 col-lg-3 mb-5">
+                                    <div class="card mb-4" style="width:100%;">
+                                        <div class="card-body">
+                                            <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
+                                            <p class="card-text">@material.description</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
-            }
+            </div>
         </div>
-    }
-    else
-    {
-        <p>No subjects found for this student.</p>
-    }
-</div>
+    </div>
+}
+else
+{
+    <p>No subjects found for this student.</p>
+}
