@@ -41,6 +41,21 @@
         .padding-bottom-20 {
             padding-bottom: 20px;
         }
+
+        .announcement-item {
+            margin-bottom: 30px;
+        }
+
+            .announcement-item img {
+                max-width: 100%;
+                height: auto;
+                margin-top: 10px;
+            }
+
+        .announcement-meta {
+            font-size: 0.9rem;
+            color: gray;
+        }
     </style>
 </head>
 <body>
@@ -64,19 +79,29 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Subject Announcements</h5>
-                        @if (Model.Announcements != null && Model.Announcements.Any())
-                        {
-                            foreach (var announcement in Model.Announcements)
+                        <div id="announcement-container">
+                            @if (Model.Announcements != null && Model.Announcements.Any())
                             {
                                 <div class="announcement-item">
-                                 @*  <h6>@announcement.Title</h6>
-                                    <p>@announcement.Content</p> *@
+                                    <h4>@Model.Announcements.First().title</h4>
+                                    <p class="announcement-meta">
+                                        @ViewData["StaffName"] posted on @Model.Announcements.First().date.ToString("MMMM dd, yyyy h:mm tt")
+                                    </p>
+                                    <p>@Model.Announcements.First().description</p>
+                                    @if (!string.IsNullOrEmpty(Model.Announcements.First().image))
+                                    {
+                                        <img src="@Model.Announcements.First().image" />
+                                    }
                                 </div>
                             }
-                        }
-                        else
+                            else
+                            {
+                                <p>No announcements available.</p>
+                            }
+                        </div>
+                        @if (Model.Announcements != null && Model.Announcements.Count > 1)
                         {
-                            <p>No announcements available.</p>
+                            <button id="viewMoreBtn" class="btn btn-primary">View More</button>
                         }
                     </div>
                 </div>
@@ -111,5 +136,32 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var announcements = @Html.Raw(Json.Serialize(Model?.Announcements?.Skip(1)?.ToList() ?? new List<Singlearn.Models.Entities.Announcement>()));
+            var currentIndex = 0;
+            $('#viewMoreBtn').click(function () {
+                var nextAnnouncements = announcements.slice(currentIndex, currentIndex + 2);
+                currentIndex += 2;
+                nextAnnouncements.forEach(function (announcement) {
+                    $('#announcement-container').append(
+                        `<div class="announcement-item">
+                                    <h4>${announcement.title}</h4>
+                                    <p class="announcement-meta">
+                                        ${'@ViewData["StaffName"]'} posted on ${new Date(announcement.date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}
+                                    </p>
+                                    <p>${announcement.description}</p>
+                                    ${announcement.image ? `<img src="${announcement.image}" />` : ''}
+                                </div>`
+                    );
+                });
+                if (currentIndex >= announcements.length) {
+                    $('#viewMoreBtn').hide();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

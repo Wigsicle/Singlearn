@@ -55,7 +55,7 @@ namespace Singlearn.Controllers
             return View(subjects);
         }
 
-        public async Task<IActionResult> GetChapters(int subject_id, string class_id)
+        public async Task<IActionResult> SubjectIndex(int subject_id, string class_id)
         {
             ViewData["SubjectId"] = subject_id;
             ViewData["ClassId"] = class_id;
@@ -76,6 +76,19 @@ namespace Singlearn.Controllers
                 })
                 .ToListAsync();
 
+
+
+            var announcements = await dbContext.Announcements
+                .Where(a => a.subject_id == subject_id && a.class_id.Equals(class_id))
+                .ToListAsync();
+
+            var staff_name = await dbContext.Staff
+                .Where(s => s.staff_id.Equals(s.staff_id))
+                .Select(s => s.name)
+                .FirstOrDefaultAsync();
+
+            ViewData["StaffName"] = staff_name;
+
             ViewData["SubjectName"] = subject_name;
 
             var stc = await dbContext.SubjectTeacherClasses
@@ -93,7 +106,7 @@ namespace Singlearn.Controllers
                 class_id = class_id,
                 TemplateViewName = template?.view_name,
                 Chapters = chapters,
-                Announcements = new List<Announcement>(),
+                Announcements = announcements,
                 Materials = new List<Material>()
             };
 
