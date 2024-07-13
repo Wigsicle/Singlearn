@@ -19,7 +19,48 @@ namespace SinglearnWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> staff_homework(int subjectId)
+        public async Task<IActionResult> Index(int subjectId, int? homeworkId = null)
+        {
+            var homeworks = await dbContext.Homeworks
+                .Where(h => h.subject_id == subjectId)
+                .Select(h => new HomeworkViewModel
+                {
+                    homework_id = h.homework_id,
+                    subject_id = h.subject_id,
+                    title = h.title,
+                    description = h.description,
+                    startdate = h.startdate,
+                    enddate = h.enddate,
+                    //attachment = h.attachment
+                })
+                .ToListAsync();
+
+            /*HomeworkViewModel editHomework = null;
+            if(homeworkId.HasValue)
+            {
+                var homework = await dbContext.Homeworks.FindAsync(homeworkId.Value);
+                if(homework != null)
+                {
+                    editHomework = new HomeworkViewModel
+                    {
+                        homework_id = homework.homework_id,
+                        subject_id = homework.subject_id,
+                        title = homework.title,
+                        description = homework.description,
+                        startdate = homework.startdate,
+                        enddate = homework.enddate,
+                        //attachment = homework.attachment
+                    };
+                }
+            }*/
+
+            ViewData["SubjectId"] = subjectId;
+
+            return View(homeworks);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create(int subjectId)
         {
             var homeworks = await dbContext.Homeworks
                 .Where(h => h.subject_id == subjectId)
@@ -36,13 +77,10 @@ namespace SinglearnWeb.Controllers
                 .ToListAsync();
 
             ViewData["SubjectId"] = subjectId;
-
             return View(homeworks);
         }
-
-
         [HttpPost]
-        public async Task<IActionResult> CreateHomework(HomeworkViewModel model)
+        public async Task<IActionResult> Create(HomeworkViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -70,33 +108,22 @@ namespace SinglearnWeb.Controllers
 
                 await dbContext.Homeworks.AddAsync(homework);
                 await dbContext.SaveChangesAsync();
-                return RedirectToAction("staff_homework", "HomeworkHub", new { subjectId = model.subject_id });
+                return RedirectToAction("Index", "HomeworkHub", new { subjectId = model.subject_id });
             }
             return View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetHomework(int homeworkId)
+        public async Task<IActionResult> Edit(int? homeworkid)
         {
-            var homework = await dbContext.Homeworks.FirstOrDefaultAsync(h=>h.homework_id == homeworkId);
+            var homework = await dbContext.Homeworks.FirstOrDefaultAsync(h => h.homework_id == homeworkid);
+            //Console.WriteLine(homework);
             if (homework == null)
             {
                 return NotFound();
             }
-            int subjecttId = homework.subject_id;
 
-            var model = new HomeworkViewModel
-            {
-                homework_id = homework.homework_id,
-                subject_id = homework.subject_id,
-                title = homework.title,
-                description = homework.description,
-                startdate = homework.startdate,
-                enddate = homework.enddate,
-                //attachment = homework.attachment
-            };
-
-            return View(model);
+            return View(homework);
         }
 
         [HttpPost]
@@ -105,7 +132,7 @@ namespace SinglearnWeb.Controllers
             if (ModelState.IsValid)
             {
                 var homework = await dbContext.Homeworks.FindAsync(model.homework_id);
-                if(homework != null)
+                if(homework == null)
                 {
                     return NotFound();
                 }
@@ -131,7 +158,11 @@ namespace SinglearnWeb.Controllers
                     if(!string.IsNullOrEmpty(homework.attachment))
                     {
                         string oldFilePath = Path.Combine(uploadFolder, homework.attachment);
-                        System.IO.File.Delete(oldFilePath);
+                        if (System.IO.File.Exists(oldFilePath))
+                        {
+                            System.IO.File.Delete(oldFilePath);
+                        }
+                        //System.IO.File.Delete(oldFilePath);
                     }
                     homework.attachment = uniqueFilename;
                 }
@@ -141,16 +172,57 @@ namespace SinglearnWeb.Controllers
                 dbContext.Homeworks.Update(homework);
                 await dbContext.SaveChangesAsync();
 
-                return RedirectToAction("staff_homework", "HomeworkHub", new { subjectId = homework.subject_id });
+                return RedirectToAction("Index", new { subjectId = homework.subject_id });
 
             }
             return View(model);
         }
 
-        public IActionResult staff_subject()
+        /*[HttpGet]
+        public async Task<IActionResult> Delete(int? homeworkid)
         {
-            return View();
+            *//*var homework = await dbContext.Homeworks.FindAsync(homeworkId);
+            if (homework == null)
+            {
+                return NotFound();
+            }
+            return View(homework);*//*
+            var homework = await dbContext.Homeworks.FirstOrDefaultAsync(h => h.homework_id == homeworkid);
+            
+            if (homework == null)
+            {
+                return NotFound();
+            }
+
+            return View(homework);
+        }*/
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteHomework(int homeworkid)
+        {
+
+            var homework = await dbContext.Homeworks.FirstOrDefaultAsync(h => h.homework_id == homeworkid);
+            if (homework == null)
+            {
+                return NotFound();
+            }
+            if (!string.IsNullOrEmpty(homework.attachment))
+            {
+                string uploadFolder = Path.Combine(hostingEnvironment.WebRootPath, "attachments");
+                string filePath = Path.Combine(uploadFolder, homework.attachment);
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+
+            dbContext.Homeworks.Remove(homework);
+            await dbContext.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Homework deleted successfully";
+            return RedirectToAction("Index", new { subjectId = homework.subject_id });
         }
+
+        
 
         public IActionResult staff_class()
         {

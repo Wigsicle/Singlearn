@@ -2,6 +2,7 @@
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
     ViewData["StaffTitle"] = "Homepage";
     int subjectId = ViewData["SubjectId"] != null ? (int)ViewData["SubjectId"] : 0;
+    var editHomework = ViewData["EditHomework"] as Singlearn.ViewModels.HomeworkViewModel;
 
 }
 
@@ -20,7 +21,7 @@
 
         <div class="d-flex justify-content-end">
             <div>
-                <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalCenter"> Add </button>
+                <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalCenter"> Create new homework </button>
                 <!-- Modal -->
                 <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -71,6 +72,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!--Edit modal-->
                 <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -85,27 +87,27 @@
                                     <!-- Form fields for editing homework -->
                                     <div class="form-group">
                                         <label class="control-label">Title</label>
-                                        <input class="form-control" id="editTitle" name="title"  />
+                                        <input class="form-control" id="editTitle" name="title" />
                                         <span class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">Description</label>
-                                        <textarea class="form-control" id="editDescription" name="description" ></textarea>
+                                        <textarea class="form-control" id="editDescription" name="description"></textarea>
                                         <span class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">Start date</label>
-                                        <input type="date" class="form-control" id="editStartDate" name="startdate"  />
+                                        <input type="date" class="form-control" id="editStartDate" name="startdate" />
                                         <span class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">End date</label>
-                                        <input type="date" class="form-control" id="editEndDate" name="enddate"  />
+                                        <input type="date" class="form-control" id="editEndDate" name="enddate" />
                                         <span class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">Attachment</label>
-                                        <input class="form-control" type="file" id="editAttachment" name="attachment"  />
+                                        <input class="form-control" type="file" id="editAttachment" name="attachment" />
                                         <span class="text-danger"></span>
                                     </div>
                                 </div>
@@ -117,6 +119,9 @@
                         </div>
                     </div>
                 </div>
+                
+
+                
             </div>
         </div>
         <!-- Basic Bootstrap Table -->
@@ -146,8 +151,12 @@
                                 <td>@homework.enddate.ToString("yyyy-MM-dd")</td>
                                 <td></td>
                                 <td>
-                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal" data-id="@homework.homework_id">Edit</button>
-                                    
+                                    <button class="btn btn-sm btn-warning btnEditHomework" data-bs-toggle="modal" data-bs-target="#editModal" data-id="@editHomework=homework.homework_id">Edit</button>
+                                    @* <a class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editmodal">Edit</a> *@
+                                    <form asp-action="DeleteHomework" asp-controller="HomeworkHub" method="post" onsubmit="return confirm('Are you sure you want to delete this homework?');">
+                                        <input type="hidden" name="homeworkId" value="@homework.homework_id" />
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                         }
@@ -160,3 +169,34 @@
         <!--/ Basic Bootstrap Table -->
     </div>
     <!-- / Content -->
+
+    <script>
+        $(document).ready(function () {
+            // Edit Homework Modal
+            $('.btnEditHomework').click(function () {
+                var homeworkId = $(this).data('id');
+
+                // AJAX request to get homework details
+                $.ajax({
+                    url: '@Url.Action("staff_homework", "HomeworkHub")',
+                    type: 'GET',
+                    data: { homeworkId: homeworkId },
+                    success: function (data) {
+                        // Populate form fields with retrieved data
+                        $('#editHomeworkId').val(data.homework_id);
+                        $('#editTitle').val(data.title);
+                        $('#editDescription').val(data.description);
+                        $('#editStartDate').val(data.startdate.split('T')[0]); // Split to remove time part
+                        $('#editEndDate').val(data.enddate.split('T')[0]); // Split to remove time part
+                        // Optionally handle attachment display if needed
+
+                        // Show the edit modal
+                        $('#editModal').modal('show');
+                    },
+                    error: function () {
+                        alert('Error loading homework details.');
+                    }
+                });
+            });
+        });
+    </script>
