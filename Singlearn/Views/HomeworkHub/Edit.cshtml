@@ -1,0 +1,65 @@
+﻿@model Singlearn.Models.Entities.Homework;
+
+@{
+    ViewData["StaffTitle"] = "Homepage";
+    int subjectId = ViewData["SubjectId"] != null ? (int)ViewData["SubjectId"] : 0;
+
+}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div style="padding: 15% 3% 3% 3%;">
+                <h2>Edit homework</h2>
+                <hr />
+
+                <form asp-action="EditHomework" asp-controller="HomeworkHub" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <input asp-for="homework_id" type="hidden" />
+                    <div class="form-group">
+                        <label asp-for="homework_id" class="control-label">Homework ID</label>
+                        <input asp-for="homework_id" class="form-control" />
+                        <span asp-validation-for="homework_id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="subject_id" class="control-label">Subject ID</label>
+                        <input asp-for="subject_id" class="form-control" />
+                        <span asp-validation-for="subject_id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="title" class="control-label">Title</label>
+                        <input asp-for="title" class="form-control" />
+                        <span asp-validation-for="title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="description" class="control-label">Description</label>
+                        <textarea asp-for="description" class="form-control"></textarea>
+                        <span asp-validation-for="description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="startdate" class="control-label">Start date</label>
+                        <input type="date" asp-for="startdate" class="form-control" />
+                        <span asp-validation-for="startdate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="enddate" class="control-label">End date</label>
+                        <input type="date" asp-for="enddate" class="form-control" />
+                        <span asp-validation-for="enddate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="attachment" class="control-label">Attachment</label>
+                        <input type="file" asp-for="attachment" class="form-control" />
+                        <span asp-validation-for="attachment" class="text-danger"></span>
+                    </div>
+                    <div class="form-group text-center mt-3 mb-3">
+                        <input type="submit" value="Update" class="btn btn-primary" />
+                    </div>
+                </form>
+
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
