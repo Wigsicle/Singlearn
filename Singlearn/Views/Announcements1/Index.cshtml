@@ -3,12 +3,13 @@
 @{
     ViewData["Title"] = "Index";
 }
+<div style="padding-top:200px">
+    <h1>Index</h1>
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -16,7 +17,7 @@
                 @Html.DisplayNameFor(model => model.subject_id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.teacher_id)
+                @Html.DisplayNameFor(model => model.staff_id)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.class_id)
@@ -33,9 +34,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.date)
             </th>
-            <th>
+            @* <th>
                 @Html.DisplayNameFor(model => model.message_body)
-            </th>
+            </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.url)
             </th>
@@ -55,7 +56,7 @@
                 @Html.DisplayFor(modelItem => item.subject_id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.teacher_id)
+                    @Html.DisplayFor(modelItem => item.staff_id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.class_id)
@@ -72,9 +73,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.date)
             </td>
-            <td>
+            @* <td>
                 @Html.DisplayFor(modelItem => item.message_body)
-            </td>
+            </td> *@
             <td>
                 @Html.DisplayFor(modelItem => item.url)
             </td>
