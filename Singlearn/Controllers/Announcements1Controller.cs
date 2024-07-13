@@ -54,7 +54,7 @@ namespace Singlearn.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("announcement_id,subject_id,teacher_id,class_id,title,description,image,date,message_body,url,category,status")] Announcement announcement)
+        public async Task<IActionResult> Create([Bind("announcement_id,subject_id,staff_id,class_id,title,description,image,date,message_body,url,category,status")] Announcement announcement)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace Singlearn.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("announcement_id,subject_id,teacher_id,class_id,title,description,image,date,message_body,url,category,status")] Announcement announcement)
+        public async Task<IActionResult> Edit(int id, [Bind("announcement_id,subject_id,staff_id,class_id,title,description,image,date,message_body,url,category,status")] Announcement announcement)
         {
             if (id != announcement.announcement_id)
             {
