@@ -48,7 +48,6 @@ namespace Singlearn.Controllers
         {
             ViewData["Subjects"] = new SelectList(_context.Subjects, "subject_id", "name");
             ViewData["Staffs"] = new SelectList(_context.Staff, "staff_id", "name");
-            ViewData["Classes"] = new SelectList(_context.Classes, "class_id", "name");
             return View();
         }
 
@@ -62,12 +61,25 @@ namespace Singlearn.Controllers
                 // Add the announcement to the context
                 _context.Add(announcement);
                 await _context.SaveChangesAsync();
+
+                // Save the selected classes
+                foreach (var classId in class_id)
+                {
+                    var subjectTeacherClass = new SubjectTeacherClass
+                    {
+                        subject_id = announcement.subject_id.Value,
+                        teacher_id = announcement.staff_id,
+                        class_id = classId.ToString() // Assuming class_id is a string
+                    };
+                    _context.Add(subjectTeacherClass);
+                }
+
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
             ViewData["Subjects"] = new SelectList(_context.Subjects, "subject_id", "name", announcement.subject_id);
             ViewData["Staffs"] = new SelectList(_context.Staff, "staff_id", "name", announcement.staff_id);
-            ViewData["Classes"] = new SelectList(_context.Classes, "class_id", "name");
             return View(announcement);
         }
 
@@ -87,11 +99,9 @@ namespace Singlearn.Controllers
 
             ViewData["Subjects"] = new SelectList(_context.Subjects, "subject_id", "name", announcement.subject_id);
             ViewData["Staffs"] = new SelectList(_context.Staff, "staff_id", "name", announcement.staff_id);
-            ViewData["Classes"] = new SelectList(_context.Classes, "class_id", "name", announcement.class_id);
 
             return View(announcement);
         }
-
 
         // POST: Announcements1/Edit/5
         [HttpPost]
@@ -167,9 +177,9 @@ namespace Singlearn.Controllers
         [HttpGet]
         public JsonResult GetClassesByStaff(string staff_id)
         {
-            var classes = _context.Classes
-                .Where(c => c.teacher_id == staff_id)
-                .Select(c => new { value = c.class_id, text = c.name })
+            var classes = _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == staff_id)
+                .Select(stc => new { value = stc.class_id, text = _context.Classes.First(c => c.class_id == stc.class_id).name })
                 .ToList();
 
             return Json(classes);
