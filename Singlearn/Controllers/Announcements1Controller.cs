@@ -83,8 +83,14 @@ namespace Singlearn.Controllers
             {
                 return NotFound();
             }
+
+            ViewData["Subjects"] = new SelectList(_context.Subjects, "subject_id", "name", announcement.subject_id);
+            ViewData["Staffs"] = new SelectList(_context.Staff, "staff_id", "name", announcement.staff_id);
+            ViewData["Classes"] = new SelectList(_context.Classes, "class_id", "name", announcement.class_id);
+
             return View(announcement);
         }
+
 
         // POST: Announcements1/Edit/5
         [HttpPost]
