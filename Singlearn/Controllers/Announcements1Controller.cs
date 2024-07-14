@@ -46,12 +46,13 @@ namespace Singlearn.Controllers
         // GET: Announcements1/Create
         public IActionResult Create()
         {
+            ViewData["Subjects"] = new SelectList(_context.Subjects, "subject_id", "name");
+            ViewData["Staffs"] = new SelectList(_context.Staff, "staff_id", "name");
+            ViewData["Classes"] = new SelectList(_context.Classes, "class_id", "name");
             return View();
         }
 
         // POST: Announcements1/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("announcement_id,subject_id,staff_id,class_id,title,description,image,date,url,category,status")] Announcement announcement)
@@ -62,6 +63,10 @@ namespace Singlearn.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["Subjects"] = new SelectList(_context.Subjects, "subject_id", "name", announcement.subject_id);
+            ViewData["Staffs"] = new SelectList(_context.Staff, "staff_id", "name", announcement.staff_id);
+            ViewData["Classes"] = new SelectList(_context.Classes, "class_id", "name", announcement.class_id);
             return View(announcement);
         }
 
@@ -82,8 +87,6 @@ namespace Singlearn.Controllers
         }
 
         // POST: Announcements1/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("announcement_id,subject_id,staff_id,class_id,title,description,image,date,url,category,status")] Announcement announcement)
@@ -152,6 +155,17 @@ namespace Singlearn.Controllers
         private bool AnnouncementExists(int id)
         {
             return _context.Announcements.Any(e => e.announcement_id == id);
+        }
+
+        [HttpGet]
+        public JsonResult GetClassesByStaff(string staff_id)
+        {
+            var classes = _context.Classes
+                .Where(c => c.teacher_id == staff_id)
+                .Select(c => new { value = c.class_id, text = c.name })
+                .ToList();
+
+            return Json(classes);
         }
     }
 }
