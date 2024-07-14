@@ -4,85 +4,92 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Material</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" method="post" enctype="multipart/form-data">
-            <input type="hidden" asp-for="material_id" />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="subject_id" class="control-label"></label>
-                <input asp-for="subject_id" class="form-control" />
-                <span asp-validation-for="subject_id" class="text-danger"></span>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div style="padding: 15% 3% 3% 3%;">
+                <h2>Edit Materials</h2>
+                <hr />
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="material_id" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group" style="padding-bottom:10px;">
+                        <label asp-for="subject_id" class="control-label"></label>
+                        <input asp-for="subject_id" class="form-control" />
+                        <span asp-validation-for="subject_id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group" style="padding-bottom:10px;">
+                        <label asp-for="teacher_id" class="control-label"></label>
+                        <input asp-for="teacher_id" class="form-control" />
+                        <span asp-validation-for="teacher_id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group" style="padding-bottom:10px;">
+                        <label asp-for="class_id" class="control-label"></label>
+                        <input asp-for="class_id" class="form-control" />
+                        <span asp-validation-for="class_id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group" style="padding-bottom:10px;">
+                        <label asp-for="name" class="control-label"></label>
+                        <input asp-for="name" class="form-control" />
+                        <span asp-validation-for="name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group" style="padding-bottom:10px;">
+                        <label asp-for="description" class="control-label"></label>
+                        <input asp-for="description" class="form-control" />
+                        <span asp-validation-for="description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group" style="padding-bottom:10px;">
+                        <label asp-for="chapter_id" class="control-label"></label>
+                        <input asp-for="chapter_id" class="form-control" />
+                        <span asp-validation-for="chapter_id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group" style="padding-bottom:10px;">
+                        <label asp-for="type" class="control-label"></label>
+                        <select asp-for="type" asp-items="ViewBag.TypeOptions" class="form-control" onchange="toggleFileInputs()"></select>
+                        <span asp-validation-for="type" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group" style="padding-bottom:10px;" id="linkField">
+                        <label asp-for="link" class="control-label"></label>
+                        <input asp-for="link" class="form-control">
+                        <span asp-validation-for="link" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group" style="padding-bottom:10px;">
+                        <label asp-for="status" class="control-label"></label>
+                        <select asp-for="status" asp-items="ViewBag.StatusOptions" class="form-control"></select>
+                        <span asp-validation-for="status" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group" style="padding-bottom:10px;" id="dataFileDiv">
+                        <label asp-for="DataFile" class="control-label"></label>
+                        <input asp-for="DataFile" type="file" class="form-control" onchange="showFileExtension(this)" />
+                        <span asp-validation-for="DataFile" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group" style="padding-bottom:10px;" id="pdfFileDiv">
+                        <label asp-for="PDFFile" class="control-label"></label>
+                        <input asp-for="PDFFile" type="file" class="form-control" />
+                        <span asp-validation-for="PDFFile" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group" style="padding-bottom:10px;" id="fileTypeDiv">
+                        <label asp-for="file_type" class="control-label">Data File Extension</label>
+                        <input asp-for="file_type" id="fileExtensionDisplay" class="form-control" readonly />
+                        <span asp-validation-for="file_type" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <br />
+                        <input type="submit" value="Save" class="btn btn-primary" style="float:left;" />
+                    </div>
+                </form>
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary" style="margin-left:20px;">Back to List</a>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="teacher_id" class="control-label"></label>
-                <input asp-for="teacher_id" class="form-control" />
-                <span asp-validation-for="teacher_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="class_id" class="control-label"></label>
-                <input asp-for="class_id" class="form-control" />
-                <span asp-validation-for="class_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="name" class="control-label"></label>
-                <input asp-for="name" class="form-control" />
-                <span asp-validation-for="name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="description" class="control-label"></label>
-                <input asp-for="description" class="form-control" />
-                <span asp-validation-for="description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="chapter_id" class="control-label"></label>
-                <input asp-for="chapter_id" class="form-control" />
-                <span asp-validation-for="chapter_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="type" class="control-label"></label>
-                <input asp-for="type" class="form-control" />
-                <span asp-validation-for="type" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="link" class="control-label"></label>
-                <input asp-for="link" class="form-control" />
-                <span asp-validation-for="link" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="status" class="control-label"></label>
-                <input asp-for="status" class="form-control" />
-                <span asp-validation-for="status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DataFile" class="control-label"></label>
-                <input asp-for="DataFile" type="file" class="form-control" onchange="showFileExtension(this)" />
-                <span asp-validation-for="DataFile" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PDFFile" class="control-label"></label>
-                <input asp-for="PDFFile" type="file" class="form-control" />
-                <span asp-validation-for="PDFFile" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="file_type" class="control-label">Select File Type For The Downloadable File:</label>
-                <input asp-for="file_type" id="fileExtensionDisplay" class="form-control" readonly />
-                <span asp-validation-for="file_type" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
@@ -93,6 +100,32 @@
                 document.getElementById('fileExtensionDisplay').value = fileExtension;
             }
         }
+
+        function toggleFileInputs() {
+            var typeSelect = document.querySelector('select[name="type"]');
+            var selectedValue = typeSelect.options[typeSelect.selectedIndex].text;
+            var linkField = document.getElementById('linkField');
+            var dataFileDiv = document.getElementById('dataFileDiv');
+            var pdfFileDiv = document.getElementById('pdfFileDiv');
+            var fileTypeDiv = document.getElementById('fileTypeDiv');
+
+            if (selectedValue === "Video Lessons") {
+                linkField.style.display = 'block';
+                dataFileDiv.style.display = 'none';
+                pdfFileDiv.style.display = 'none';
+                fileTypeDiv.style.display = 'none';
+            } else {
+                linkField.style.display = 'none';
+                dataFileDiv.style.display = 'block';
+                pdfFileDiv.style.display = 'block';
+                fileTypeDiv.style.display = 'block';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            toggleFileInputs();
+        });
+
     </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
