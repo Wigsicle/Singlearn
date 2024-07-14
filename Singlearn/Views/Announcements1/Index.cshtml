@@ -14,6 +14,11 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://kit.fontawesome.com/a076d05399.js" rel="stylesheet">
     <style>
+        .button-group {
+            display: flex;
+            gap: 10px; /* Adjust the spacing between buttons as needed */
+        }
+
         .main-content {
             max-width: calc(100% - 300px);
             margin-left: 150px;
@@ -98,7 +103,7 @@
                                 <td>@Html.DisplayFor(modelItem => item.url)</td>
                                 <td>@Html.DisplayFor(modelItem => item.category)</td>
                                 <td>@Html.DisplayFor(modelItem => item.status)</td>
-                                <td>
+                                <td class="button-group">
                                     <a asp-action="Edit" asp-route-id="@item.announcement_id" class="btn btn-warning btn-sm">Edit</a>
                                     <a asp-action="Details" asp-route-id="@item.announcement_id" class="btn btn-info btn-sm">Details</a>
                                     <a asp-action="Delete" asp-route-id="@item.announcement_id" class="btn btn-danger btn-sm">Delete</a>

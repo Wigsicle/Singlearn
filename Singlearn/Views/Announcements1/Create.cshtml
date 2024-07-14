@@ -139,8 +139,10 @@
                         <span asp-validation-for="staff_id" class="text-danger"></span>
                     </div>
                     <div class="form-group hidden" id="classGroup">
-                        <label asp-for="class_id" class="control-label"></label>
-                        <select asp-for="class_id" class="form-control" asp-items="ViewBag.Classes" id="classDropdown"></select>
+                        <label class="control-label">Classes</label>
+                        <div id="classCheckboxes">
+                            <!-- Checkboxes will be inserted here via AJAX -->
+                        </div>
                         <span asp-validation-for="class_id" class="text-danger"></span>
                     </div>
                     <!-- Your existing form fields -->
@@ -180,10 +182,20 @@
                         type: 'GET',
                         data: { staff_id: staffId },
                         success: function (data) {
-                            var classDropdown = $('#classDropdown');
-                            classDropdown.empty();
+                            var classCheckboxes = $('#classCheckboxes');
+                            classCheckboxes.empty();
                             $.each(data, function (index, value) {
-                                classDropdown.append($('<option>').text(value.text).attr('value', value.value));
+                                classCheckboxes.append(
+                                    $('<div>').append(
+                                        $('<input>').attr({
+                                            type: 'checkbox',
+                                            name: 'class_id',
+                                            value: value.value
+                                        }).addClass('form-check-input')
+                                    ).append(
+                                        $('<label>').text(value.text).addClass('form-check-label')
+                                    ).addClass('form-check')
+                                );
                             });
                         }
                     });

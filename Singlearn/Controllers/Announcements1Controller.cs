@@ -55,10 +55,11 @@ namespace Singlearn.Controllers
         // POST: Announcements1/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("announcement_id,subject_id,staff_id,class_id,title,description,image,date,url,category,status")] Announcement announcement)
+        public async Task<IActionResult> Create([Bind("announcement_id,subject_id,staff_id,title,description,image,date,url,category,status")] Announcement announcement, int[] class_id)
         {
             if (ModelState.IsValid)
             {
+                // Add the announcement to the context
                 _context.Add(announcement);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -66,7 +67,7 @@ namespace Singlearn.Controllers
 
             ViewData["Subjects"] = new SelectList(_context.Subjects, "subject_id", "name", announcement.subject_id);
             ViewData["Staffs"] = new SelectList(_context.Staff, "staff_id", "name", announcement.staff_id);
-            ViewData["Classes"] = new SelectList(_context.Classes, "class_id", "name", announcement.class_id);
+            ViewData["Classes"] = new SelectList(_context.Classes, "class_id", "name");
             return View(announcement);
         }
 
