@@ -14,8 +14,8 @@
         }
 
             .card-hover-effect:hover {
-                transform: scale(1.05); /* Increase size on hover */
-                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
+                transform: scale(1.05);
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             }
 
         .padding-bottom-20 {
@@ -23,12 +23,16 @@
         }
 
         .announcement-item {
+            padding-top: 20px;
             margin-bottom: 30px;
+            border-bottom: 1px solid black;
+            padding-bottom: 15px;
         }
 
             .announcement-item img {
-                max-width: 100%;
-                height: auto;
+                width: 200px;
+                height: 150px;
+                object-fit: cover;
                 margin-top: 10px;
             }
 
@@ -36,6 +40,29 @@
             font-size: 0.9rem;
             color: gray;
         }
+
+        .announcement-description {
+            color: black; /* Set description color to black */
+        }
+
+        .chapter-card {
+            width: 200px;
+            height: 100px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chapter-card-title {
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -55,7 +82,7 @@
             </div>
         </div>
         <div class="alert alert-info mt-3" role="alert">
-            <h5 class="alert-heading">Subject Announcements</h5>
+            <h4 class="alert-heading">Subject Announcements</h4>
             <div id="announcement-container">
                 @if (Model?.Announcements != null && Model.Announcements.Any())
                 {
@@ -64,7 +91,7 @@
                         <p class="announcement-meta">
                             @ViewData["StaffName"] posted on @Model.Announcements.First().date.ToString("MMMM dd, yyyy h:mm tt")
                         </p>
-                        <p>@Model.Announcements.First().description</p>
+                        <p class="announcement-description">@Model.Announcements.First().description</p>
                         @if (!string.IsNullOrEmpty(Model.Announcements.First().image))
                         {
                             <img src="@Model.Announcements.First().image" />
@@ -82,7 +109,7 @@
             }
         </div>
         <div class="alert alert-warning mt-3" role="alert">
-            <h5 class="alert-heading">Subject Chapters</h5>
+            <h4 class="alert-heading">Subject Chapters</h4>
             <div class="row">
                 @if (Model?.Chapters != null && Model.Chapters.Any())
                 {
@@ -91,9 +118,9 @@
                         {
                             <div class="col-md-6 col-lg-3 padding-bottom-20">
                                 <a asp-controller="Staff" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@ViewData["ClassId"]" class="card-link">
-                                    <div class="card mb-2 card-hover-effect">
+                                    <div class="card mb-2 card-hover-effect chapter-card">
                                         <div class="card-body">
-                                            <h5 class="card-title fw-bold py-3 mb-2">Chapter @chapter.chapter_id: @chapter.name</h5>
+                                            <h5 class="card-title fw-bold py-3 mb-2 chapter-card-title">Chapter @chapter.chapter_id: @chapter.name</h5>
                                         </div>
                                     </div>
                                 </a>
@@ -120,11 +147,11 @@
                 nextAnnouncements.forEach(function (announcement) {
                     $('#announcement-container').append(
                         `<div class="announcement-item">
-                                    <h4>${announcement.title}</h4>
+                                    <h5>${announcement.title}</h5>
                                     <p class="announcement-meta">
                                         ${'@ViewData["StaffName"]'} posted on ${new Date(announcement.date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}
                                     </p>
-                                    <p>${announcement.description}</p>
+                                    <p class="announcement-description">${announcement.description}</p>
                                     ${announcement.image ? `<img src="${announcement.image}" />` : ''}
                                 </div>`
                     );

@@ -53,17 +53,42 @@
 
         .announcement-item {
             margin-bottom: 30px;
+            border-bottom: 1px solid black; /* Black line underneath each announcement */
+            padding-bottom: 15px;
         }
 
             .announcement-item img {
-                max-width: 100%;
-                height: auto;
+                width: 200px; /* Fixed width */
+                height: 150px; /* Fixed height */
+                object-fit: cover; /* Ensures the image covers the entire area */
                 margin-top: 10px;
             }
 
         .announcement-meta {
             font-size: 0.9rem;
             color: gray;
+        }
+
+        .announcement-description {
+            color: black; /* Set description color to black */
+        }
+
+        .chapter-card {
+            width: 200px; /* Fixed width */
+            height: 120px; /* Fixed height */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chapter-card-title {
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .row {
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -91,7 +116,7 @@
                             <p class="announcement-meta">
                                 @ViewData["StaffName"] posted on @announcements.First().date.ToString("MMMM dd, yyyy h:mm tt")
                             </p>
-                            <p>@announcements.First().description</p>
+                            <p class="announcement-description">@announcements.First().description</p>
                             @if (!string.IsNullOrEmpty(announcements.First().image))
                             {
                                 <img src="@announcements.First().image" />
@@ -120,9 +145,9 @@
                             {
                                 <div class="col-md-6 col-lg-3 padding-bottom-20">
                                     <a asp-controller="@currentController" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@ViewData["ClassId"]" class="card-link">
-                                        <div class="card mb-2 card-hover-effect">
+                                        <div class="card mb-2 card-hover-effect chapter-card">
                                             <div class="card-body">
-                                                <h5 class="card-title fw-bold py-3 mb-2">Chapter @chapter.chapter_id: @chapter.name</h5>
+                                                <h5 class="card-title fw-bold py-3 mb-2 chapter-card-title">Chapter @chapter.chapter_id: @chapter.name</h5>
                                             </div>
                                         </div>
                                     </a>
@@ -154,7 +179,7 @@
                                     <p class="announcement-meta">
                                         ${'@ViewData["StaffName"]'} posted on ${new Date(announcement.date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}
                                     </p>
-                                    <p>${announcement.description}</p>
+                                    <p class="announcement-description">${announcement.description}</p>
                                     ${announcement.image ? `<img src="${announcement.image}" />` : ''}
                                 </div>`
                     );
