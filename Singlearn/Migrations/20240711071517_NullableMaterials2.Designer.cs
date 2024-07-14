@@ -12,8 +12,8 @@ using Singlearn.Data;
 namespace Singlearn.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240709065511_NullableMaterials")]
-    partial class NullableMaterials
+    [Migration("20240711071517_NullableMaterials2")]
+    partial class NullableMaterials2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,7 +69,7 @@ namespace Singlearn.Migrations
 
                     b.HasKey("announcement_id");
 
-                    b.ToTable("Announcements");
+                    b.ToTable("Announcements", (string)null);
                 });
 
             modelBuilder.Entity("Singlearn.Models.Entities.ChapterName", b =>
@@ -92,12 +92,12 @@ namespace Singlearn.Migrations
 
                     b.HasKey("chapter_name_id");
 
-                    b.ToTable("ChapterNames");
+                    b.ToTable("ChapterNames", (string)null);
                 });
 
             modelBuilder.Entity("Singlearn.Models.Entities.Class", b =>
                 {
-                    b.Property<string>("class_Id")
+                    b.Property<string>("class_id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("academic_level")
@@ -115,9 +115,43 @@ namespace Singlearn.Migrations
                     b.Property<int>("year")
                         .HasColumnType("int");
 
-                    b.HasKey("class_Id");
+                    b.HasKey("class_id");
 
-                    b.ToTable("Classes");
+                    b.ToTable("Classes", (string)null);
+                });
+
+            modelBuilder.Entity("Singlearn.Models.Entities.Homework", b =>
+                {
+                    b.Property<int>("homework_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("homework_id"));
+
+                    b.Property<string>("attachment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("enddate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("startdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("subject_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("homework_id");
+
+                    b.ToTable("Homeworks");
                 });
 
             modelBuilder.Entity("Singlearn.Models.Entities.Material", b =>
@@ -134,6 +168,10 @@ namespace Singlearn.Migrations
                     b.Property<string>("class_id")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("data")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("description")
                         .IsRequired()
@@ -164,7 +202,7 @@ namespace Singlearn.Migrations
 
                     b.HasKey("material_id");
 
-                    b.ToTable("Materials");
+                    b.ToTable("Materials", (string)null);
                 });
 
             modelBuilder.Entity("Singlearn.Models.Entities.STCTemplate", b =>
@@ -183,7 +221,11 @@ namespace Singlearn.Migrations
 
                     b.HasKey("stc_t_id");
 
-                    b.ToTable("STCTemplates");
+                    b.HasIndex("stc_id");
+
+                    b.HasIndex("template_id");
+
+                    b.ToTable("STCTemplates", (string)null);
                 });
 
             modelBuilder.Entity("Singlearn.Models.Entities.Staff", b =>
@@ -204,7 +246,7 @@ namespace Singlearn.Migrations
 
                     b.HasKey("staff_id");
 
-                    b.ToTable("Staff");
+                    b.ToTable("Staff", (string)null);
                 });
 
             modelBuilder.Entity("Singlearn.Models.Entities.Student", b =>
@@ -260,7 +302,7 @@ namespace Singlearn.Migrations
 
                     b.HasKey("subject_id");
 
-                    b.ToTable("Subjects");
+                    b.ToTable("Subjects", (string)null);
                 });
 
             modelBuilder.Entity("Singlearn.Models.Entities.SubjectTeacherClass", b =>
@@ -273,18 +315,24 @@ namespace Singlearn.Migrations
 
                     b.Property<string>("class_id")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("subject_id")
                         .HasColumnType("int");
 
                     b.Property<string>("teacher_id")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("stc_id");
 
-                    b.ToTable("SubjectTeacherClasses");
+                    b.HasIndex("class_id");
+
+                    b.HasIndex("subject_id");
+
+                    b.HasIndex("teacher_id");
+
+                    b.ToTable("SubjectTeacherClasses", (string)null);
                 });
 
             modelBuilder.Entity("Singlearn.Models.Entities.Template", b =>
@@ -305,7 +353,7 @@ namespace Singlearn.Migrations
 
                     b.HasKey("template_id");
 
-                    b.ToTable("Templates");
+                    b.ToTable("Templates", (string)null);
                 });
 
             modelBuilder.Entity("Singlearn.Models.Entities.User", b =>
@@ -329,6 +377,52 @@ namespace Singlearn.Migrations
                     b.HasKey("user_id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Singlearn.Models.Entities.STCTemplate", b =>
+                {
+                    b.HasOne("Singlearn.Models.Entities.SubjectTeacherClass", "SubjectTeacherClass")
+                        .WithMany()
+                        .HasForeignKey("stc_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Singlearn.Models.Entities.Template", "Template")
+                        .WithMany()
+                        .HasForeignKey("template_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubjectTeacherClass");
+
+                    b.Navigation("Template");
+                });
+
+            modelBuilder.Entity("Singlearn.Models.Entities.SubjectTeacherClass", b =>
+                {
+                    b.HasOne("Singlearn.Models.Entities.Class", "Class")
+                        .WithMany()
+                        .HasForeignKey("class_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Singlearn.Models.Entities.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("subject_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Singlearn.Models.Entities.Staff", "Staff")
+                        .WithMany()
+                        .HasForeignKey("teacher_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Class");
+
+                    b.Navigation("Staff");
+
+                    b.Navigation("Subject");
                 });
 #pragma warning restore 612, 618
         }
