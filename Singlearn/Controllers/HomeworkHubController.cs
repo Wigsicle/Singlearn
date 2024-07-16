@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
 using Singlearn.Models.Entities;
 using Singlearn.ViewModels;
+using Microsoft.IdentityModel.Tokens;
+using Singlearn.Models;
+using System.Text;
 
 namespace SinglearnWeb.Controllers
 {
@@ -18,226 +21,227 @@ namespace SinglearnWeb.Controllers
             this.hostingEnvironment = hostingEnvironment;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index(int subjectId, int? homeworkId = null)
+
+        public IActionResult staff_subject()
         {
-            var homeworks = await dbContext.Homeworks
-                .Where(h => h.subject_id == subjectId)
-                .Select(h => new HomeworkViewModel
-                {
-                    homework_id = h.homework_id,
-                    subject_id = h.subject_id,
-                    title = h.title,
-                    description = h.description,
-                    startdate = h.startdate,
-                    enddate = h.enddate,
-                    //attachment = h.attachment
-                })
-                .ToListAsync();
+            return View();
+        }
 
-            /*HomeworkViewModel editHomework = null;
-            if(homeworkId.HasValue)
-            {
-                var homework = await dbContext.Homeworks.FindAsync(homeworkId.Value);
-                if(homework != null)
-                {
-                    editHomework = new HomeworkViewModel
-                    {
-                        homework_id = homework.homework_id,
-                        subject_id = homework.subject_id,
-                        title = homework.title,
-                        description = homework.description,
-                        startdate = homework.startdate,
-                        enddate = homework.enddate,
-                        //attachment = homework.attachment
-                    };
-                }
-            }*/
-
+        public async Task<IActionResult> staff_homework(int subjectId)
+        {
+            var homework = await dbContext.Homeworks.Where(h => h.subject_id == subjectId).ToListAsync();
             ViewData["SubjectId"] = subjectId;
-
-            return View(homeworks);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Create(int subjectId)
-        {
-            var homeworks = await dbContext.Homeworks
-                .Where(h => h.subject_id == subjectId)
-                .Select(h => new HomeworkViewModel
-                {
-                    homework_id = h.homework_id,
-                    subject_id = h.subject_id,
-                    title = h.title,
-                    description = h.description,
-                    startdate = h.startdate,
-                    enddate = h.enddate,
-                    //attachment = h.attachment
-                })
-                .ToListAsync();
-
-            ViewData["SubjectId"] = subjectId;
-            return View(homeworks);
-        }
-        [HttpPost]
-        public async Task<IActionResult> Create(HomeworkViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                string? uniqueFilename = null;
-                if (model.attachment != null && model.attachment.Length > 0)
-                {
-                    string uploadFolder = Path.Combine(hostingEnvironment.WebRootPath, "attachments");
-                    uniqueFilename = Guid.NewGuid().ToString() + "_" + model.attachment.FileName;
-                    string filePath = Path.Combine(uploadFolder, uniqueFilename);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await model.attachment.CopyToAsync(fileStream);
-                    }
-                }
-
-                var homework = new Homework
-                {
-                    subject_id = model.subject_id,
-                    title = model.title,
-                    description = model.description,
-                    startdate = model.startdate,
-                    enddate = model.enddate,
-                    attachment = uniqueFilename,
-                };
-
-                await dbContext.Homeworks.AddAsync(homework);
-                await dbContext.SaveChangesAsync();
-                return RedirectToAction("Index", "HomeworkHub", new { subjectId = model.subject_id });
-            }
-            return View(model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int? homeworkid)
-        {
-            var homework = await dbContext.Homeworks.FirstOrDefaultAsync(h => h.homework_id == homeworkid);
-            //Console.WriteLine(homework);
-            if (homework == null)
-            {
-                return NotFound();
-            }
 
             return View(homework);
         }
 
+        [HttpGet]
+        public IActionResult staff_homework_create(int subjectId)
+        {
+            var model = new HomeworkViewModel 
+            { 
+                subject_id = subjectId
+            };
+
+            return View(model);
+        }
+
+
         [HttpPost]
-        public async Task<IActionResult> EditHomework(HomeworkViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> staff_homework_create(HomeworkViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var homework = await dbContext.Homeworks.FindAsync(model.homework_id);
-                if(homework == null)
+                using (var memoryStream = new MemoryStream())
+                {
+                    await model.attachment.CopyToAsync(memoryStream);
+                    var homework = new Homework
+                    {
+                        subject_id = model.subject_id,
+                        title = model.title,
+                        description = model.description,
+                        startdate = model.startdate,
+                        enddate = model.enddate,
+                        attachment = model.attachment != null ? await GetPdfFileBytesAsync(model.attachment) : null
+                    };
+
+                    dbContext.Add(homework);
+                    await dbContext.SaveChangesAsync();
+                    return RedirectToAction("staff_homework", "HomeworkHub", new { subjectId = model.subject_id });
+                }
+            }
+
+            // If we reach here, something went wrong, so return to the view with the model
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> staff_homework_edit(int homeworkid)
+        {
+            var homework = await dbContext.Homeworks.FindAsync(homeworkid);
+            var viewModel = new HomeworkViewModel
+            {
+                homework_id = homework.homework_id,
+                subject_id = homework.subject_id,
+                title = homework.title,
+                description = homework.description,
+                startdate = homework.startdate,
+                enddate = homework.enddate
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> staff_homework_edit(int homeworkid, HomeworkViewModel homework)
+        {
+            try
+            {
+                var existingHomeworks = await dbContext.Homeworks.FindAsync(homework.homework_id);
+                existingHomeworks.subject_id = homework.subject_id;
+                existingHomeworks.title = homework.title;
+                existingHomeworks.description = homework.description;
+                existingHomeworks.startdate = homework.startdate;
+                existingHomeworks.enddate = homework.enddate;
+
+                // Update PDF file if provided
+                if (homework.attachment != null && homework.attachment.Length > 0)
+                {
+                    existingHomeworks.attachment = await GetPdfFileBytesAsync(homework.attachment);
+                }
+
+                dbContext.Update(existingHomeworks);
+                await dbContext.SaveChangesAsync();
+
+                return RedirectToAction("staff_homework", "HomeworkHub", new { subjectId = existingHomeworks.subject_id });
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!HomeworkExists(homeworkid))
                 {
                     return NotFound();
                 }
-
-                homework.subject_id = model.subject_id;
-                homework.title = model.title;
-                homework.description = model.description;
-                homework.startdate = model.startdate;
-                homework.enddate = model.enddate;
-                //homework.attachment = uniqueFilename;
-
-                //string uniqueFilename = homework.attachment;
-                if(model.attachment != null)
+                else
                 {
-                    string uploadFolder = Path.Combine(hostingEnvironment.WebRootPath, "attachments");
-                    string uniqueFilename = Guid.NewGuid().ToString() + "_" + model.attachment.FileName;
-                    string filePath = Path.Combine(uploadFolder, uniqueFilename);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await model.attachment.CopyToAsync(fileStream);
-                    }
-
-                    if(!string.IsNullOrEmpty(homework.attachment))
-                    {
-                        string oldFilePath = Path.Combine(uploadFolder, homework.attachment);
-                        if (System.IO.File.Exists(oldFilePath))
-                        {
-                            System.IO.File.Delete(oldFilePath);
-                        }
-                        //System.IO.File.Delete(oldFilePath);
-                    }
-                    homework.attachment = uniqueFilename;
+                    throw;
                 }
-
-     
-
-                dbContext.Homeworks.Update(homework);
-                await dbContext.SaveChangesAsync();
-
-                return RedirectToAction("Index", new { subjectId = homework.subject_id });
-
             }
-            return View(model);
         }
 
-        /*[HttpGet]
-        public async Task<IActionResult> Delete(int? homeworkid)
-        {
-            *//*var homework = await dbContext.Homeworks.FindAsync(homeworkId);
-            if (homework == null)
-            {
-                return NotFound();
-            }
-            return View(homework);*//*
-            var homework = await dbContext.Homeworks.FirstOrDefaultAsync(h => h.homework_id == homeworkid);
-            
-            if (homework == null)
-            {
-                return NotFound();
-            }
-
-            return View(homework);
-        }*/
-
         [HttpPost]
-        public async Task<IActionResult> DeleteHomework(int homeworkid)
+        public async Task<IActionResult> staff_homework_delete(int homeworkid)
         {
 
             var homework = await dbContext.Homeworks.FirstOrDefaultAsync(h => h.homework_id == homeworkid);
-            if (homework == null)
-            {
-                return NotFound();
-            }
-            if (!string.IsNullOrEmpty(homework.attachment))
-            {
-                string uploadFolder = Path.Combine(hostingEnvironment.WebRootPath, "attachments");
-                string filePath = Path.Combine(uploadFolder, homework.attachment);
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
-            }
 
             dbContext.Homeworks.Remove(homework);
             await dbContext.SaveChangesAsync();
             TempData["SuccessMessage"] = "Homework deleted successfully";
-            return RedirectToAction("Index", new { subjectId = homework.subject_id });
+            return RedirectToAction("staff_homework", new { subjectId = homework.subject_id });
         }
 
-        
-
-        public IActionResult staff_class()
+        [HttpGet]
+        public async Task<IActionResult> staff_class(int homeworkId)
         {
-            return View();
+            var model = new HomeworkViewModel
+            {
+                homework_id = homeworkId
+            };
+
+            var homeworkSubmissions = await dbContext.Submissions
+                .Where(s => s.homework_id == homeworkId)
+                .Join(
+                    dbContext.Classes,
+                    s => s.class_id,
+                    c => c.class_id,
+                    (s, c) => new {
+                        Submission = s,
+                        Class = c
+                    }
+                )
+                .GroupBy(joined => joined.Class.class_id)
+                .Select(joined => new ClassesViewModel
+                {
+                    name = joined.First().Class.name,
+                    class_id = joined.First().Class.class_id,   
+                    
+                })
+                .ToListAsync();
+
+            ViewData["HomeworkId"] = homeworkId;
+
+            return View(homeworkSubmissions);
         }
 
-        public IActionResult staff_homework()
+        [HttpGet]
+        public async Task<IActionResult> staff_submission(int homeworkId, string classId)
         {
-            return View();
+
+
+            /*var model = new ClassesViewModel
+            {
+                class_id = classId
+            };*/
+
+            var submissions = await dbContext.Submissions
+                .Where(s => s.class_id == classId && s.homework_id == homeworkId) // Filter by class_id
+                .Join(
+                    dbContext.Students,
+                    s => s.class_id,
+                    stu => stu.class_id,
+                    (s, stu) => new SubmissionViewModel
+                    {
+                        submission_id = s.submission_id,
+                        class_id = s.class_id,
+                        homework_id = s.homework_id,
+                        //originalFilename = Encoding.UTF8.GetString(s.originalFilename), 
+                        status = s.status,
+                        visibility = s.visibility,
+                        student_name = stu.name
+
+                    })
+                    .ToListAsync();
+
+            return View(submissions);
         }
 
-        public IActionResult staff_submission()
+        [HttpGet]
+        public async Task<IActionResult> staff_marking(int submissionId)
         {
-            return View();
+            var submission = await dbContext.Submissions
+                .FirstOrDefaultAsync(s => s.submission_id == submissionId);
+
+            return View(submission);
         }
+
+        private bool HomeworkExists(int id)
+        {
+            return dbContext.Homeworks.Any(e => e.homework_id == id);
+        }
+        private async Task<byte[]> GetPdfFileBytesAsync(IFormFile pdfFile)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await pdfFile.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+
+        /*public async Task<IActionResult> ViewAttachment(int submissionId)
+        {
+            var submission = await dbContext.Submissions
+                .Include(s => s.homework_id)
+                .FirstOrDefaultAsync(s => s.submission_id == submissionId);
+
+            if (submission == null || submission.originalFilename == null)
+            {
+                return NotFound();
+            }
+
+            return File(submission.originalFilename, "application/pdf");
+        }*/
 
     }
 }

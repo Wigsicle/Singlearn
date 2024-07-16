@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Singlearn.Data;
 using Singlearn.Models.Entities;
+using Singlearn.ViewModels;
 
 namespace Singlearn.Controllers
 {
@@ -20,6 +21,11 @@ namespace Singlearn.Controllers
         }
 
         // GET: Subjects
+        public async Task<IActionResult> staff_subject()
+        {
+            return View(await _context.Subjects.ToListAsync());
+        }
+
         public async Task<IActionResult> Index()
         {
             return View(await _context.Subjects.ToListAsync());

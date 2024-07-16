@@ -1,33 +1,27 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
     ViewData["StaffTitle"] = "Homepage";
-    int homeworkId = ViewData["HomeworkId"] != null ? (int)ViewData["HomeworkId"] : 0;
 }
-
-@model List<Singlearn.Models.ClassesViewModel>
 
 <!-- Content wrapper -->
 <div style="padding-top: 110px;" class="content-wrapper">
     <!-- Content -->
 
     <div class="container-xxl flex-grow-1 container-p-y" style="width:200%">
-        <h1 class="fw-bold py-3 mb-2">Class</h1>
+        <h1 class="fw-bold py-3 mb-2">Dropbox</h1>
 
         <!-- Basic Bootstrap Table -->
         <div class="card">
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Name</th>
+                        <th>Homework</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td><a asp-action="staff_submission" asp-route-classId="@item.class_id" asp-route-homeworkId="@ViewData["HomeworkId"]" >@Html.DisplayFor(modelItem => item.name)</a></td>
-                        </tr>
-                    }
+                    <tr>
+                        <td><a asp-action="#">Homework 1</a></td>
+                    </tr>
                 </tbody>
             </table>
         </div>

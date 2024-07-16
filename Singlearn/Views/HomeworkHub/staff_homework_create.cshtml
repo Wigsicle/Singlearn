@@ -1,0 +1,40 @@
+﻿@model Singlearn.ViewModels.HomeworkViewModel
+
+@* @model List<Singlearn.ViewModels.HomeworkViewModel> *@
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="row" style="padding-top: 100px;">
+    <div class="col-md-2"></div>
+    
+    <div class="col-md-8">
+        <div class="p-3 py-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="text-right">Create Homework</h4>
+            </div>
+            <form asp-action="staff_homework_create" method="post" enctype="multipart/form-data">
+                <div class="row mt-2">
+                    <div class="col-md-12"><label class="labels">Subject Id</label><input asp-for="subject_id" type="text" class="form-control" readonly></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12"><label class="labels">Title</label><input asp-for="title" type="text" class="form-control"></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12"><label class="labels">Description</label><input asp-for="description" type="text" class="form-control"></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6"><label class="labels">Start Date</label><input asp-for="startdate" type="date" class="form-control"></div>
+                    <div class="col-md-6"><label class="labels">End Date</label><input asp-for="enddate" type="date" class="form-control"></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12"><label class="labels">File Upload</label><input asp-for="attachment" type="file" class="form-control"></div>
+                </div>
+                <div class="mt-5 text-center"><button class="btn btn-primary" type="submit">Create</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-2"></div>
+</div>

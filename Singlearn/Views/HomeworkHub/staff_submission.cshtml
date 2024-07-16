@@ -2,7 +2,10 @@
 @{
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
     ViewData["StaffTitle"] = "Homepage";
+    int homeworkId = ViewData["HomeworkId"] != null ? (int)ViewData["HomeworkId"] : 0;
 }
+
+@model List<Singlearn.Models.SubmissionViewModel>
 
 <!-- Content wrapper -->
 <div style="padding-top: 110px;" class="content-wrapper">
@@ -10,7 +13,6 @@
 
     <div class="container-xxl flex-grow-1 container-p-y" style="width:200%">
         <h1 class="fw-bold py-3 mb-2">Submission</h1>
-
         <!-- Basic Bootstrap Table -->
         <div class="card">
             <div class="card-body">
@@ -24,34 +26,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                homework1.pdf
-                            </td>
-                            <td>Albert Cook</td>
-                            <td><span class="badge bg-label-danger me-1">Marked</span></td>
-                            <td>
-                                <a href="">Mark</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>homework2.pdf</td>
-                            <td>Barry Hunter</td>
-                            <td><span class="badge bg-label-danger me-1">Marked</span></td>
-                            <td>
-                                <a href="">Mark</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                homework3.pdf
-                            </td>
-                            <td>Jerry Milton</td>
-                            <td><span class="badge bg-label-warning me-1">Pending</span></td>
-                            <td>
-                                <a href="">Mark</a>
-                            </td>
-                        </tr>
+                        @foreach (var submission in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @submission.submission_id
+                                </td>
+                                <td>
+                                    @submission.student_name
+                                </td>
+                                <td>
+                                    @submission.status
+                                </td>
+                                <td>
+                                    <a asp-action="staff_marking" asp-route-submissionId="@submission.submission_id">Mark</a>
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>

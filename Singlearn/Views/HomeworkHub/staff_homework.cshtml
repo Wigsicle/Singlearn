@@ -1,127 +1,30 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
-    ViewData["StaffTitle"] = "Homepage";
+    ViewData["StaffTitle"] = "Homework";
     int subjectId = ViewData["SubjectId"] != null ? (int)ViewData["SubjectId"] : 0;
-    var editHomework = ViewData["EditHomework"] as Singlearn.ViewModels.HomeworkViewModel;
-
+   
 }
 
-@model List<Singlearn.ViewModels.HomeworkViewModel>
+@model IEnumerable<Singlearn.Models.Entities.Homework>
 
 
 
 <!-- Content wrapper -->
 <div style="padding-top: 110px;" class="content-wrapper">
     <!-- Content -->
-
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Assignment / Subject / </span> Homework</h4>
+        <h4 class="fw-bold py-3 mb-4">Homework</h4>
 
-        <h2>Homeworks for Subject ID: @ViewData["SubjectId"]</h2>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
 
         <div class="d-flex justify-content-end">
             <div>
-                <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalCenter"> Create new homework </button>
-                <!-- Modal -->
-                <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <form asp-action="CreateHomework" asp-controller="HomeworkHub" method="post" enctype="multipart/form-data">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalCenterTitle">Create new homework</h5>
-                                    <button type="button"
-                                            class="btn-close"
-                                            data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <input type="hidden" name="subject_id" value="@subjectId" />
-                                    <div class="form-group">
-                                        <label class="control-label">Title</label>
-                                        <input type="text" class="form-control" name="title" />
-                                        <span class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Description</label>
-                                        <textarea class="form-control" name="description"></textarea>
-                                        <span class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Start Date</label>
-                                        <input type="date" class="form-control" name="startdate" />
-                                        <span class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label">End date</label>
-                                        <input type="date" class="form-control" name="enddate" />
-                                        <span class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Attachment</label>
-                                        <input class="form-control" type="file" name="attachment" />
-                                        <span class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                        Close
-                                    </button>
-                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!--Edit modal-->
-                <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <form asp-action="EditHomework" asp-controller="HomeworkHub" method="post" enctype="multipart/form-data">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Edit homework</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <input type="hidden" id="editHomeworkId" name="homework_id" />
-                                    <!-- Form fields for editing homework -->
-                                    <div class="form-group">
-                                        <label class="control-label">Title</label>
-                                        <input class="form-control" id="editTitle" name="title" />
-                                        <span class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Description</label>
-                                        <textarea class="form-control" id="editDescription" name="description"></textarea>
-                                        <span class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Start date</label>
-                                        <input type="date" class="form-control" id="editStartDate" name="startdate" />
-                                        <span class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label">End date</label>
-                                        <input type="date" class="form-control" id="editEndDate" name="enddate" />
-                                        <span class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Attachment</label>
-                                        <input class="form-control" type="file" id="editAttachment" name="attachment" />
-                                        <span class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                
-
-                
+                <a class="btn btn-primary mb-3" asp-action="staff_homework_create" asp-route-subjectId="@subjectId">Create new homework</a>
             </div>
         </div>
         <!-- Basic Bootstrap Table -->
@@ -130,38 +33,38 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Homework ID</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Start Date</th>
-                            <th>End date</th>
-                            <th>Status</th>
+                            <th>@Html.DisplayNameFor(model => model.title)</th>
+                            <th>@Html.DisplayNameFor(model => model.description)</th>
+                            <th>@Html.DisplayNameFor(model => model.startdate)</th>
+                            <th>@Html.DisplayNameFor(model => model.enddate)</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
 
                     <tbody class="table-border-bottom-0">
-                        @foreach (var homework in Model)
+                        @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@homework.homework_id</td>
-                                <td>@homework.title</td>
-                                <td>@homework.description</td>
-                                <td>@homework.startdate.ToString("yyyy-MM-dd")</td>
-                                <td>@homework.enddate.ToString("yyyy-MM-dd")</td>
-                                <td></td>
                                 <td>
-                                    <button class="btn btn-sm btn-warning btnEditHomework" data-bs-toggle="modal" data-bs-target="#editModal" data-id="@editHomework=homework.homework_id">Edit</button>
-                                    @* <a class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editmodal">Edit</a> *@
-                                    <form asp-action="DeleteHomework" asp-controller="HomeworkHub" method="post" onsubmit="return confirm('Are you sure you want to delete this homework?');">
-                                        <input type="hidden" name="homeworkId" value="@homework.homework_id" />
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    <a asp-action="staff_class" asp-route-homeworkId="@item.homework_id">@Html.DisplayFor(modelItem => item.title)</a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.startdate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.enddate)
+                                </td>
+                                <td class="d-flex justify-content-start">
+                                    <a class="btn btn-warning" asp-action="staff_homework_edit" asp-route-homeworkid="@item.homework_id">Edit</a>
+                                    <form method="post" asp-controller="HomeworkHub" asp-action="staff_homework_delete" asp-route-homeworkid="@item.homework_id" onsubmit="return confirm('Are you sure you want to delete this homework?');">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
                                     </form>
                                 </td>
                             </tr>
                         }
-
-
                     </tbody>
                 </table>
             </div>
@@ -169,34 +72,3 @@
         <!--/ Basic Bootstrap Table -->
     </div>
     <!-- / Content -->
-
-    <script>
-        $(document).ready(function () {
-            // Edit Homework Modal
-            $('.btnEditHomework').click(function () {
-                var homeworkId = $(this).data('id');
-
-                // AJAX request to get homework details
-                $.ajax({
-                    url: '@Url.Action("staff_homework", "HomeworkHub")',
-                    type: 'GET',
-                    data: { homeworkId: homeworkId },
-                    success: function (data) {
-                        // Populate form fields with retrieved data
-                        $('#editHomeworkId').val(data.homework_id);
-                        $('#editTitle').val(data.title);
-                        $('#editDescription').val(data.description);
-                        $('#editStartDate').val(data.startdate.split('T')[0]); // Split to remove time part
-                        $('#editEndDate').val(data.enddate.split('T')[0]); // Split to remove time part
-                        // Optionally handle attachment display if needed
-
-                        // Show the edit modal
-                        $('#editModal').modal('show');
-                    },
-                    error: function () {
-                        alert('Error loading homework details.');
-                    }
-                });
-            });
-        });
-    </script>

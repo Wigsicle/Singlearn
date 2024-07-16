@@ -108,19 +108,31 @@ namespace Singlearn.Controllers
             return View();
         }
 
-        public IActionResult homeworkhub_subject()
+        public async Task<IActionResult> staff_subject(string id)
         {
-            return View();
-        }
+            /*if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest("Staff id is required");
+            }*/
+            ViewData["StaffId"] = id;
+            var subject = await dbContext.Subjects
+                .Join(
+                dbContext.SubjectTeacherClasses,
+                s => s.subject_id,
+                stc => stc.subject_id, (s, stc) => new { Subject = s, SubjectTeacherClass = stc })
+                .Where(joined => joined.SubjectTeacherClass.teacher_id == id)
+                .Select(joined => new SubjectViewModel
+                {
+                    subject_id = joined.Subject.subject_id,
+                    name = joined.Subject.name,
+                    academic_level = joined.Subject.academic_level,
+                    image = joined.Subject.image,
+                    no_chapters = joined.Subject.no_chapters,
+                    year = joined.Subject.year
+                })
+                .ToListAsync();
 
-        public IActionResult homeworkhub_class()
-        {
-            return View();
-        }
-
-        public IActionResult homeworkhub_submission()
-        {
-            return View();
+            return View(subject);
         }
 
         [HttpGet]

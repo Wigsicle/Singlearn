@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <title>@ViewData["StudentTitle"]</title
+    <title>@ViewData["StaffTitle"]</title>
     <link rel="icon" href="~/assets/images/poop.png">
     <link rel="stylesheet" href="~/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/assets/css/fontawesome.css">
@@ -53,7 +53,7 @@
                             <li>
                                 <div class="dropdown show">
                                     <a class="dropdown-toggle no-arrow" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disable>
-                                        User 1
+                                        @User.Identity.Name
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right mt-4" aria-labelledby="dropdownMenuLink">
                                         <a class="dropdown-item" href="~/student/profile">Profile</a>
@@ -100,7 +100,7 @@
                   </a>
                 </li>
                 <li class="menu-item">
-                  <a href="~/HomeworkHub/staff_subject" class="menu-link">
+                  <a href="~/HomeworkHub/staff_subject" class="menu-link" id="dropbox-subjects-link" >
                     <div data-i18n="dropbox">Dropbox</div>
                   </a>
                 </li>
@@ -116,12 +116,6 @@
               <a href="~/Announcements/announcement" class="menu-link">
                 <i class="menu-icon tf-icons fa fa-bullhorn"></i>
                 <div data-i18n="Analytics">Announcements</div>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="~/Staff/homeworkhub_subject" class="menu-link">
-                <i class="menu-icon tf-icons fa fa-bullhorn"></i>
-                <div data-i18n="Analytics">Homework HUB</div>
               </a>
             </li>
             
@@ -162,7 +156,16 @@
      <!-- Main JS -->
     <script src="~/assets/js/main.js"></script>
     <script src="../assets/vendor/libs/masonry/masonry.js"></script>
+    <script>
+        document.getElementById('dropbox-subjects-link').addEventListener('click', function () {
+        const staffId = '@User.FindFirst("staff_id")?.Value';
 
+        console.log('Staffid: ${staffid}');
+
+        // Navigate to the subjects list for the staff
+
+        window.location.href = `/HomeworkHub/staff_subject?id=${staffId}`;
+    </script>
     
 
     @await RenderSectionAsync("Scripts", required: false)

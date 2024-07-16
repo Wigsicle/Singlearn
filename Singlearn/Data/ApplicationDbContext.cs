@@ -25,6 +25,8 @@ namespace Singlearn.Data
 
         public DbSet<Homework> Homeworks { get; set; }
 
+        public DbSet<Submission> Submissions { get; set; }
+
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,6 +41,7 @@ namespace Singlearn.Data
             modelBuilder.Entity<SubjectTeacherClass>().ToTable("SubjectTeacherClasses");
             modelBuilder.Entity<Template>().ToTable("Templates");
             modelBuilder.Entity<STCTemplate>().ToTable("STCTemplates");
+            
 
         }
     }
