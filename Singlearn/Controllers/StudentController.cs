@@ -92,7 +92,7 @@ namespace Singlearn.Controllers
             ViewData["SubjectName"] = subject_name;
 
             var stc = await dbContext.SubjectTeacherClasses
-                .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id == class_id);
+                .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id.Equals(class_id));
 
             var stcTemplate = await dbContext.STCTemplates
                 .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);

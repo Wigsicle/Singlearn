@@ -1,8 +1,11 @@
 ﻿@model Singlearn.ViewModels.SubjectViewModel
 
+
 @{
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
     ViewData["Title"] = @ViewData["SubjectName"];
 }
+
 
 @if (!string.IsNullOrEmpty(Model.TemplateViewName))
 {
