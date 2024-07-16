@@ -57,7 +57,7 @@ namespace Singlearn.Controllers
                 Date = announcement.date,
                 Url = announcement.url,
                 SubjectId = announcement.subject_id,
-                StaffId = announcement.teacher_id,
+                StaffId = announcement.staff_id,
                 ClassId = announcement.class_id
             };
 
@@ -92,7 +92,7 @@ namespace Singlearn.Controllers
                     date = model.Date,
                     url = model.Url,
                     subject_id = model.SubjectId,
-                    teacher_id = model.StaffId,
+                    staff_id = model.StaffId,
                     class_id = model.ClassId
                 };
 
@@ -129,7 +129,7 @@ namespace Singlearn.Controllers
                 Image = announcement.image,
                 Date = announcement.date,
                 SubjectId = announcement.subject_id,
-                StaffId = announcement.teacher_id,
+                StaffId = announcement.staff_id,
                 ClassId = announcement.class_id,
                 Url = announcement.url
             };
@@ -167,7 +167,7 @@ namespace Singlearn.Controllers
                 announcement.image = model.Image;
                 announcement.date = model.Date;
                 announcement.subject_id = model.SubjectId;
-                announcement.teacher_id = model.StaffId;
+                announcement.staff_id = model.StaffId;
                 announcement.class_id = model.ClassId;
                 announcement.url = model.Url;
 
@@ -229,7 +229,7 @@ namespace Singlearn.Controllers
                 Date = announcement.date,
                 Url = announcement.url,
                 SubjectId = announcement.subject_id,
-                StaffId = announcement.teacher_id,
+                StaffId = announcement.staff_id,
                 ClassId = announcement.class_id
             };
 

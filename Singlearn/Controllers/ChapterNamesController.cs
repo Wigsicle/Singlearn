@@ -39,7 +39,6 @@ namespace Singlearn.Controllers
             {
                 return NotFound();
             }
-
             return View(chapterName);
         }
 

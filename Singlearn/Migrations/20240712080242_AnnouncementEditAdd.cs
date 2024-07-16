@@ -23,7 +23,7 @@ namespace Singlearn.Migrations
                 table: "Announcements",
                 type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: "News"); // Replace with a suitable default value
+                defaultValue: "Visible"); // Replace with a suitable default value
 
         }
 

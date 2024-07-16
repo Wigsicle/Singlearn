@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Singlearn.Data;
 using Singlearn.Models.Entities;
@@ -17,13 +18,14 @@ namespace Singlearn.Controllers
         public MaterialsController(ApplicationDbContext context)
         {
             _context = context;
+            
         }
 
         // GET: Materials
         public async Task<IActionResult> Index()
         {
-            var materials = await _context.Materials.ToListAsync();
-            return View(materials);
+                var materials = await _context.Materials.ToListAsync();
+                return View(materials);
         }
 
         // GET: Materials/Details/5
@@ -45,10 +47,31 @@ namespace Singlearn.Controllers
             return View(material);
         }
 
+        private void PopulateViewBag()
+        {
+            var typeOptions = new List<SelectListItem>
+            {
+                new SelectListItem{ Value = "Video Lessons", Text = "Video Lessons" },
+                new SelectListItem{ Value = "Lesson Notes", Text = "Lesson Notes"},
+                new SelectListItem{ Value = "Classwork", Text = "Classwork"},
+                new SelectListItem{ Value = "Homework", Text = "Homework"}
+            };
+            var statusOptions = new List<SelectListItem>
+            {
+              new SelectListItem{ Value = "Visible", Text = "Visible" },
+              new SelectListItem{ Value = "Not Visible", Text = "Not Visible" }
+             };
+
+            ViewBag.TypeOptions = typeOptions;
+            ViewBag.StatusOptions = statusOptions;
+
+        }
+
         // GET: Materials/Create
         public IActionResult Create()
         {
-            return View();
+            PopulateViewBag();
+            return View(new MaterialCreateViewModel());
         }
 
         // POST: Materials/Create
@@ -58,40 +81,44 @@ namespace Singlearn.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Process uploaded file if present
+                var material = new Material
+                {
+                    subject_id = model.subject_id,
+                    teacher_id = model.teacher_id,
+                    class_id = model.class_id,
+                    name = model.name,
+                    description = model.description,
+                    chapter_id = model.chapter_id,
+                    type = model.type,
+                    link = model.link,
+                    status = model.status,
+                    file_type = model.file_type
+                };
+
+                // Process uploaded data file if present
                 if (model.DataFile != null && model.DataFile.Length > 0)
                 {
                     using (var memoryStream = new MemoryStream())
                     {
                         await model.DataFile.CopyToAsync(memoryStream);
-                        var material = new Material
-                        {
-                            subject_id = model.subject_id,
-                            teacher_id = model.teacher_id,
-                            class_id = model.class_id,
-                            name = model.name,
-                            description = model.description,
-                            chapter_id = model.chapter_id,
-                            type = model.type,
-                            link = model.link,
-                            status = model.status,
-                            data = memoryStream.ToArray(),
-                            file_type = model.file_type,
-                            pdf_file = model.PDFFile != null ? await GetPdfFileBytesAsync(model.PDFFile) : null
-                        };
-
-                        _context.Add(material);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
+                        material.data = memoryStream.ToArray();
+                        material.file_type = Path.GetExtension(model.DataFile.FileName).Substring(1).ToUpper();
                     }
                 }
-                else
+
+                // Process uploaded PDF file if present
+                if (model.PDFFile != null && model.PDFFile.Length > 0)
                 {
-                    ModelState.AddModelError("DataFile", "Please upload a file.");
+                    material.pdf_file = await GetPdfFileBytesAsync(model.PDFFile);
                 }
+
+                _context.Add(material);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
 
             // If we reach here, something went wrong, so return to the view with the model
+            PopulateViewBag();
             return View(model);
         }
 
@@ -124,6 +151,7 @@ namespace Singlearn.Controllers
                 // You don't need to set file_type, DataFile, or PDFFile here
             };
 
+            PopulateViewBag();
             return View(viewModel);
         }
 
@@ -213,6 +241,7 @@ namespace Singlearn.Controllers
                 return NotFound();
             }
 
+            PopulateViewBag();
             return View(material);
         }
 

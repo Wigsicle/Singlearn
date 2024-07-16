@@ -4,80 +4,204 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Announcement</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body {
+            background-color: #f7f7f9; /* Light pastel background color */
+        }
 
-<h4>Announcement</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="subject_id" class="control-label"></label>
-                <input asp-for="subject_id" class="form-control" />
-                <span asp-validation-for="subject_id" class="text-danger"></span>
+        .main-container {
+            padding: 150px;
+        }
+
+        .header-container {
+            text-align: left;
+            margin-right: 20px;
+            display: flex;
+            align-items: center; /* Center vertically */
+            height: 100%; /* Full height of parent */
+        }
+
+        .form-container {
+            background-color: #ffffff; /* White background for the form */
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            max-width: 500px; /* Smaller width */
+        }
+
+        .btn-primary {
+            display: block;
+            width: 100%;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .content-wrapper {
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
+
+        ::placeholder {
+            color: lightgray;
+            opacity: 1; /* Firefox */
+        }
+
+        .form-group.hidden {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 20px; /* Add space between form groups */
+        }
+
+        .checkbox-group {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-container">
+        <div class="content-wrapper">
+            <div class="header-container">
+                <div>
+                    <h1>Create</h1>
+                    <h4>Announcement</h4>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="teacher_id" class="control-label"></label>
-                <input asp-for="teacher_id" class="form-control" />
-                <span asp-validation-for="teacher_id" class="text-danger"></span>
+            <div class="form-container">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="title" class="control-label"></label>
+                        <input asp-for="title" class="form-control" placeholder="Insert your Title Here" />
+                        <span asp-validation-for="title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="description" class="control-label"></label>
+                        <input asp-for="description" class="form-control" placeholder="Insert your Description Here" />
+                        <span asp-validation-for="description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="image" class="control-label"></label>
+                        <input asp-for="image" class="form-control" placeholder="Insert your Image URL Here" />
+                        <span asp-validation-for="image" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="date" class="control-label"></label>
+                        <input asp-for="date" class="form-control" placeholder="Insert the Date Here" />
+                        <span asp-validation-for="date" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="url" class="control-label"></label>
+                        <input asp-for="url" class="form-control" placeholder="Insert your URL Here" />
+                        <span asp-validation-for="url" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="category" class="control-label"></label>
+                        <select asp-for="category" class="form-control" id="categoryDropdown">
+                            <option value="News">News</option>
+                            <option value="Events">Events</option>
+                            <option value="Subject">Subject</option>
+                        </select>
+                        <span asp-validation-for="category" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="status" class="control-label"></label>
+                        <select asp-for="status" class="form-control">
+                            <option value="Visible">Visible</option>
+                            <option value="Non-Visible">Non-Visible</option>
+                        </select>
+                        <span asp-validation-for="status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="subject_id" class="control-label"></label>
+                        <select asp-for="subject_id" class="form-control" asp-items="ViewBag.Subjects"></select>
+                        <span asp-validation-for="subject_id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="staff_id" class="control-label"></label>
+                        <select asp-for="staff_id" class="form-control" asp-items="ViewBag.Staffs" id="staffDropdown"></select>
+                        <span asp-validation-for="staff_id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group hidden" id="classGroup">
+                        <label class="control-label">Classes</label>
+                        <div id="classCheckboxes">
+                            <!-- Checkboxes will be inserted here via AJAX -->
+                        </div>
+                        <span asp-validation-for="class_id" class="text-danger"></span>
+                    </div>
+                    <!-- Your existing form fields -->
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="class_id" class="control-label"></label>
-                <input asp-for="class_id" class="form-control" />
-                <span asp-validation-for="class_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="title" class="control-label"></label>
-                <input asp-for="title" class="form-control" />
-                <span asp-validation-for="title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="description" class="control-label"></label>
-                <input asp-for="description" class="form-control" />
-                <span asp-validation-for="description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="image" class="control-label"></label>
-                <input asp-for="image" class="form-control" />
-                <span asp-validation-for="image" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="date" class="control-label"></label>
-                <input asp-for="date" class="form-control" />
-                <span asp-validation-for="date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="message_body" class="control-label"></label>
-                <input asp-for="message_body" class="form-control" />
-                <span asp-validation-for="message_body" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="url" class="control-label"></label>
-                <input asp-for="url" class="form-control" />
-                <span asp-validation-for="url" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="category" class="control-label"></label>
-                <input asp-for="category" class="form-control" />
-                <span asp-validation-for="category" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="status" class="control-label"></label>
-                <input asp-for="status" class="form-control" />
-                <span asp-validation-for="status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+        <div class="back-link">
+            <a asp-action="Index">Back to List</a>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+        <script>
+            $(document).ready(function () {
+                // Hide class group by default
+                $('#classGroup').hide();
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+                // Show or hide class group based on selected category
+                $('#categoryDropdown').change(function () {
+                    if ($(this).val() === 'Subject') {
+                        $('#classGroup').show();
+                    } else {
+                        $('#classGroup').hide();
+                    }
+                });
+
+                $('#staffDropdown').change(function () {
+                    var staffId = $(this).val();
+                    $.ajax({
+                        url: '@Url.Action("GetClassesByStaff", "Announcements1")',
+                        type: 'GET',
+                        data: { staff_id: staffId },
+                        success: function (data) {
+                            var classCheckboxes = $('#classCheckboxes');
+                            classCheckboxes.empty();
+                            $.each(data, function (index, value) {
+                                classCheckboxes.append(
+                                    $('<div>').append(
+                                        $('<input>').attr({
+                                            type: 'checkbox',
+                                            name: 'class_id',
+                                            value: value.value
+                                        }).addClass('form-check-input')
+                                    ).append(
+                                        $('<label>').text(value.text).addClass('form-check-label')
+                                    ).addClass('form-check')
+                                );
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
+    }
+</body>
+</html>

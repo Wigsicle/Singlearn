@@ -1,6 +1,7 @@
 ﻿@model Singlearn.ViewModels.SubjectViewModel
 @{
     var currentController = ViewContext.RouteData.Values["controller"].ToString();
+    var announcements = Model.Announcements ?? new List<Singlearn.Models.Entities.Announcement>();
 }
 <!DOCTYPE html>
 <html>
@@ -49,10 +50,50 @@
                 transform: scale(1.05); /* Increase size on hover */
                 box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
             }
+
+        .announcement-item {
+            margin-bottom: 30px;
+            border-bottom: 1px solid black; /* Black line underneath each announcement */
+            padding-bottom: 15px;
+        }
+
+            .announcement-item img {
+                width: 200px; /* Fixed width */
+                height: 150px; /* Fixed height */
+                object-fit: cover; /* Ensures the image covers the entire area */
+                margin-top: 10px;
+            }
+
+        .announcement-meta {
+            font-size: 0.9rem;
+            color: gray;
+        }
+
+        .announcement-description {
+            color: black; /* Set description color to black */
+        }
+
+        .chapter-card {
+            width: 200px; /* Fixed width */
+            height: 120px; /* Fixed height */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chapter-card-title {
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="container mt-5" style="padding-top: 100px;">
         <div class="card mt-3">
             <div class="card-body">
                 <h5 class="card-title text-center">Link Panel</h5>
@@ -67,20 +108,29 @@
         <div class="card mt-3">
             <div class="card-body">
                 <h5 class="card-title text-center">Subject Announcements</h5>
-                @* Loop through announcements if available *@
-                @if (Model.Announcements != null && Model.Announcements.Any())
-                {
-                    foreach (var announcement in Model.Announcements)
+                <div id="announcement-container">
+                    @if (announcements.Any())
                     {
                         <div class="announcement-item">
-                           @* <h6>@announcement.Title</h6>
-                            <p>@announcement.Content</p> *@
+                            <h4>@announcements.First().title</h4>
+                            <p class="announcement-meta">
+                                @ViewData["StaffName"] posted on @announcements.First().date.ToString("MMMM dd, yyyy h:mm tt")
+                            </p>
+                            <p class="announcement-description">@announcements.First().description</p>
+                            @if (!string.IsNullOrEmpty(announcements.First().image))
+                            {
+                                <img src="@announcements.First().image" />
+                            }
                         </div>
                     }
-                }
-                else
+                    else
+                    {
+                        <p>No announcements available.</p>
+                    }
+                </div>
+                @if (announcements.Count > 1)
                 {
-                    <p>No announcements available.</p>
+                    <button id="viewMoreBtn" class="btn btn-primary">View More</button>
                 }
             </div>
         </div>
@@ -95,9 +145,9 @@
                             {
                                 <div class="col-md-6 col-lg-3 padding-bottom-20">
                                     <a asp-controller="@currentController" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@ViewData["ClassId"]" class="card-link">
-                                        <div class="card mb-2 card-hover-effect">
+                                        <div class="card mb-2 card-hover-effect chapter-card">
                                             <div class="card-body">
-                                                <h5 class="card-title fw-bold py-3 mb-2">Chapter @chapter.chapter_id: @chapter.name</h5>
+                                                <h5 class="card-title fw-bold py-3 mb-2 chapter-card-title">Chapter @chapter.chapter_id: @chapter.name</h5>
                                             </div>
                                         </div>
                                     </a>
@@ -113,5 +163,32 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var announcements = @Html.Raw(Json.Serialize(announcements.Skip(1).ToList()));
+            var currentIndex = 0;
+            $('#viewMoreBtn').click(function () {
+                var nextAnnouncements = announcements.slice(currentIndex, currentIndex + 2);
+                currentIndex += 2;
+                nextAnnouncements.forEach(function (announcement) {
+                    $('#announcement-container').append(
+                        `<div class="announcement-item">
+                                    <h4>${announcement.title}</h4>
+                                    <p class="announcement-meta">
+                                        ${'@ViewData["StaffName"]'} posted on ${new Date(announcement.date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}
+                                    </p>
+                                    <p class="announcement-description">${announcement.description}</p>
+                                    ${announcement.image ? `<img src="${announcement.image}" />` : ''}
+                                </div>`
+                    );
+                });
+                if (currentIndex >= announcements.length) {
+                    $('#viewMoreBtn').hide();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

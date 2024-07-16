@@ -39,9 +39,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.status)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.file_type)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -55,13 +52,13 @@
                     @Html.DisplayFor(modelItem => item.teacher_id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.class_id)
+                    @Html.DisplayFor(modelItem => item.class_id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.description)
+                    @Html.DisplayFor(modelItem => item.description)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.chapter_id)
@@ -70,14 +67,11 @@
                 @Html.DisplayFor(modelItem => item.type)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.link)
+                    @Html.DisplayFor(modelItem => item.link)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.status)
             </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.file_type)
-                </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.material_id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.material_id">Details</a> |
