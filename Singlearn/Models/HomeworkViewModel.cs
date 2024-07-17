@@ -10,7 +10,7 @@
         public DateTime startdate { get; set; }
         public DateTime enddate { get; set; }
 
-        public IFormFile attachment { get; set; }
+        public IFormFile? attachment { get; set; } //file upload
 
         
     }

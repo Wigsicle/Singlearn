@@ -36,6 +36,8 @@ namespace Singlearn.Controllers
                         var student = await dbContext.Students.FirstOrDefaultAsync(s => s.user_id == user.user_id);
                         if (student != null)
                         {
+                            HttpContext.Session.SetString("student_id", student.student_id.ToString());
+                            HttpContext.Session.SetString("role", "Student");
                             return RedirectToAction("Home", "Student", new { id = student.student_id });
                         }
                     }
@@ -44,6 +46,8 @@ namespace Singlearn.Controllers
                         var staff = await dbContext.Staff.FirstOrDefaultAsync(s => s.user_id == user.user_id);
                         if (staff != null)
                         {
+                            HttpContext.Session.SetString("staff_id", staff.staff_id.ToString());
+                            HttpContext.Session.SetString("role", "Staff");
                             return RedirectToAction("Home", "Staff", new { id = staff.staff_id });
                         }
                     }

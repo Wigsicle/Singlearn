@@ -8,9 +8,9 @@
 
         public int homework_id { get; set; }
 
-        public string originalFilename { get; set; }
+        public string? originalFilename { get; set; }
 
-        public string annotatedFilename { get; set; }
+        public string? annotatedFilename { get; set; }
 
         public string feedback { get; set; }
 

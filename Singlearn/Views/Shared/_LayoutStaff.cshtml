@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var staffId = HttpContextAccessor.HttpContext.Session.GetString("staff_id");
+    var role = HttpContextAccessor.HttpContext.Session.GetString("role");
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,6 +29,8 @@
      
 
 </head>
+
+
 <body>
     <!-- ***** Preloader Start ***** -->
     <div id="js-preloader" class="js-preloader">
@@ -106,7 +114,7 @@
                   </a>
                 </li>
                 <li class="menu-item">
-                  <a href="~/HomeworkHub/staff_subject" class="menu-link" id="dropbox-subjects-link" >
+                  <a href="~/HomeworkHub/staff_subject?teacherId=@staffId" class="menu-link" id="dropbox-subjects-link" >
                     <div data-i18n="dropbox">Dropbox</div>
                   </a>
                 </li>
