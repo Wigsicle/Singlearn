@@ -1,8 +1,14 @@
 ﻿@{
-    Layout = "~/Views/Shared/_LayoutStudent.cshtml";
+    Layout = "~/Views/Shared/_LayoutFixed.cshtml";
     ViewData["StudentTitle"] = "Homepage";
 }
 @using Singlearn.ViewModels
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var studentId = HttpContextAccessor.HttpContext.Session.GetString("student_id");
+}
+
 
 @model HomepageViewModel
 <div class="container-fluid">

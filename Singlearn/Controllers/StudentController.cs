@@ -17,19 +17,15 @@ namespace Singlearn.Controllers
         }
 
 
-        public async Task<IActionResult> Home(string id)
+        public async Task<IActionResult> Home()
         {
-            // Set the student ID in ViewData for use in the view
-            ViewData["StudentId"] = id;
+            var studentId = HttpContext.Session.GetString("student_id");
 
             // Query the database to get the class ID for the student
             var classId = await dbContext.Students
-                .Where(s => s.student_id == id)
+                .Where(s => s.student_id == studentId)
                 .Select(s => s.class_id)
                 .FirstOrDefaultAsync();
-
-            // Pass the retrieved classId to the view
-            ViewData["ClassId"] = classId;
 
             // Query for subject IDs associated with the class ID
             var subject_ids = await dbContext.SubjectTeacherClasses
