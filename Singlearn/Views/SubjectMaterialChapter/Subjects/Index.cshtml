@@ -1,7 +1,7 @@
 @model IEnumerable<Singlearn.Models.Entities.Subject>
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
     ViewData["Title"] = "Subjects";
 
     var subjects = Model.Select(m => m.name).Distinct().OrderBy(subject => subject).ToList();

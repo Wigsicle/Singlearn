@@ -1,8 +1,8 @@
 ﻿@using Singlearn.Models.Entities
 @model IEnumerable<Singlearn.Models.Entities.Material>
-
 @{
-    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutStudent.cshtml";
+    ViewData["StudentTitle"] = "Homepage";
 }
 
 <style>
@@ -18,9 +18,6 @@
 </style>
 
 <div class="container-fluid" style="padding-top: 150px;">
-    <div class="row mb-12">
-        <h1 style="padding-top:100px;"></h1>
-    </div>
     <div class="col-lg-12">
         <div class="demo-inline-spacing mt-3">
             <div class="list-group list-group-horizontal-md text-md-center" ;">
@@ -49,7 +46,7 @@
                         <div class="row">
                             @foreach (var material in Model.Where(m => m.type == "Video Lessons" && m.status == "Visible"))
                             {
-                                <div class="col-md-6 col-lg-3 padding-bottom-20">
+                                <div class="col-lg-6 padding-bottom-20">
                                     <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
                                         <div class="card mb-2 card-hover-effect">
                                             <div class="card-body">
@@ -66,7 +63,7 @@
                         <div class="row">
                             @foreach (var material in Model.Where(m => m.type == "Lesson Notes" && m.status == "Visible"))
                             {
-                                <div class="col-md-6 col-lg-3 padding-bottom-20">
+                                <div class="col-lg-6 padding-bottom-20">
                                     <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
                                         <div class="card mb-2 card-hover-effect">
                                             <div class="card-body">
@@ -83,7 +80,7 @@
                         <div class="row">
                             @foreach (var material in Model.Where(m => m.type == "Classwork" && m.status == "Visible"))
                             {
-                                <div class="col-md-6 col-lg-3 padding-bottom-20">
+                                <div class="col-lg-6 padding-bottom-20">
                                     <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
                                         <div class="card mb-2 card-hover-effect">
                                             <div class="card-body">
@@ -100,7 +97,7 @@
                         <div class="row">
                             @foreach (var material in Model.Where(m => m.type == "Homework" && m.status == "Visible"))
                             {
-                                <div class="col-md-6 col-lg-3 padding-bottom-20">
+                                <div class="col-lg-6 padding-bottom-20">
                                     <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
                                         <div class="card mb-2 card-hover-effect">
                                             <div class="card-body">
