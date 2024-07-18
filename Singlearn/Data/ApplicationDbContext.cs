@@ -33,8 +33,17 @@ namespace Singlearn.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Staff>().ToTable("Staff");
-            modelBuilder.Entity<Subject>().ToTable("Subjects");
-            modelBuilder.Entity<Class>().ToTable("Classes");
+            modelBuilder.Entity<SubjectTeacherClass>()
+                .HasOne(stc => stc.Subject)
+                .WithMany()
+                .HasForeignKey(stc => stc.subject_id);
+
+            modelBuilder.Entity<SubjectTeacherClass>()
+                .HasOne(stc => stc.Class)
+                .WithMany()
+                .HasForeignKey(stc => stc.class_id);
+            /*            modelBuilder.Entity<Subject>().ToTable("Subjects");
+                        modelBuilder.Entity<Class>().ToTable("Classes");*/
             modelBuilder.Entity<Announcement>().ToTable("Announcements");
             modelBuilder.Entity<ChapterName>().ToTable("ChapterNames");
             modelBuilder.Entity<Material>().ToTable("Materials");
