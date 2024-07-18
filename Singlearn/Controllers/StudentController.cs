@@ -53,20 +53,24 @@ namespace Singlearn.Controllers
             // Query announcements
             var announcements = await dbContext.Announcements
                 .Where(a => a.category == "News" || a.category == "Events")
-                .Select(a => new AnnouncementViewModel
-                {
-                    AnnouncementId = a.announcement_id,
-                    Title = a.title,
-                    Category = a.category,
-                    Status = a.status,
-                    Image = a.image,
-                    Description = a.description,
-                    Date = a.date,
-                    SubjectId = a.subject_id,
-                    StaffId = a.staff_id,
-                    ClassId = a.class_id,
-                    Url = a.url,
-                })
+                .Join(dbContext.Staff,
+                      a => a.staff_id,
+                      s => s.staff_id,
+                      (a, s) => new AnnouncementViewModel
+                      {
+                          AnnouncementId = a.announcement_id,
+                          Title = a.title,
+                          Category = a.category,
+                          Status = a.status,
+                          Image = a.image,
+                          Description = a.description,
+                          Date = a.date,
+                          SubjectId = a.subject_id,
+                          StaffId = a.staff_id,
+                          StaffName = s.name, // Include staff name here
+                          ClassId = a.class_id,
+                          Url = a.url,
+                      })
                 .ToListAsync();
 
             var viewModel = new HomepageViewModel
@@ -136,10 +140,11 @@ namespace Singlearn.Controllers
             return View("SubjectMain", viewModel);
         }
 
-        public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id, string class_id)
+        public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id)
         {
+            var classId = HttpContext.Session.GetString("class_id");
             var materials = await dbContext.Materials
-                .Where(m => m.subject_id == subject_id && m.chapter_id == chapter_id && m.class_id == class_id)
+                .Where(m => m.subject_id == subject_id && m.chapter_id == chapter_id && m.class_id == classId)
                 .ToListAsync();
 
             return View("ChapterMain", materials);

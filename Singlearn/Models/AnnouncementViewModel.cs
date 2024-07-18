@@ -20,6 +20,8 @@ namespace Singlearn.ViewModels
 
 		public DateTime Date { get; set; }
 
+		public string StaffName { get; set; }
+
 
 		// Foreign Key
 		public int? SubjectId { get; set; }

@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "~/Views/Shared/_LayoutFixed.cshtml";
+    Layout = "~/Views/Shared/_LayoutStudent.cshtml";
     ViewData["StudentTitle"] = "Homepage";
 }
 @using Singlearn.ViewModels
@@ -41,7 +41,16 @@
                                                     <div class="card-body">
                                                         <h5 class="card-title fw-bold py-3 mb-2">@announcement.Title</h5>
                                                         <p class="card-text">Post Date: @announcement.Date</p>
-                                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#announcementModal" onclick="loadAnnouncementDetails('@announcement.Title', '@announcement.Description', '@announcement.Image', '@announcement.Url', '@announcement.Date')">Find out more</button>
+                                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#announcementModal"
+                                                                data-title="@announcement.Title"
+                                                                data-description="@announcement.Description"
+                                                                data-image="@announcement.Image"
+                                                                data-url="@announcement.Url"
+                                                                data-date="@announcement.Date"
+                                                                data-staffname="@announcement.StaffName"
+                                                                onclick="loadAnnouncementDetails(this)">
+                                                            Find out more
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -92,11 +101,13 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="announcementModalLabel">Announcement Details</h5>
+                <h5 class="modal-title fw-bold" id="announcementModalLabel">Announcement Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Modal content will be dynamically loaded here -->
+                <div id="announcementDetails">
+                    <!-- Modal content will be dynamically loaded here -->
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -105,21 +116,43 @@
     </div>
 </div>
 
+
 <script>
-    function loadAnnouncementDetails(title, description, image, url, date) {
+    function loadAnnouncementDetails(button) {
+        const title = button.getAttribute('data-title');
+        const description = button.getAttribute('data-description');
+        const image = button.getAttribute('data-image');
+        const url = button.getAttribute('data-url');
+        const date = button.getAttribute('data-date');
+        const staffname = button.getAttribute('data-staffname');
+
         document.querySelector('#announcementModalLabel').textContent = title;
         const modalBody = document.querySelector('#announcementModal .modal-body');
-        modalBody.innerHTML = `
-            <img src="${image}" alt="Image" class="img-fluid mb-3" />
-            <p>${description}</p>
-                    <p><a href="${url}" target="_blank">Link</a></p>
-            <p>Posted at: ${date}</p>
 
-        `;
+        let htmlContent = `
+                <img src="${image}" alt="Image" class="img-fluid mb-3" />
+                <p>${description}</p>`;
+
+        // Add link if URL is provided
+        if (url) {
+            htmlContent += `<p><a href="${url}" target="_blank">Link</a></p>`;
+        }
+
+        htmlContent += `
+                <p>Posted by: ${staffname}</p>
+                <p>Posted at: ${date}</p>
+            `;
+
+        modalBody.innerHTML = htmlContent;
     }
 </script>
 
+
 <style>
+    .modal-title {
+        color: black; /* Set title color to black */
+    }
+
     .carousel-img {
         height: 300px;
         width: 100%;
