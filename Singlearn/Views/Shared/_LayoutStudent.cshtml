@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var studentId = HttpContextAccessor.HttpContext.Session.GetString("student_id");
+    var role = HttpContextAccessor.HttpContext.Session.GetString("role");
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -86,6 +93,12 @@
               <a href="~/Student/lessonmain" class="menu-link">
                 <i class="menu-icon tf-icons fa fa-book"></i>
                 <div data-i18n="Analytics">Learning Material</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="~/HomeworkHub/student_homework?studentid=@studentId" class="menu-link">
+                <i class="menu-icon tf-icons fa fa-book"></i>
+                <div data-i18n="Analytics">Homework HUB</div>
               </a>
             </li>
             

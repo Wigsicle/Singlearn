@@ -264,6 +264,99 @@ namespace SinglearnWeb.Controllers
             return View(submission);
         }
 
+        public async Task<IActionResult> student_homework(string studentId)
+        {
+            var student = await dbContext.Students.SingleOrDefaultAsync(s => s.student_id == studentId);
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            var homeworks = await dbContext.Homeworks
+                .Join(
+                dbContext.SubjectTeacherClasses,
+                h=> h.subject_id,
+                stc => stc.subject_id,
+                (h, stc) => new { h, stc })
+                .Where(hstc => hstc.stc.class_id == student.class_id && hstc.stc.teacher_id == hstc.stc.teacher_id)
+                .Select(hstc => hstc.h)
+                .ToListAsync();
+
+
+            return View(homeworks);
+        }
+
+        /*public ActionResult student_upload()
+        {
+            return View();
+        }*/
+
+        [HttpGet]
+        public async Task<IActionResult> student_upload(int homeworkId)
+        {
+            var homework = await dbContext.Homeworks.SingleOrDefaultAsync(h => h.homework_id == homeworkId);
+            if (homework == null)
+            {
+                return NotFound();
+            }
+
+            var model = new UploadHomeworkViewModel
+            {
+                homework_id = homework.homework_id,
+                subject_id = homework.subject_id,
+                title = homework.title,
+                description = homework.description,
+               
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> student_upload(UploadHomeworkViewModel model)
+        {
+            var studentId = HttpContext.Session.GetString("StudentId");
+
+            if (ModelState.IsValid)
+            {
+                var homework = await dbContext.Homeworks.SingleOrDefaultAsync(h => h.homework_id == model.homework_id);
+                if(homework == null)
+                {
+                    return NotFound();
+                }
+
+                var student = await dbContext.Students.SingleOrDefaultAsync(s => s.student_id == studentId);
+                if(student == null)
+                {
+                    return NotFound();
+                }
+
+                var submission = new Submission
+                {
+                    
+                    class_id = student.class_id,
+                    homework_id = model.homework_id,
+                    status = "Submitted",
+                    //visibility = true
+                };
+
+                if (model.file != null && model.file.Length > 0)
+                {
+                    submission.originalFilename = await GetPdfFileBytesAsync(model.file);
+                }
+
+                dbContext.Submissions.Add(submission);
+                await dbContext.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Homework submitted successfully!";
+
+                return RedirectToAction("student_homework", "HomeworkHub", new { studentId = student.student_id});
+
+            }
+
+            return View(model);
+        }
+
         private bool HomeworkExists(int id)
         {
             return dbContext.Homeworks.Any(e => e.homework_id == id);

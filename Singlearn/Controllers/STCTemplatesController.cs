@@ -10,22 +10,22 @@ using Singlearn.Models.Entities;
 
 namespace Singlearn.Controllers
 {
-    public class ChapterNamesController : Controller
+    public class STCTemplatesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ChapterNamesController(ApplicationDbContext context)
+        public STCTemplatesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: ChapterNames
+        // GET: STCTemplates
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ChapterNames.ToListAsync());
+            return View(await _context.STCTemplates.ToListAsync());
         }
 
-        // GET: ChapterNames/Details/5
+        // GET: STCTemplates/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,38 +33,39 @@ namespace Singlearn.Controllers
                 return NotFound();
             }
 
-            var chapterName = await _context.ChapterNames
-                .FirstOrDefaultAsync(m => m.chapter_name_id == id);
-            if (chapterName == null)
+            var stctemplates = await _context.STCTemplates
+                .FirstOrDefaultAsync(m => m.stc_id == id);
+            if (stctemplates == null)
             {
                 return NotFound();
             }
-            return View(chapterName);
+
+            return View(stctemplates);
         }
 
-        // GET: ChapterNames/Create
+        // GET: STCTemplates/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: ChapterNames/Create
+        // POST: STCTemplates/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("chapter_name_id,name,chapter_id,subject_id")] ChapterName chapterName)
+        public async Task<IActionResult> Create([Bind("stc_t_id,stc_id,template_id")] STCTemplate stcTemplate)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(chapterName);
+                _context.Add(stcTemplate);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(chapterName);
+            return View(stcTemplate);
         }
 
-        // GET: ChapterNames/Edit/5
+        // GET: STCTemplates/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,22 +73,22 @@ namespace Singlearn.Controllers
                 return NotFound();
             }
 
-            var chapterName = await _context.ChapterNames.FindAsync(id);
-            if (chapterName == null)
+            var stcTemplate = await _context.STCTemplates.FindAsync(id);
+            if (stcTemplate == null)
             {
                 return NotFound();
             }
-            return View(chapterName);
+            return View(stcTemplate);
         }
 
-        // POST: ChapterNames/Edit/5
+        // POST: STCTemplates/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("chapter_name_id,name,chapter_id,subject_id")] ChapterName chapterName)
+        public async Task<IActionResult> Edit(int id, [Bind("stc_t_id,stc_id,template_id")] STCTemplate stcTemplate)
         {
-            if (id != chapterName.chapter_name_id)
+            if (id != stcTemplate.stc_t_id)
             {
                 return NotFound();
             }
@@ -96,12 +97,12 @@ namespace Singlearn.Controllers
             {
                 try
                 {
-                    _context.Update(chapterName);
+                    _context.Update(stcTemplate);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ChapterNameExists(chapterName.chapter_name_id))
+                    if (!STCTemplateExists(stcTemplate.stc_t_id))
                     {
                         return NotFound();
                     }
@@ -112,10 +113,10 @@ namespace Singlearn.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(chapterName);
+            return View(stcTemplate);
         }
 
-        // GET: ChapterNames/Delete/5
+        // GET: STCTemplates/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,34 +124,34 @@ namespace Singlearn.Controllers
                 return NotFound();
             }
 
-            var chapterName = await _context.ChapterNames
-                .FirstOrDefaultAsync(m => m.chapter_name_id == id);
-            if (chapterName == null)
+            var stcTemplate = await _context.STCTemplates
+                .FirstOrDefaultAsync(m => m.stc_id == id);
+            if (stcTemplate == null)
             {
                 return NotFound();
             }
 
-            return View(chapterName);
+            return View(stcTemplate);
         }
 
-        // POST: ChapterNames/Delete/5
+        // POST: STCTemplates/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var chapterName = await _context.ChapterNames.FindAsync(id);
-            if (chapterName != null)
+            var stcTemplate = await _context.STCTemplates.FindAsync(id);
+            if (stcTemplate != null)
             {
-                _context.ChapterNames.Remove(chapterName);
+                _context.STCTemplates.Remove(stcTemplate);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ChapterNameExists(int id)
+        private bool STCTemplateExists(int id)
         {
-            return _context.ChapterNames.Any(e => e.chapter_name_id == id);
+            return _context.STCTemplates.Any(e => e.stc_id == id);
         }
     }
 }
