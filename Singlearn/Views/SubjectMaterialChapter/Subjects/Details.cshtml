@@ -1,14 +1,14 @@
-@model Singlearn.Models.Entities.Subject
+﻿@model Singlearn.Models.Entities.Subject
 
 @{
-    ViewData["Title"] = "Delete Subject";
+    ViewData["Title"] = "Subject Details";
 }
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div style="padding: 15% 3% 3% 3%;">
-                <h3>Are you sure you want to delete this?</h3>
+                <h2>Subject Details</h2>
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-4">
@@ -42,12 +42,9 @@
                         @Html.DisplayFor(model => model.image)
                     </dd>
                 </dl>
-                <div>
-                    <form asp-action="Delete">
-                        <input type="hidden" asp-for="subject_id" />
-                        <button class="btn btn-danger" type="submit" value="Delete"><i class="fa fa-trash"></i> Delete</button>
-                        <a class="btn btn-secondary" asp-action="Index">Back to List</a>
-                    </form>
+                <div class="form-group mt-3 mb-3">
+                    <a asp-action="EditSubject" asp-controller="SubjectMaterialChapter" asp-route-id="@Model?.subject_id" class="btn btn-warning"><i class="fa fa-pencil"></i> Edit</a>
+                    <a asp-action="IndexSubjects" asp-controller="SubjectMaterialChapter" class="btn btn-secondary">Back to List</a>
                 </div>
             </div>
         </div>

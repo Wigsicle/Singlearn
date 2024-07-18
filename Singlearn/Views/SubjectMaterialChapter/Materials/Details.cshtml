@@ -1,12 +1,11 @@
 ﻿@model Singlearn.Models.Entities.Material
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Details";
 }
 
-<h1>Delete</h1>
+<h1>Details</h1>
 
-<h3>Are you sure you want to delete this?</h3>
 <div>
     <h4>Material</h4>
     <hr />
@@ -66,10 +65,8 @@
             @Html.DisplayFor(model => model.status)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="material_id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+</div>
+<div>
+    <a asp-action="EditMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="@Model?.material_id">Edit</a> |
+    <a asp-action="IndexMaterials" asp-controller="SubjectMaterialChapter">Back to List</a>
 </div>

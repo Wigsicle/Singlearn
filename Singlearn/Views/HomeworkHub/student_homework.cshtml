@@ -3,6 +3,22 @@
     ViewData["StaffTitle"] = "Homepage";
 }
 
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var studentId = HttpContextAccessor.HttpContext.Session.GetString("student_id");
+    var role = HttpContextAccessor.HttpContext.Session.GetString("role");
+}
+
+@model IEnumerable<Singlearn.Models.Entities.Homework>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
 <!-- Content wrapper -->
 <div style="padding-top: 110px;" class="content-wrapper">
     <!-- Content -->
@@ -15,13 +31,26 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Homework</th>
+                        @* <th>@Html.DisplayNameFor(model => model.homework_id)</th> *@
+                        <th>@Html.DisplayNameFor(model => model.title)</th>
+                        <th>@Html.DisplayNameFor(model => model.description)</th>
+                        <th>@Html.DisplayNameFor(model => model.startdate)</th>
+                        <th>@Html.DisplayNameFor(model => model.enddate)</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-                    <tr>
-                        <td><a asp-action="#">Homework 1</a></td>
-                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="student_upload" asp-route-homeworkId="@item.homework_id" asp-route-studentId="@studentId">@Html.DisplayFor(modelItem => item.title)</a>
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.description)</td>
+                            <td>@Html.DisplayFor(modelItem => item.startdate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.enddate)</td>
+                        </tr>
+                    }
+                    
                 </tbody>
             </table>
         </div>

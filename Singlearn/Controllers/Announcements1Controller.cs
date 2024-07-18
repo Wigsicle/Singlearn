@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -46,8 +47,29 @@ namespace Singlearn.Controllers
         // GET: Announcements1/Create
         public IActionResult Create()
         {
-            ViewData["Subjects"] = new SelectList(_context.Subjects, "subject_id", "name");
-            ViewData["Staffs"] = new SelectList(_context.Staff, "staff_id", "name");
+            var staffId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var subjects = _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == staffId)
+                .Select(stc => stc.Subject)
+                .Distinct()
+                .ToList();
+
+            ViewData["Subjects"] = new SelectList(subjects, "subject_id", "name");
+
+            var classes = _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == staffId)
+                .Select(stc => stc.Class)
+                .Distinct()
+                .ToList();
+
+            ViewData["Classes"] = new SelectList(classes, "class_id", "name");
+
+            // Pass the staff information
+            var staffName = User.Identity.Name; // Assuming the user name is the staff name
+            ViewData["StaffName"] = staffName;
+            ViewData["StaffId"] = staffId;
+
             return View();
         }
 
@@ -58,28 +80,59 @@ namespace Singlearn.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Add the announcement to the context
-                _context.Add(announcement);
-                await _context.SaveChangesAsync();
+                // Set the current date
+                announcement.date = DateTime.Now;
 
-                // Save the selected classes
-                foreach (var classId in class_id)
+                // Get the logged-in staff ID
+                var staffId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (staffId != null)
                 {
-                    var subjectTeacherClass = new SubjectTeacherClass
-                    {
-                        subject_id = announcement.subject_id.Value,
-                        teacher_id = announcement.staff_id,
-                        class_id = classId.ToString() // Assuming class_id is a string
-                    };
-                    _context.Add(subjectTeacherClass);
-                }
+                    announcement.staff_id = staffId;
 
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    // Add the announcement to the context
+                    _context.Add(announcement);
+                    await _context.SaveChangesAsync();
+
+                    // Save the selected classes
+                    foreach (var classId in class_id)
+                    {
+                        var subjectTeacherClass = new SubjectTeacherClass
+                        {
+                            subject_id = announcement.subject_id.HasValue ? announcement.subject_id.Value : 0,
+                            teacher_id = announcement.staff_id,
+                            class_id = classId.ToString() // Assuming class_id is a string
+                        };
+                        _context.Add(subjectTeacherClass);
+                    }
+
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
 
-            ViewData["Subjects"] = new SelectList(_context.Subjects, "subject_id", "name", announcement.subject_id);
-            ViewData["Staffs"] = new SelectList(_context.Staff, "staff_id", "name", announcement.staff_id);
+            var loggedInStaffId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var subjects = _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == loggedInStaffId)
+                .Select(stc => stc.Subject)
+                .Distinct()
+                .ToList();
+
+            ViewData["Subjects"] = new SelectList(subjects, "subject_id", "name", announcement.subject_id);
+
+            var classes = _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == loggedInStaffId)
+                .Select(stc => stc.Class)
+                .Distinct()
+                .ToList();
+
+            ViewData["Classes"] = new SelectList(classes, "class_id", "name");
+
+            // Pass the staff information
+            var staffName = User.Identity.Name; // Assuming the user name is the staff name
+            ViewData["StaffName"] = staffName;
+            ViewData["StaffId"] = loggedInStaffId;
+
             return View(announcement);
         }
 
@@ -97,8 +150,19 @@ namespace Singlearn.Controllers
                 return NotFound();
             }
 
-            ViewData["Subjects"] = new SelectList(_context.Subjects, "subject_id", "name", announcement.subject_id);
-            ViewData["Staffs"] = new SelectList(_context.Staff, "staff_id", "name", announcement.staff_id);
+            var staffId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            ViewData["Subjects"] = new SelectList(
+                _context.Subjects
+                    .Where(subject => _context.SubjectTeacherClasses
+                        .Any(stc => stc.teacher_id == staffId && stc.subject_id == subject.subject_id)),
+                "subject_id",
+                "name",
+                announcement.subject_id
+            );
+
+            ViewData["StaffId"] = staffId;
+            ViewData["StaffName"] = User.Identity.Name;
 
             return View(announcement);
         }
@@ -106,7 +170,7 @@ namespace Singlearn.Controllers
         // POST: Announcements1/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("announcement_id,subject_id,staff_id,class_id,title,description,image,date,url,category,status")] Announcement announcement)
+        public async Task<IActionResult> Edit(int id, [Bind("announcement_id,subject_id,title,description,image,date,url,category,status")] Announcement announcement, int[] class_id)
         {
             if (id != announcement.announcement_id)
             {
@@ -117,7 +181,31 @@ namespace Singlearn.Controllers
             {
                 try
                 {
+                    // Update the announcement
+                    announcement.date = DateTime.Now;
                     _context.Update(announcement);
+                    await _context.SaveChangesAsync();
+
+                    // Remove existing class associations
+                    var existingClasses = _context.SubjectTeacherClasses
+                        .Where(stc => stc.teacher_id == announcement.staff_id && stc.subject_id == announcement.subject_id)
+                        .ToList();
+
+                    _context.SubjectTeacherClasses.RemoveRange(existingClasses);
+                    await _context.SaveChangesAsync();
+
+                    // Add the selected classes
+                    foreach (var classId in class_id)
+                    {
+                        var subjectTeacherClass = new SubjectTeacherClass
+                        {
+                            subject_id = announcement.subject_id.Value,
+                            teacher_id = announcement.staff_id,
+                            class_id = classId.ToString() // Assuming class_id is a string
+                        };
+                        _context.Add(subjectTeacherClass);
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -133,23 +221,20 @@ namespace Singlearn.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(announcement);
-        }
 
-        // GET: Announcements1/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var staffId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var announcement = await _context.Announcements
-                .FirstOrDefaultAsync(m => m.announcement_id == id);
-            if (announcement == null)
-            {
-                return NotFound();
-            }
+            ViewData["Subjects"] = new SelectList(
+                _context.Subjects
+                    .Where(subject => _context.SubjectTeacherClasses
+                        .Any(stc => stc.teacher_id == staffId && stc.subject_id == subject.subject_id)),
+                "subject_id",
+                "name",
+                announcement.subject_id
+            );
+
+            ViewData["StaffId"] = staffId;
+            ViewData["StaffName"] = User.Identity.Name;
 
             return View(announcement);
         }

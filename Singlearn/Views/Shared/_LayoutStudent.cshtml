@@ -1,13 +1,19 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var studentId = HttpContextAccessor.HttpContext.Session.GetString("student_id");
+    var role = HttpContextAccessor.HttpContext.Session.GetString("role");
+}
 
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <title>@ViewData["StudentTitle"]</title>
+    <title>@ViewData["StudentTitle"]</title
     <link rel="icon" href="~/assets/images/poop.png">
     <link rel="stylesheet" href="~/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/assets/css/fontawesome.css">
@@ -18,11 +24,12 @@
     <link rel="stylesheet" href="~/css/core.css" class="template-customizer-core-css">
     <link rel="stylesheet" href="~/css/theme-default.css" class="template-customizer-theme-css">
     <link rel="stylesheet" href="~/css/boxicons.css">
-    <link rel="stylesheet" href="~/assets/vendor/perfect-scrollbar/perfect-scrollbar.css" />
-    <script src="~/assets/js/helpers.js"></script>
-    <script src="~/assets/js/config.js"></script>
-</head>
+     <link rel="stylesheet" href="~/assets/vendor/perfect-scrollbar/perfect-scrollbar.css" />
+     <script src="~/assets/js/helpers.js"></script>
+     <script src="~/assets/js/config.js"></script>
+     
 
+</head>
 <body>
     <!-- ***** Preloader Start ***** -->
     <div id="js-preloader" class="js-preloader">
@@ -66,34 +73,44 @@
                         <!-- ***** Menu End ***** -->
                     </nav>
                 </div>
-            </div>
+            </div>  
         </div>
     </header>
     <!-- ***** Header Area End ***** -->
     <div class="layout-container">
-        <div class="d-flex">
-            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" style="padding-top: 110px">
-                <ul class="menu-inner py-1">
-                    <!-- Dashboard -->
-                    <li class="menu-item">
-                        <a href="~/Student/home" class="menu-link">
-                            <i class="menu-icon tf-icons fa fa-home"></i>
-                            <div data-i18n="Analytics">Home</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="~/Student/lessonmain" class="menu-link">
-                            <i class="menu-icon tf-icons fa fa-book"></i>
-                            <div data-i18n="Analytics">Learning Material</div>
-                        </a>
-                    </li>
-                </ul>
-            </aside>
-            <main role="main" class="flex-grow-1">
-                @RenderBody()
-            </main>
-        </div>
+    <div class="d-flex justify-content-start">
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" style="padding-top: 110px">
+
+          <ul class="menu-inner py-1">
+            <!-- Dashboard -->
+            <li class="menu-item">
+              <a href="~/Student/home" class="menu-link">
+                <i class="menu-icon tf-icons fa fa-home"></i>
+                <div data-i18n="Analytics">Home</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="~/Student/lessonmain" class="menu-link">
+                <i class="menu-icon tf-icons fa fa-book"></i>
+                <div data-i18n="Analytics">Learning Material</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="~/HomeworkHub/student_homework?studentid=@studentId" class="menu-link">
+                <i class="menu-icon tf-icons fa fa-book"></i>
+                <div data-i18n="Analytics">Homework HUB</div>
+              </a>
+            </li>
+            
+          </ul>
+        </aside>
+        <main role="main">
+        @RenderBody()
+        
+        </main>
     </div>
+    </div>
+    
 
     <footer>
         <div class="container">
@@ -116,13 +133,15 @@
     <script src="~/assets/vendor/popper/popper.js"></script>
     <script src="~/js/bootstrap.js"></script>
     <script src="~/assets/vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+
     <script src="~/js/menu.js"></script>
     <!-- endbuild -->
-    <!-- Main JS -->
+     <!-- Main JS -->
     <script src="~/assets/js/main.js"></script>
     <script src="../assets/vendor/libs/masonry/masonry.js"></script>
 
+    
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-
 </html>

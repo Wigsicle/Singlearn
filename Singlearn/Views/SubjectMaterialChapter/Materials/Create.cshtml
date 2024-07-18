@@ -1,48 +1,54 @@
-﻿@model Singlearn.ViewModels.MaterialEditViewModel
+﻿@model Singlearn.ViewModels.MaterialCreateViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
 }
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div style="padding: 15% 3% 3% 3%;">
-                <h2>Edit Materials</h2>
+                <h2>Create Materials</h2>
                 <hr />
-                <form asp-action="Edit" method="post" enctype="multipart/form-data">
-                    <input type="hidden" asp-for="material_id" />
+                <form asp-action="CreateMaterial" method="post" asp-controller="SubjectMaterialChapter" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    
                     <div class="form-group" style="padding-bottom:10px;">
                         <label asp-for="subject_id" class="control-label"></label>
-                        <input asp-for="subject_id" class="form-control" />
+                        <input asp-for="subject_id" class="form-control" required />
                         <span asp-validation-for="subject_id" class="text-danger"></span>
                     </div>
+                    
                     <div class="form-group" style="padding-bottom:10px;">
                         <label asp-for="teacher_id" class="control-label"></label>
-                        <input asp-for="teacher_id" class="form-control" />
+                        <input asp-for="teacher_id" class="form-control" required />
                         <span asp-validation-for="teacher_id" class="text-danger"></span>
                     </div>
+                    
                     <div class="form-group" style="padding-bottom:10px;">
                         <label asp-for="class_id" class="control-label"></label>
                         <input asp-for="class_id" class="form-control" />
                         <span asp-validation-for="class_id" class="text-danger"></span>
                     </div>
+                    
                     <div class="form-group" style="padding-bottom:10px;">
                         <label asp-for="name" class="control-label"></label>
-                        <input asp-for="name" class="form-control" />
+                        <input asp-for="name" class="form-control" required />
                         <span asp-validation-for="name" class="text-danger"></span>
                     </div>
+                    
                     <div class="form-group" style="padding-bottom:10px;">
                         <label asp-for="description" class="control-label"></label>
-                        <input asp-for="description" class="form-control" />
+                        <input asp-for="description" class="form-control"/>
                         <span asp-validation-for="description" class="text-danger"></span>
                     </div>
+                    
                     <div class="form-group" style="padding-bottom:10px;">
                         <label asp-for="chapter_id" class="control-label"></label>
-                        <input asp-for="chapter_id" class="form-control" />
+                        <input asp-for="chapter_id" class="form-control" required />
                         <span asp-validation-for="chapter_id" class="text-danger"></span>
                     </div>
+                    
                     <div class="form-group" style="padding-bottom:10px;">
                         <label asp-for="type" class="control-label"></label>
                         <select asp-for="type" asp-items="ViewBag.TypeOptions" class="form-control" onchange="toggleFileInputs()"></select>
@@ -81,11 +87,11 @@
                     
                     <div class="form-group">
                         <br />
-                        <input type="submit" value="Save" class="btn btn-primary" style="float:left;" />
+                        <input type="submit" value="Create" class="btn btn-primary" style="float:left;" />
                     </div>
                 </form>
                 <div>
-                    <a asp-action="Index" class="btn btn-secondary" style="margin-left:20px;">Back to List</a>
+                    <a asp-action="IndexMaterials" asp-controller="SubjectMaterialChapter" class="btn btn-secondary" style="margin-left:20px;">Back to List</a>
                 </div>
             </div>
         </div>
