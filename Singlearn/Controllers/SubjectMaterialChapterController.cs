@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,11 +12,11 @@ using Singlearn.ViewModels;
 
 namespace Singlearn.Controllers
 {
-    public class MaterialsAndChaptersController : Controller
+    public class SubjectMaterialChapterController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public MaterialsAndChaptersController(ApplicationDbContext context)
+        public SubjectMaterialChapterController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -333,6 +334,123 @@ namespace Singlearn.Controllers
             return RedirectToAction(nameof(ChaptersIndex));
         }
 
+        // Subject Actions
+        [HttpGet("subjects/index")]
+        public async Task<IActionResult> SubjectsIndex()
+        {
+            return View("Subjects/Index", await _context.Subjects.ToListAsync());
+        }
+
+        [HttpGet("subjects/details/{id}")]
+        public async Task<IActionResult> SubjectsDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var subject = await _context.Subjects.FirstOrDefaultAsync(m => m.subject_id == id);
+            if (subject == null)
+            {
+                return NotFound();
+            }
+
+            return View("Subjects/Details", subject);
+        }
+
+        [HttpGet("subjects/create")]
+        public IActionResult SubjectsCreate()
+        {
+            return View("Subjects/Create");
+        }
+
+        [HttpPost("subjects/create")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubjectsCreate([Bind("subject_id,name,year,academic_level,no_chapters,image")] Subject subject)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(subject);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(SubjectsIndex));
+            }
+            return View("Subjects/Create", subject);
+        }
+
+        [HttpGet("subjects/edit/{id}")]
+        public async Task<IActionResult> SubjectsEdit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var subject = await _context.Subjects.FindAsync(id);
+            if (subject == null)
+            {
+                return NotFound();
+            }
+            return View("Subjects/Edit", subject);
+        }
+
+        [HttpPost("subjects/edit/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubjectsEdit(int id, [Bind("subject_id,name,year,academic_level,no_chapters,image")] Subject subject)
+        {
+            if (id != subject.subject_id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(subject);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!SubjectExists(subject.subject_id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(SubjectsIndex));
+            }
+            return View("Subjects/Edit", subject);
+        }
+
+        [HttpGet("subjects/delete/{id}")]
+        public async Task<IActionResult> SubjectsDelete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var subject = await _context.Subjects.FirstOrDefaultAsync(m => m.subject_id == id);
+            if (subject == null)
+            {
+                return NotFound();
+            }
+            return View("Subjects/Delete", subject);
+        }
+
+        [HttpPost("subjects/delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubjectsDeleteConfirmed(int id)
+        {
+            var subject = await _context.Subjects.FindAsync(id);
+            _context.Subjects.Remove(subject);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(SubjectsIndex));
+        }
+
         private bool MaterialExists(int id)
         {
             return _context.Materials.Any(e => e.material_id == id);
@@ -341,6 +459,11 @@ namespace Singlearn.Controllers
         private bool ChapterNameExists(int id)
         {
             return _context.ChapterNames.Any(e => e.chapter_name_id == id);
+        }
+
+        private bool SubjectExists(int id)
+        {
+            return _context.Subjects.Any(e => e.subject_id == id);
         }
 
         private async Task<byte[]> GetPdfFileBytesAsync(IFormFile pdfFile)
