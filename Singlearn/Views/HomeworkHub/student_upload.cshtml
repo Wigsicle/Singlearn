@@ -1,24 +1,35 @@
-﻿@{
-    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var studentId = HttpContextAccessor.HttpContext.Session.GetString("student_id");
+    var role = HttpContextAccessor.HttpContext.Session.GetString("role");
+}
+@{
+    Layout = "~/Views/Shared/_LayoutStudent.cshtml";
     ViewData["StaffTitle"] = "Homepage";
 }
+
+@model Singlearn.Models.UploadHomeworkViewModel
 
 <!-- Content wrapper -->
 <div class="content-wrapper" style="padding-top: 110px;">
     <!-- Content -->
     <div class="container-xxl flex-grow-1 container-p-y">
+        <h2>Studentid :@Model.student_id</h2>
         <div class="row">
             <div class="col-xl-12">
                 <!-- File input -->
                 <div class="card">
-                    <h5 class="card-header">Homework Name</h5>
+                    <h5 class="card-header">Homework Title: @Model.title</h5>
                     <div class="card-body">
-                        <div class="mb-3">
-                            <label for="formFile" class="form-label">Submission</label>
-                            <input class="form-control" type="file" id="formFile" />
-                        </div>
-
-                        <button type="button" class="btn btn-primary">Submit</button>
+                        <form asp-action="student_upload" asp-controller="HomeworkHub" method="post" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="homework_id" />
+                            <div class="mb-3">
+                                <label class="form-label">Submission</label>
+                                <input asp-for="file" class="form-control" type="file" name="file" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
                     </div>
                 </div>
             </div>

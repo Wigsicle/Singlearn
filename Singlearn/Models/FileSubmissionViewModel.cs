@@ -1,8 +1,8 @@
 ﻿namespace Singlearn.Models
 {
-    public class SubmissionViewModel
+    public class FileSubmissionViewModel
     {
-        public int submission_id {  get; set; }
+        public int submission_id { get; set; }
 
         public string class_id { get; set; }
 
@@ -19,9 +19,5 @@
         public string status { get; set; }
 
         public Boolean visibility { get; set; }
-
-        public string student_name { get; set; }
-
-
     }
 }

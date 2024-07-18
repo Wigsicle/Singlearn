@@ -22,11 +22,6 @@ namespace SinglearnWeb.Controllers
         }
 
 
-        /*public IActionResult staff_subject()
-        {
-            return View();
-        }*/
-
         public async Task<IActionResult> staff_subject(string teacherId)
         {
             var subjectsWithClassId = await dbContext.Subjects
@@ -98,26 +93,8 @@ namespace SinglearnWeb.Controllers
                 dbContext.Add(homework);
                 await dbContext.SaveChangesAsync();
                 return RedirectToAction("staff_homework", "HomeworkHub", new { subjectId = model.subject_id });
-                /*using (var memoryStream = new MemoryStream())
-                {
-                    await model.attachment.CopyToAsync(memoryStream);
-                    var homework = new Homework
-                    {
-                        subject_id = model.subject_id,
-                        title = model.title,
-                        description = model.description,
-                        startdate = model.startdate,
-                        enddate = model.enddate,
-                        attachment = model.attachment != null ? await GetPdfFileBytesAsync(model.attachment) : null
-                    };
-
-                    dbContext.Add(homework);
-                    await dbContext.SaveChangesAsync();
-                    return RedirectToAction("staff_homework", "HomeworkHub", new { subjectId = model.subject_id });
-                }*/
             }
 
-            // If we reach here, something went wrong, so return to the view with the model
             return View(model);
         }
 
@@ -223,13 +200,6 @@ namespace SinglearnWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> staff_submission(int homeworkId, string classId)
         {
-
-
-            /*var model = new ClassesViewModel
-            {
-                class_id = classId
-            };*/
-
             var submissions = await dbContext.Submissions
                 .Where(s => s.class_id == classId && s.homework_id == homeworkId) // Filter by class_id
                 .Join(
@@ -241,16 +211,12 @@ namespace SinglearnWeb.Controllers
                         submission_id = s.submission_id,
                         class_id = s.class_id,
                         homework_id = s.homework_id,
-                        originalFilename = Encoding.UTF8.GetString(s.originalFilename), 
                         status = s.status,
                         visibility = s.visibility,
                         student_name = stu.name
 
                     })
                     .ToListAsync();
-
-
-
 
             return View(submissions);
         }
@@ -260,6 +226,129 @@ namespace SinglearnWeb.Controllers
         {
             var submission = await dbContext.Submissions
                 .FirstOrDefaultAsync(s => s.submission_id == submissionId);
+
+            if (submission == null)
+            {
+                return NotFound();
+            }
+
+            return View(submission);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> staff_marking(FileSubmissionViewModel model)
+        {
+            var submission = await dbContext.Submissions
+                .FirstOrDefaultAsync(s => s.submission_id == model.submission_id);
+
+            if (submission == null)
+            {
+                return NotFound();
+            }
+
+            submission.feedback = model.feedback;
+            submission.grade = model.grade;
+
+            if (model.annotatedFilename != null && model.annotatedFilename.Length > 0)
+            {
+                submission.annotatedFilename = await GetPdfFileBytesAsync(model.annotatedFilename);
+            }
+
+            dbContext.Update(submission);
+            await dbContext.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Submission marked successfully!";
+            return RedirectToAction("staff_submission", new { homeworkId = submission.homework_id, classId = submission.class_id });
+        }
+
+        public async Task<IActionResult> student_homework(string studentId)
+        {
+            var student = await dbContext.Students.SingleOrDefaultAsync(s => s.student_id == studentId);
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            var homeworks = await dbContext.Homeworks
+                .Join(
+                dbContext.SubjectTeacherClasses,
+                h=> h.subject_id,
+                stc => stc.subject_id,
+                (h, stc) => new { h, stc })
+                .Where(hstc => hstc.stc.class_id == student.class_id && hstc.stc.teacher_id == hstc.stc.teacher_id)
+                .Select(hstc => hstc.h)
+                .ToListAsync();
+
+            return View(homeworks);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> student_upload(int homeworkId)
+        {
+
+            var homework = await dbContext.Homeworks.SingleOrDefaultAsync(h => h.homework_id == homeworkId);
+            if (homework == null)
+            {
+                return NotFound();
+            }
+
+            var model = new UploadHomeworkViewModel
+            {
+                student_id = HttpContext.Session.GetString("student_id"),
+                homework_id = homework.homework_id,
+                subject_id = homework.subject_id,
+                title = homework.title,
+                description = homework.description,
+               
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> student_upload(UploadHomeworkViewModel model)
+        {
+            var studentId = HttpContext.Session.GetString("student_id");
+
+            var student = await dbContext.Students.SingleOrDefaultAsync(s => s.student_id.Equals(studentId));
+
+            var submission = new Submission
+            {
+               
+                class_id = student.class_id,
+                homework_id = model.homework_id,
+                feedback = "",
+                grade = "",
+                status = "Submitted",
+                visibility = true,
+
+            };
+
+            if (model.file != null && model.file.Length > 0)
+            {
+                submission.originalFilename = await GetPdfFileBytesAsync(model.file);
+                submission.annotatedFilename = await GetPdfFileBytesAsync(model.file);
+
+            }
+
+            dbContext.Submissions.Add(submission);
+            await dbContext.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Homework submitted successfully!";
+
+            return RedirectToAction("student_homework", "HomeworkHub", new { studentId = student.student_id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> student_review(int homeworkId)
+        {
+            var submission = await dbContext.Submissions
+                .FirstOrDefaultAsync(s => s.homework_id == homeworkId);
+
+            if (submission == null)
+            {
+                return NotFound();
+            }
 
             return View(submission);
         }
@@ -276,20 +365,5 @@ namespace SinglearnWeb.Controllers
                 return memoryStream.ToArray();
             }
         }
-
-        /*public async Task<IActionResult> ViewAttachment(int submissionId)
-        {
-            var submission = await dbContext.Submissions
-                .Include(s => s.homework_id)
-                .FirstOrDefaultAsync(s => s.submission_id == submissionId);
-
-            if (submission == null || submission.originalFilename == null)
-            {
-                return NotFound();
-            }
-
-            return File(submission.originalFilename, "application/pdf");
-        }*/
-
     }
 }
