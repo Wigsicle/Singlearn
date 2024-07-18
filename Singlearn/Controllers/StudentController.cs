@@ -41,18 +41,43 @@ namespace Singlearn.Controllers
             var subjects = await dbContext.Subjects
                 .Where(s => subject_ids.Contains(s.subject_id))
                 .Select(s => new SubjectViewModel
-                {  // Adjust to use your actual ViewModel or entity
+                {
                     subject_id = s.subject_id,
                     name = s.name,
                     academic_level = s.academic_level,
                     image = s.image,
                     no_chapters = s.no_chapters,
                     year = s.year,
-                    class_id = classId  // Include the class ID here
+                    class_id = classId
                 })
                 .ToListAsync();
 
-            return View(subjects);
+            // Query announcements
+            var announcements = await dbContext.Announcements
+                .Where(a => a.category == "News" || a.category == "Events")
+                .Select(a => new AnnouncementViewModel
+                {
+                    AnnouncementId = a.announcement_id,
+                    Title = a.title,
+                    Category = a.category,
+                    Status = a.status,
+                    Image = a.image,
+                    Description = a.description,
+                    Date = a.date,
+                    SubjectId = a.subject_id,
+                    StaffId = a.staff_id,
+                    ClassId = a.class_id,
+                    Url = a.url,
+                })
+                .ToListAsync();
+
+            var viewModel = new HomepageViewModel
+            {
+                Subjects = subjects,
+                Announcements = announcements
+            };
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> SubjectIndex(int subject_id, string class_id)

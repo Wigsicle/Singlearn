@@ -38,6 +38,7 @@ namespace Singlearn.Controllers
                         {
                             HttpContext.Session.SetString("student_id", student.student_id.ToString());
                             HttpContext.Session.SetString("role", "Student");
+                            HttpContext.Session.SetString("class", student.class_id);
                             return RedirectToAction("Home", "Student", new { id = student.student_id });
                         }
                     }
