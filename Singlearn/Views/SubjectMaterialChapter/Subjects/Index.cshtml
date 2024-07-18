@@ -98,9 +98,9 @@
                                     <td>@Html.DisplayFor(modelItem => item.no_chapters)</td>
                                     <td>@Html.DisplayFor(modelItem => item.image)</td>
                                     <td>
-                                        <a asp-action="Details" asp-route-id="@item.subject_id"><i class="fa fa-eye text-primary"></i></a> |
-                                        <a asp-action="Edit" asp-route-id="@item.subject_id"><i class="fa fa-pencil text-warning"></i></a> |
-                                        <a asp-action="Delete" asp-route-id="@item.subject_id"><i class="fa fa-trash text-danger"></i></a>
+                                        <a asp-action="DetailsSubject" asp-route-id="@item.subject_id"><i class="fa fa-eye text-primary"></i></a> |
+                                        <a asp-action="EditSubject" asp-route-id="@item.subject_id"><i class="fa fa-pencil text-warning"></i></a> |
+                                        <a asp-action="DeleteSubject" asp-route-id="@item.subject_id"><i class="fa fa-trash text-danger"></i></a>
                                     </td>
                                 </tr>
                             }

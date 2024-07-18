@@ -10,7 +10,7 @@
             <div style="padding: 15% 3% 3% 3%;">
                 <h2>Edit Materials</h2>
                 <hr />
-                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <form asp-action="EditMaterial" asp-controller="SubjectMaterialChapter" method="post" enctype="multipart/form-data">
                     <input type="hidden" asp-for="material_id" />
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group" style="padding-bottom:10px;">

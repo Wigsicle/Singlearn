@@ -10,7 +10,7 @@
                 <h2>Edit Subject</h2>
                 <hr />
 
-                <form asp-action="Edit">
+                <form asp-action="EditSubject" asp-controller="SubjectMaterialChapter" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="subject_id" />
                     <div class="form-group">

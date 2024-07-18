@@ -73,9 +73,9 @@
                 @Html.DisplayFor(modelItem => item.status)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.material_id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.material_id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.material_id">Delete</a>
+                <a asp-action="EditMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="@item.material_id">Edit</a> |
+                    <a asp-action="DetailsMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="@item.material_id">Details</a> |
+                    <a asp-action="DeleteMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="@item.material_id">Delete</a>
             </td>
         </tr>
 }
