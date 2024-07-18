@@ -67,9 +67,9 @@
         </dd>
     </dl>
 
-    <form asp-action="DeleteConfirmedMaterial" method="post">
+    <form asp-action="DeleteConfirmedMaterial" method="post" asp-route-id="@Model.material_id">
         <input type="hidden" asp-for="material_id" />
         <input type="submit" value="Delete" class="btn btn-danger" />
-        <a asp-action="IndexMaterials" asp-controller="SubjectMaterialChapter">Back to List</a>
+        <a asp-action="IndexMaterials" class="btn btn-secondary">Back to List</a>
     </form>
 </div>

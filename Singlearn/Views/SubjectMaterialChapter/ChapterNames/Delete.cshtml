@@ -30,8 +30,8 @@
             @Html.DisplayFor(model => model.subject_id)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
+
+    <form asp-action="DeleteConfirmedChapterName" method="post" asp-route-id="@Model.chapter_name_id">
         <input type="hidden" asp-for="chapter_name_id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="IndexChapterNames" asp-controller="SubjectMaterialChapter">Back to List</a>

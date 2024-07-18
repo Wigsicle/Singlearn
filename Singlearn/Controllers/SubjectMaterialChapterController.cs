@@ -198,6 +198,7 @@ namespace Singlearn.Controllers
             return View("Materials/Edit", material);
         }
 
+        // GET: Materials/Delete/5
         [HttpGet]
         [Route("/Materials/Delete/{id?}")]
         public async Task<IActionResult> DeleteMaterial(int? id)
@@ -218,7 +219,7 @@ namespace Singlearn.Controllers
         }
 
         [HttpPost, ActionName("DeleteConfirmedMaterial")]
-        [Route("/Materials/DeleteConfirmed/{id?}")]
+        [Route("/Materials/DeleteConfirmedMaterial/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmedMaterial(int id)
         {
@@ -230,7 +231,6 @@ namespace Singlearn.Controllers
             }
             return RedirectToAction(nameof(IndexMaterials));
         }
-
 
 
         // ChapterNames methods
@@ -349,8 +349,8 @@ namespace Singlearn.Controllers
             return View("ChapterNames/Delete", chapterName);
         }
 
-        [HttpPost, ActionName("Delete")]
-        [Route("/ChapterNames/DeleteConfirmed/{id?}")]
+        [HttpPost, ActionName("DeleteConfirmedChapterName")]
+        [Route("/ChapterNames/DeleteConfirmedChapterName/{id?}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmedChapterName(int id)
         {
@@ -481,8 +481,8 @@ namespace Singlearn.Controllers
             return View("Subjects/Delete", subject);
         }
 
-        [HttpPost, ActionName("Delete")]
-        [Route("/Subjects/DeleteConfirmed/{id?}")]
+        [HttpPost, ActionName("DeleteConfirmedSubject")]
+        [Route("/Subjects/DeleteConfirmedSubject/{id?}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmedSubject(int id)
         {

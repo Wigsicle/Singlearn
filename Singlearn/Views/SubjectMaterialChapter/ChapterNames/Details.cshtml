@@ -4,33 +4,37 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>ChapterName</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.chapter_id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.chapter_id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.subject_id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.subject_id)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="EditChapterName" asp-controller="SubjectMaterialChapter" asp-route-id="@Model?.chapter_name_id">Edit</a> |
-    <a asp-action="IndexChapterNames" asp-controller="SubjectMaterialChapter">Back to List</a>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div style="padding: 15% 3% 3% 3%;">
+                <h2>Chapter Name Details</h2>
+                <hr />
+                <dl class="row">
+                    <dt class = "col-sm-4">
+                        @Html.DisplayNameFor(model => model.name)
+                    </dt>
+                    <dd class = "col-sm-8">
+                        @Html.DisplayFor(model => model.name)
+                    </dd>
+                    <dt class = "col-sm-4">
+                        @Html.DisplayNameFor(model => model.chapter_id)
+                    </dt>
+                    <dd class = "col-sm-8">
+                        @Html.DisplayFor(model => model.chapter_id)
+                    </dd>
+                    <dt class = "col-sm-4">
+                        @Html.DisplayNameFor(model => model.subject_id)
+                    </dt>
+                    <dd class = "col-sm-8">
+                        @Html.DisplayFor(model => model.subject_id)
+                    </dd>
+                </dl>
+                <div class="form-group mt-3 mb-3">
+                    <a asp-action="EditChapterName" asp-controller="SubjectMaterialChapter" asp-route-id="@Model.chapter_name_id" class="btn btn-warning"><i class="fa fa-pencil"></i> Edit</a>
+                    <a asp-action="IndexChapterNames" asp-controller="SubjectMaterialChapter" class="btn btn-secondary">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
