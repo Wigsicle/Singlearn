@@ -12,11 +12,7 @@ namespace Singlearn.Models.Entities
 
         public string teacher_id { get; set; }
 
-        public string class_id { get; set; }
-
-
-        public Subject Subject { get; set; }
-        public Class Class { get; set; }
+        public string class_id { get; set; }    
 
     }
 }
