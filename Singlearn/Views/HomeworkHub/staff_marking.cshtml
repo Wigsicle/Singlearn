@@ -4,179 +4,60 @@
 }
 
 @model Singlearn.Models.Entities.Submission
+@using System
+@using System.Web
+
 
 <!-- Content wrapper -->
 <div style="padding-top: 110px;" class="content-wrapper">
-    <div id="canvas_div" style="overflow-x: auto;">
-        <canvas id="canvas" width="900" height="360"></canvas>
-        <br />
-        <button onclick="javascript:clearArea();return false;">Clear Area</button>
-    </div>
-    <div class="card-body text-center">
+    <div class="card-body text-center" style="width:900px; height:600px">
         <!-- Use iframe to embed PDF -->
         @if (Model.originalFilename != null && Model.originalFilename.Length > 0)
         {
-            <iframe src="data:application/pdf;base64,@(Convert.ToBase64String(Model.originalFilename))" width="100%" height="600px"></iframe>
+            <iframe src="data:application/pdf;base64,@Convert.ToBase64String(Model.originalFilename)" width="100%" height="600px" type="application/pdf"></iframe>
         }
+        else
+        {
+            <p>NO PDF available</p>
+        }
+        <br />
         
 
     </div>
-    <div class="form-group mt-4">
-        <label for="grade">Grading</label>
-        <select class="form-control" id="grade" name="grade">
-            <option value="A1">A1</option>
-            <option value="A2">A2</option>
-            <option value="B3">B3</option>
-            <option value="B4">B4</option>
-            <option value="C5">C5</option>
-            <option value="C6">C6</option>
-            <option value="D7">D7</option>
-            <option value="E8">E8</option>
-            <option value="F9">F9</option>
-        </select>
-    </div>
-    <div class="form-group mt-4">
-        <label for="feedback">Feedback</label>
-        <textarea class="form-control" id="feedback" rows="3"></textarea>
+    
+    <div class="form-wrapper">
+        <form asp-controller="HomeworkHub" asp-action="staff_marking" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="submission_id" />
+            <input type="hidden" asp-for="class_id" />
+            <input type="hidden" asp-for="homework_id" />
+
+            <div class="form-group mt-4">
+                <label for="annotatedFile">Upload Annotated PDF</label>
+                <input type="file" class="form-control" asp-for="annotatedFilename" accept=".pdf">
+            </div>
+
+            <div class="form-group mt-4">
+                <label for="grade">Grade</label>
+                <select class="form-control" id="grade" name="grade">
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                    <option value="B3">B3</option>
+                    <option value="B4">B4</option>
+                    <option value="C5">C5</option>
+                    <option value="C6">C6</option>
+                    <option value="D7">D7</option>
+                    <option value="E8">E8</option>
+                    <option value="F9">F9</option>
+                </select>
+            </div>
+
+            <div class="form-group mt-4">
+                <label for="feedback">Feedback</label>
+                <textarea class="form-control" id="feedback" name="feedback" rows="3">@Model.feedback</textarea>
+            </div>
+
+            <button class="btn btn-primary mt-4" type="submit">Save Annotation</button>
+        </form>
     </div>
 </div>
 <!-- / Content -->
-
-<style>
-    #canvas_div {
-        text-align: center;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    canvas {
-        border: 2px solid black;
-    }
-</style>
-
-<script>
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
-    let isDrawing = false;
-    let x = 0;
-    let y = 0;
-    var offsetX;
-    var offsetY;
-
-    function startup() {
-        canvas.addEventListener('touchstart', handleStart);
-        canvas.addEventListener('touchend', handleEnd);
-        canvas.addEventListener('touchcancel', handleCancel);
-        canvas.addEventListener('touchmove', handleMove);
-        canvas.addEventListener('mousedown', (e) => {
-            x = e.offsetX;
-            y = e.offsetY;
-            isDrawing = true;
-        });
-
-        canvas.addEventListener('mousemove', (e) => {
-            if (isDrawing) {
-                drawLine(context, x, y, e.offsetX, e.offsetY);
-                x = e.offsetX;
-                y = e.offsetY;
-            }
-        });
-
-        canvas.addEventListener('mouseup', (e) => {
-            if (isDrawing) {
-                drawLine(context, x, y, e.offsetX, e.offsetY);
-                x = 0;
-                y = 0;
-                isDrawing = false;
-            }
-        });
-    }
-
-    document.addEventListener("DOMContentLoaded", startup);
-
-    const ongoingTouches = [];
-
-    function handleStart(evt) {
-        evt.preventDefault();
-        const touches = evt.changedTouches;
-        offsetX = canvas.getBoundingClientRect().left;
-        offsetY = canvas.getBoundingClientRect().top;
-        for (let i = 0; i < touches.length; i++) {
-            ongoingTouches.push(copyTouch(touches[i]));
-        }
-    }
-
-    function handleMove(evt) {
-        evt.preventDefault();
-        const touches = evt.changedTouches;
-        for (let i = 0; i < touches.length; i++) {
-            const color = "red";
-            const idx = ongoingTouchIndexById(touches[i].identifier);
-            if (idx >= 0) {
-                context.beginPath();
-                context.moveTo(ongoingTouches[idx].clientX - offsetX, ongoingTouches[idx].clientY - offsetY);
-                context.lineTo(touches[i].clientX - offsetX, touches[i].clientY - offsetY);
-                context.lineWidth = 5;
-                context.strokeStyle = color;
-                context.lineJoin = "round";
-                context.closePath();
-                context.stroke();
-                ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
-            }
-        }
-    }
-
-    function handleEnd(evt) {
-        evt.preventDefault();
-        const touches = evt.changedTouches;
-        for (let i = 0; i < touches.length; i++) {
-            const color = "red";
-            let idx = ongoingTouchIndexById(touches[i].identifier);
-            if (idx >= 0) {
-                context.lineWidth = 5;
-                context.fillStyle = color;
-                ongoingTouches.splice(idx, 1);  // remove it; we're done
-            }
-        }
-    }
-
-    function handleCancel(evt) {
-        evt.preventDefault();
-        const touches = evt.changedTouches;
-        for (let i = 0; i < touches.length; i++) {
-            let idx = ongoingTouchIndexById(touches[i].identifier);
-            ongoingTouches.splice(idx, 1);  // remove it; we're done
-        }
-    }
-
-    function copyTouch({ identifier, clientX, clientY }) {
-        return { identifier, clientX, clientY };
-    }
-
-    function ongoingTouchIndexById(idToFind) {
-        for (let i = 0; i < ongoingTouches.length; i++) {
-            const id = ongoingTouches[i].identifier;
-            if (id === idToFind) {
-                return i;
-            }
-        }
-        return -1;    // not found
-    }
-
-    function drawLine(context, x1, y1, x2, y2) {
-        context.beginPath();
-        context.strokeStyle = "red";
-        context.lineWidth = 5;
-        context.lineJoin = "round";
-        context.moveTo(x1, y1);
-        context.lineTo(x2, y2);
-        context.closePath();
-        context.stroke();
-    }
-
-    function clearArea() {
-        context.setTransform(1, 0, 0, 1, 0, 0);
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    }
-</script>

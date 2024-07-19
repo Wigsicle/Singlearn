@@ -8,7 +8,14 @@ namespace Singlearn.ViewModels
 		[Required]
 		public int AnnouncementId { get; set; }
 
-		public string Title { get; set; }
+        public int? SubjectId { get; set; }
+
+        public string StaffId { get; set; }
+
+        public string ClassId { get; set; }
+
+
+        public string Title { get; set; }
 
 		public string Description { get; set; }
 
@@ -24,11 +31,7 @@ namespace Singlearn.ViewModels
 
 
 		// Foreign Key
-		public int? SubjectId { get; set; }
 
-		public string StaffId { get; set; }
-
-		public string? ClassId { get; set; }
 
         // Additional properties for view
 

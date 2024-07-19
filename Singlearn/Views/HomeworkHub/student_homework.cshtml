@@ -12,12 +12,7 @@
 
 @model IEnumerable<Singlearn.Models.Entities.Homework>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
+
 
 <!-- Content wrapper -->
 <div style="padding-top: 110px;" class="content-wrapper">
@@ -25,7 +20,12 @@
 
     <div class="container-xxl flex-grow-1 container-p-y" style="width:200%">
         <h1 class="fw-bold py-3 mb-2">Dropbox</h1>
-
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
         <!-- Basic Bootstrap Table -->
         <div class="card">
             <table class="table">
@@ -36,6 +36,7 @@
                         <th>@Html.DisplayNameFor(model => model.description)</th>
                         <th>@Html.DisplayNameFor(model => model.startdate)</th>
                         <th>@Html.DisplayNameFor(model => model.enddate)</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
@@ -48,6 +49,9 @@
                             <td>@Html.DisplayFor(modelItem => item.description)</td>
                             <td>@Html.DisplayFor(modelItem => item.startdate)</td>
                             <td>@Html.DisplayFor(modelItem => item.enddate)</td>
+                            <td>
+                                <a asp-action="student_review" asp-route-homeworkId="@item.homework_id" asp-route-studentId="@studentId">Review</a>
+                            </td>
                         </tr>
                     }
                     

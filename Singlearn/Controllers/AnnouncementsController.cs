@@ -74,54 +74,43 @@ namespace Singlearn.Controllers
         }
 
         // GET: Announcements/Create
+        [HttpGet]
+        [Route("Announcements/Create")]
         public IActionResult Create()
         {
-            // Retrieve the staff ID from the session
             var staffId = HttpContext.Session.GetString("staff_id");
-
-            if (string.IsNullOrEmpty(staffId))
+            var announcement = new Announcement
             {
-                return Unauthorized(); // Handle this case as needed
-            }
-
-            // Initialize the model with the staff ID
-            var model = new AnnouncementViewModel
-            {
-                StaffId = staffId
+                staff_id = staffId,
+                date = DateTime.Now
             };
 
-            return View(model);
+            ViewBag.Subjects = new SelectList(_context.Subjects, "subject_id", "name");
+            return View(announcement);
         }
+
 
         // POST: Announcements/Create
         [HttpPost]
+        [Route("Announcements/Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AnnouncementViewModel model)
+        public async Task<IActionResult> Create([Bind("subject_id, class_id, title, description, image, url, category, status, staff_id")] Announcement announcement)
         {
             if (ModelState.IsValid)
             {
-                var announcement = new Announcement
-                {
-                    announcement_id = 0, // Auto-generated ID, if applicable
-                    subject_id = model.SubjectId,
-                    staff_id = model.StaffId,
-                    class_id = model.ClassId,
-                    title = model.Title,
-                    description = model.Description,
-                    image = model.Image,
-                    date = model.Date,
-                    url = model.Url,
-                    category = model.Category,
-                    status = model.Status
-                };
+/*                var staffId = HttpContext.Session.GetString("staff_id");
+                announcement.staff_id = staffId;*/
+                announcement.date = DateTime.Now;
 
                 _context.Announcements.Add(announcement);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(model);
+            return View(announcement);
         }
+
+
 
         // GET: Announcements/Edit/
         public async Task<IActionResult> Edit(int? id)
@@ -247,11 +236,24 @@ namespace Singlearn.Controllers
         }
 
         [HttpGet]
+        public JsonResult GetSubjectsByStaff(string staff_id)
+        {
+            var subjects = _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == staff_id)
+                .Select(stc => new { value = stc.subject_id, text = _context.Subjects.First(s => s.subject_id == stc.subject_id).name })
+                .Distinct()
+                .ToList();
+
+            return Json(subjects);
+        }
+
+        [HttpGet]
         public JsonResult GetClassesByStaff(string staff_id)
         {
             var classes = _context.SubjectTeacherClasses
                 .Where(stc => stc.teacher_id == staff_id)
                 .Select(stc => new { value = stc.class_id, text = _context.Classes.First(c => c.class_id == stc.class_id).name })
+                .Distinct()
                 .ToList();
 
             return Json(classes);

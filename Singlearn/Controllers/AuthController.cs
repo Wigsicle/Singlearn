@@ -49,7 +49,7 @@ namespace Singlearn.Controllers
                         {
                             HttpContext.Session.SetString("staff_id", staff.staff_id.ToString());
                             HttpContext.Session.SetString("role", "Staff");
-                            return RedirectToAction("Home", "Staff", new { id = staff.staff_id });
+                            return RedirectToAction("Home", "Staff");
                         }
                     }
                 }

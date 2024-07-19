@@ -2,7 +2,7 @@
 {
     public class UploadHomeworkViewModel
     {
-
+        public string student_id { get; set; }
         public int homework_id { get; set; }   
 
         public int subject_id { get; set; }
