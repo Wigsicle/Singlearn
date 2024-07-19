@@ -38,7 +38,8 @@ namespace Singlearn.Controllers
                         {
                             HttpContext.Session.SetString("student_id", student.student_id.ToString());
                             HttpContext.Session.SetString("role", "Student");
-                            return RedirectToAction("Home", "Student", new { id = student.student_id });
+                            HttpContext.Session.SetString("class_id", student.class_id);
+                            return RedirectToAction("Home", "Student");
                         }
                     }
                     else if (user.role == "Staff")
@@ -48,7 +49,7 @@ namespace Singlearn.Controllers
                         {
                             HttpContext.Session.SetString("staff_id", staff.staff_id.ToString());
                             HttpContext.Session.SetString("role", "Staff");
-                            return RedirectToAction("Home", "Staff", new { id = staff.staff_id });
+                            return RedirectToAction("Home", "Staff");
                         }
                     }
                 }

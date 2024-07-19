@@ -17,19 +17,11 @@ namespace Singlearn.Controllers
         }
 
 
-        public async Task<IActionResult> Home(string id)
+        public async Task<IActionResult> Home()
         {
-            // Set the student ID in ViewData for use in the view
-            ViewData["StudentId"] = id;
-
-            // Query the database to get the class ID for the student
-            var classId = await dbContext.Students
-                .Where(s => s.student_id == id)
-                .Select(s => s.class_id)
-                .FirstOrDefaultAsync();
-
-            // Pass the retrieved classId to the view
-            ViewData["ClassId"] = classId;
+            // Getting the store session cookie info
+            var studentId = HttpContext.Session.GetString("student_id");
+            var classId = HttpContext.Session.GetString("class_id");
 
             // Query for subject IDs associated with the class ID
             var subject_ids = await dbContext.SubjectTeacherClasses
@@ -37,28 +29,63 @@ namespace Singlearn.Controllers
                 .Select(stc => stc.subject_id)
                 .ToListAsync();
 
+            var className = await dbContext.Classes
+                .Where(c => c.class_id == classId)
+                .Select(c => c.name)
+                .FirstOrDefaultAsync();
+
             // Query subjects based on the retrieved subject IDs
             var subjects = await dbContext.Subjects
                 .Where(s => subject_ids.Contains(s.subject_id))
                 .Select(s => new SubjectViewModel
-                {  // Adjust to use your actual ViewModel or entity
+                {
                     subject_id = s.subject_id,
                     name = s.name,
                     academic_level = s.academic_level,
                     image = s.image,
                     no_chapters = s.no_chapters,
                     year = s.year,
-                    class_id = classId  // Include the class ID here
+                    class_id = classId,
+                    class_name = className
                 })
                 .ToListAsync();
 
-            return View(subjects);
+            // Query announcements
+            var announcements = await dbContext.Announcements
+                .Where(a => a.category == "News" || a.category == "Events")
+                .Join(dbContext.Staff,
+                      a => a.staff_id,
+                      s => s.staff_id,
+                      (a, s) => new AnnouncementViewModel
+                      {
+                          AnnouncementId = a.announcement_id,
+                          Title = a.title,
+                          Category = a.category,
+                          Status = a.status,
+                          Image = a.image,
+                          Description = a.description,
+                          Date = a.date,
+                          SubjectId = a.subject_id,
+                          StaffId = a.staff_id,
+                          StaffName = s.name, // Include staff name here
+                          ClassId = a.class_id,
+                          Url = a.url,
+                      })
+                .ToListAsync();
+
+            var viewModel = new HomepageViewModel
+            {
+                Subjects = subjects,
+                Announcements = announcements
+            };
+
+            return View(viewModel);
         }
 
-        public async Task<IActionResult> SubjectIndex(int subject_id, string class_id)
+        public async Task<IActionResult> SubjectIndex(int subject_id)
         {
             ViewData["SubjectId"] = subject_id;
-            ViewData["ClassId"] = class_id;
+            var classId = HttpContext.Session.GetString("class_id");
 
             var subject_name = await dbContext.Subjects
                 .Where(s => s.subject_id.Equals(subject_id))
@@ -79,7 +106,7 @@ namespace Singlearn.Controllers
 
 
             var announcements = await dbContext.Announcements
-                .Where(a => a.subject_id == subject_id && a.class_id.Equals(class_id))
+                .Where(a => a.subject_id == subject_id && a.class_id.Equals(classId))
                 .ToListAsync();
 
             var staff_name = await dbContext.Staff
@@ -92,7 +119,7 @@ namespace Singlearn.Controllers
             ViewData["SubjectName"] = subject_name;
 
             var stc = await dbContext.SubjectTeacherClasses
-                .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id.Equals(class_id));
+                .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id.Equals(classId));
 
             var stcTemplate = await dbContext.STCTemplates
                 .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
@@ -103,7 +130,7 @@ namespace Singlearn.Controllers
             var viewModel = new SubjectViewModel
             {
                 subject_id = subject_id,
-                class_id = class_id,
+                class_id = classId,
                 TemplateViewName = template?.view_name,
                 Chapters = chapters,
                 Announcements = announcements,
@@ -113,10 +140,11 @@ namespace Singlearn.Controllers
             return View("SubjectMain", viewModel);
         }
 
-        public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id, string class_id)
+        public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id)
         {
+            var classId = HttpContext.Session.GetString("class_id");
             var materials = await dbContext.Materials
-                .Where(m => m.subject_id == subject_id && m.chapter_id == chapter_id && m.class_id == class_id)
+                .Where(m => m.subject_id == subject_id && m.chapter_id == chapter_id && m.class_id == classId)
                 .ToListAsync();
 
             return View("ChapterMain", materials);

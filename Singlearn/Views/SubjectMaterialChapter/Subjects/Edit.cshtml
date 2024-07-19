@@ -10,7 +10,7 @@
                 <h2>Edit Subject</h2>
                 <hr />
 
-                <form asp-action="Edit">
+                <form asp-action="EditSubject" asp-controller="SubjectMaterialChapter" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="subject_id" />
                     <div class="form-group">
@@ -38,14 +38,13 @@
                         <input asp-for="image" class="form-control" />
                         <span asp-validation-for="image" class="text-danger"></span>
                     </div>
-
                     <div class="form-group text-center mt-3 mb-3">
                         <input type="submit" value="Update" class="btn btn-primary" />
                     </div>
                 </form>
 
                 <div>
-                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                    <a asp-action="IndexSubjects" asp-controller="SubjectMaterialChapter" class="btn btn-secondary">Back to List</a>
                 </div>
             </div>
         </div>

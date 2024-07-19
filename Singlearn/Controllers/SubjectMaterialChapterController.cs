@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +11,7 @@ using Singlearn.ViewModels;
 
 namespace Singlearn.Controllers
 {
+    [Route("[controller]/[action]")]
     public class SubjectMaterialChapterController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,23 +21,25 @@ namespace Singlearn.Controllers
             _context = context;
         }
 
-        // Materials Actions
-        [HttpGet("materials/index")]
-        public async Task<IActionResult> MaterialsIndex()
+        // Materials methods
+        [HttpGet]
+        [Route("/Materials/Index")]
+        public async Task<IActionResult> IndexMaterials()
         {
             return View("Materials/Index", await _context.Materials.ToListAsync());
         }
 
-        [HttpGet("materials/details/{id}")]
-        public async Task<IActionResult> MaterialsDetails(int? id)
+        [HttpGet]
+        [Route("/Materials/Details/{id?}")]
+        public async Task<IActionResult> DetailsMaterial(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var material = await _context.Materials.FirstOrDefaultAsync(m => m.material_id == id);
-
+            var material = await _context.Materials
+                .FirstOrDefaultAsync(m => m.material_id == id);
             if (material == null)
             {
                 return NotFound();
@@ -46,16 +48,18 @@ namespace Singlearn.Controllers
             return View("Materials/Details", material);
         }
 
-        [HttpGet("materials/create")]
-        public IActionResult MaterialsCreate()
+        [HttpGet]
+        [Route("/Materials/Create")]
+        public IActionResult CreateMaterial()
         {
             PopulateViewBag();
-            return View("Materials/Create", new MaterialCreateViewModel());
+            return View("Materials/Create");
         }
 
-        [HttpPost("materials/create")]
+        [HttpPost]
+        [Route("/Materials/Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> MaterialsCreate(MaterialCreateViewModel model)
+        public async Task<IActionResult> CreateMaterial(MaterialCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -90,15 +94,16 @@ namespace Singlearn.Controllers
 
                 _context.Add(material);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(MaterialsIndex));
+                return RedirectToAction(nameof(IndexMaterials));
             }
 
             PopulateViewBag();
             return View("Materials/Create", model);
         }
 
-        [HttpGet("materials/edit/{id}")]
-        public async Task<IActionResult> MaterialsEdit(int? id)
+        [HttpGet]
+        [Route("/Materials/Edit/{id?}")]
+        public async Task<IActionResult> EditMaterial(int? id)
         {
             if (id == null)
             {
@@ -129,9 +134,10 @@ namespace Singlearn.Controllers
             return View("Materials/Edit", viewModel);
         }
 
-        [HttpPost("materials/edit/{id}")]
+        [HttpPost]
+        [Route("/Materials/Edit/{id?}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> MaterialsEdit(int id, MaterialEditViewModel material)
+        public async Task<IActionResult> EditMaterial(int id, MaterialEditViewModel material)
         {
             if (id != material.material_id)
             {
@@ -187,53 +193,65 @@ namespace Singlearn.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(MaterialsIndex));
+                return RedirectToAction(nameof(IndexMaterials));
             }
             return View("Materials/Edit", material);
         }
 
-        [HttpGet("materials/delete/{id}")]
-        public async Task<IActionResult> MaterialsDelete(int? id)
+        // GET: Materials/Delete/5
+        [HttpGet]
+        [Route("/Materials/Delete/{id?}")]
+        public async Task<IActionResult> DeleteMaterial(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var material = await _context.Materials.FirstOrDefaultAsync(m => m.material_id == id);
+            var material = await _context.Materials
+                .FirstOrDefaultAsync(m => m.material_id == id);
             if (material == null)
             {
                 return NotFound();
             }
+
             return View("Materials/Delete", material);
         }
 
-        [HttpPost("materials/delete/{id}")]
+        [HttpPost, ActionName("DeleteConfirmedMaterial")]
+        [Route("/Materials/DeleteConfirmedMaterial/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> MaterialsDeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmedMaterial(int id)
         {
             var material = await _context.Materials.FindAsync(id);
-            _context.Materials.Remove(material);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(MaterialsIndex));
+            if (material != null)
+            {
+                _context.Materials.Remove(material);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(IndexMaterials));
         }
 
-        // ChapterNames Actions
-        [HttpGet("chapternames/index")]
-        public async Task<IActionResult> ChaptersIndex()
+
+        // ChapterNames methods
+        [HttpGet]
+        [Route("/ChapterNames/Index")]
+        public async Task<IActionResult> IndexChapterNames()
         {
             return View("ChapterNames/Index", await _context.ChapterNames.ToListAsync());
         }
 
-        [HttpGet("chapternames/details/{id}")]
-        public async Task<IActionResult> ChaptersDetails(int? id)
+        [HttpGet]
+        [Route("/ChapterNames/Details/{id?}")]
+        public async Task<IActionResult> DetailsChapterName(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var chapterName = await _context.ChapterNames.FirstOrDefaultAsync(m => m.chapter_name_id == id);
+            var chapterName = await _context.ChapterNames
+                .FirstOrDefaultAsync(m => m.chapter_name_id == id);
             if (chapterName == null)
             {
                 return NotFound();
@@ -241,27 +259,30 @@ namespace Singlearn.Controllers
             return View("ChapterNames/Details", chapterName);
         }
 
-        [HttpGet("chapternames/create")]
-        public IActionResult ChaptersCreate()
+        [HttpGet]
+        [Route("/ChapterNames/Create")]
+        public IActionResult CreateChapterName()
         {
             return View("ChapterNames/Create");
         }
 
-        [HttpPost("chapternames/create")]
+        [HttpPost]
+        [Route("/ChapterNames/Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChaptersCreate([Bind("chapter_name_id,name,chapter_id,subject_id")] ChapterName chapterName)
+        public async Task<IActionResult> CreateChapterName([Bind("chapter_name_id,name,chapter_id,subject_id")] ChapterName chapterName)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(chapterName);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(ChaptersIndex));
+                return RedirectToAction(nameof(IndexChapterNames));
             }
             return View("ChapterNames/Create", chapterName);
         }
 
-        [HttpGet("chapternames/edit/{id}")]
-        public async Task<IActionResult> ChaptersEdit(int? id)
+        [HttpGet]
+        [Route("/ChapterNames/Edit/{id?}")]
+        public async Task<IActionResult> EditChapterName(int? id)
         {
             if (id == null)
             {
@@ -276,9 +297,10 @@ namespace Singlearn.Controllers
             return View("ChapterNames/Edit", chapterName);
         }
 
-        [HttpPost("chapternames/edit/{id}")]
+        [HttpPost]
+        [Route("/ChapterNames/Edit/{id?}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChaptersEdit(int id, [Bind("chapter_name_id,name,chapter_id,subject_id")] ChapterName chapterName)
+        public async Task<IActionResult> EditChapterName(int id, [Bind("chapter_name_id,name,chapter_id,subject_id")] ChapterName chapterName)
         {
             if (id != chapterName.chapter_name_id)
             {
@@ -303,53 +325,64 @@ namespace Singlearn.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(ChaptersIndex));
+                return RedirectToAction(nameof(IndexChapterNames));
             }
             return View("ChapterNames/Edit", chapterName);
         }
 
-        [HttpGet("chapternames/delete/{id}")]
-        public async Task<IActionResult> ChaptersDelete(int? id)
+        [HttpGet]
+        [Route("/ChapterNames/Delete/{id?}")]
+        public async Task<IActionResult> DeleteChapterName(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var chapterName = await _context.ChapterNames.FirstOrDefaultAsync(m => m.chapter_name_id == id);
+            var chapterName = await _context.ChapterNames
+                .FirstOrDefaultAsync(m => m.chapter_name_id == id);
             if (chapterName == null)
             {
                 return NotFound();
             }
+
             return View("ChapterNames/Delete", chapterName);
         }
 
-        [HttpPost("chapternames/delete/{id}")]
+        [HttpPost, ActionName("DeleteConfirmedChapterName")]
+        [Route("/ChapterNames/DeleteConfirmedChapterName/{id?}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChaptersDeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmedChapterName(int id)
         {
             var chapterName = await _context.ChapterNames.FindAsync(id);
-            _context.ChapterNames.Remove(chapterName);
+            if (chapterName != null)
+            {
+                _context.ChapterNames.Remove(chapterName);
+            }
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ChaptersIndex));
+            return RedirectToAction(nameof(IndexChapterNames));
         }
 
-        // Subject Actions
-        [HttpGet("subjects/index")]
-        public async Task<IActionResult> SubjectsIndex()
+        // Subjects methods
+        [HttpGet]
+        [Route("/Subjects/Index")]
+        public async Task<IActionResult> IndexSubjects()
         {
             return View("Subjects/Index", await _context.Subjects.ToListAsync());
         }
 
-        [HttpGet("subjects/details/{id}")]
-        public async Task<IActionResult> SubjectsDetails(int? id)
+        [HttpGet]
+        [Route("/Subjects/Details/{id?}")]
+        public async Task<IActionResult> DetailsSubject(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var subject = await _context.Subjects.FirstOrDefaultAsync(m => m.subject_id == id);
+            var subject = await _context.Subjects
+                .FirstOrDefaultAsync(m => m.subject_id == id);
             if (subject == null)
             {
                 return NotFound();
@@ -358,27 +391,30 @@ namespace Singlearn.Controllers
             return View("Subjects/Details", subject);
         }
 
-        [HttpGet("subjects/create")]
-        public IActionResult SubjectsCreate()
+        [HttpGet]
+        [Route("/Subjects/Create")]
+        public IActionResult CreateSubject()
         {
             return View("Subjects/Create");
         }
 
-        [HttpPost("subjects/create")]
+        [HttpPost]
+        [Route("/Subjects/Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SubjectsCreate([Bind("subject_id,name,year,academic_level,no_chapters,image")] Subject subject)
+        public async Task<IActionResult> CreateSubject([Bind("subject_id,name,year,academic_level,no_chapters,image")] Subject subject)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(subject);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(SubjectsIndex));
+                return RedirectToAction(nameof(IndexSubjects));
             }
             return View("Subjects/Create", subject);
         }
 
-        [HttpGet("subjects/edit/{id}")]
-        public async Task<IActionResult> SubjectsEdit(int? id)
+        [HttpGet]
+        [Route("/Subjects/Edit/{id?}")]
+        public async Task<IActionResult> EditSubject(int? id)
         {
             if (id == null)
             {
@@ -393,9 +429,10 @@ namespace Singlearn.Controllers
             return View("Subjects/Edit", subject);
         }
 
-        [HttpPost("subjects/edit/{id}")]
+        [HttpPost]
+        [Route("/Subjects/Edit/{id?}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SubjectsEdit(int id, [Bind("subject_id,name,year,academic_level,no_chapters,image")] Subject subject)
+        public async Task<IActionResult> EditSubject(int id, [Bind("subject_id,name,year,academic_level,no_chapters,image")] Subject subject)
         {
             if (id != subject.subject_id)
             {
@@ -420,35 +457,43 @@ namespace Singlearn.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(SubjectsIndex));
+                return RedirectToAction(nameof(IndexSubjects));
             }
             return View("Subjects/Edit", subject);
         }
 
-        [HttpGet("subjects/delete/{id}")]
-        public async Task<IActionResult> SubjectsDelete(int? id)
+        [HttpGet]
+        [Route("/Subjects/Delete/{id?}")]
+        public async Task<IActionResult> DeleteSubject(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var subject = await _context.Subjects.FirstOrDefaultAsync(m => m.subject_id == id);
+            var subject = await _context.Subjects
+                .FirstOrDefaultAsync(m => m.subject_id == id);
             if (subject == null)
             {
                 return NotFound();
             }
+
             return View("Subjects/Delete", subject);
         }
 
-        [HttpPost("subjects/delete/{id}")]
+        [HttpPost, ActionName("DeleteConfirmedSubject")]
+        [Route("/Subjects/DeleteConfirmedSubject/{id?}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SubjectsDeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmedSubject(int id)
         {
             var subject = await _context.Subjects.FindAsync(id);
-            _context.Subjects.Remove(subject);
+            if (subject != null)
+            {
+                _context.Subjects.Remove(subject);
+            }
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(SubjectsIndex));
+            return RedirectToAction(nameof(IndexSubjects));
         }
 
         private bool MaterialExists(int id)
@@ -486,9 +531,9 @@ namespace Singlearn.Controllers
             };
             var statusOptions = new List<SelectListItem>
             {
-                new SelectListItem{ Value = "Visible", Text = "Visible" },
-                new SelectListItem{ Value = "Not Visible", Text = "Not Visible" }
-            };
+              new SelectListItem{ Value = "Visible", Text = "Visible" },
+              new SelectListItem{ Value = "Not Visible", Text = "Not Visible" }
+             };
 
             ViewBag.TypeOptions = typeOptions;
             ViewBag.StatusOptions = statusOptions;
