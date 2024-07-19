@@ -85,12 +85,13 @@ namespace Singlearn.Controllers
             }
 
             // Initialize the model with the staff ID
-            var model = new AnnouncementViewModel
+            var viewModel = new AnnouncementViewModel
             {
-                StaffId = staffId
+                StaffId = staffId,
+                Date = DateTime.Now
             };
 
-            return View(model);
+            return View(viewModel);
         }
 
         // POST: Announcements/Create
@@ -100,6 +101,11 @@ namespace Singlearn.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Ensure the staff ID is set
+                var staffId = HttpContext.Session.GetString("staff_id");
+                model.StaffId = staffId;
+
+                // Map the view model to the entity model
                 var announcement = new Announcement
                 {
                     announcement_id = 0, // Auto-generated ID, if applicable
