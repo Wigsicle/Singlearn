@@ -1,94 +1,122 @@
-﻿@model IEnumerable<Singlearn.Models.Entities.Announcement>
-
+﻿@model List<Singlearn.ViewModels.AnnouncementViewModel>
 @{
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
     ViewData["Title"] = "Index";
 }
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Announcement Index</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://kit.fontawesome.com/a076d05399.js" rel="stylesheet">
+    <style>
+        .button-group {
+            display: flex;
+            gap: 10px; /* Adjust the spacing between buttons as needed */
+        }
 
-<div style="padding-top: 200px">
-<h1>Index</h1>
+        .main-content {
+            max-width: calc(100% - 300px);
+            margin-left: 150px;
+            margin-right: 50px;
+        }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-</div>
+        .input-group {
+            flex-grow: 1;
+            justify-content: center;
+            margin: 0 auto;
+            max-width: 600px;
+        }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.url)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.subject_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.staff_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.class_id)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.category)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.image)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.url)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.subject_id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.staff_id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.class_id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.announcement_id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.announcement_id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.announcement_id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        .add-button {
+            margin-left: 20px;
+        }
+
+        .table-container table td.description {
+            max-width: 300px; /* Adjust max-width as needed */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .action-icons {
+            font-size: 1.2em;
+            cursor: pointer;
+            display: inline-block;
+            margin: 0 2px;
+        }
+
+        .table-responsive-md {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-content" style="padding-top: 120px;">
+        <div class="text-center mb-5">
+            <h1 class="display-4"><b>Announcement Page</b></h1>
+        </div>
+
+        <div class="d-flex justify-content-center mb-3">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fa fa-search"></i>
+                </span>
+                <input type="text" class="form-control" placeholder="Search..." aria-label="Search...">
+                <a asp-action="Create" class="btn btn-primary add-button">Create New</a>
+            </div>
+        </div>
+
+        <div class="card mb-5">
+            <div class="table-responsive table-container">
+                <table class="table table-bordered table-striped text-center table-responsive-md">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model[0].SubjectId)</th>
+                            <th>@Html.DisplayNameFor(model => model[0].StaffId)</th>
+                            <th>@Html.DisplayNameFor(model => model[0].ClassId)</th>
+                            <th>@Html.DisplayNameFor(model => model[0].Title)</th>
+                            <th>@Html.DisplayNameFor(model => model[0].Description)</th>
+                            <th>@Html.DisplayNameFor(model => model[0].Image)</th>
+                            <th>@Html.DisplayNameFor(model => model[0].Date)</th>
+                            <th>@Html.DisplayNameFor(model => model[0].Url)</th>
+                            <th>@Html.DisplayNameFor(model => model[0].Category)</th>
+                            <th>@Html.DisplayNameFor(model => model[0].Status)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.SubjectId</td>
+                                <td>@item.StaffId</td>
+                                <td>@item.ClassId</td>
+                                <td>@item.Title</td>
+                                <td class="description">@item.Description</td>
+                                <td>@item.Image</td>
+                                <td>@item.Date.ToString("yyyy-MM-dd")</td>
+                                <td>@item.Url</td>
+                                <td>@item.Category</td>
+                                <td>@item.Status</td>
+                                <td class="button-group">
+                                    <a asp-action="Edit" asp-route-id="@item.AnnouncementId" class="btn btn-warning btn-sm">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.AnnouncementId" class="btn btn-info btn-sm">Details</a>
+                                    <a asp-action="Delete" asp-route-id="@item.AnnouncementId" class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>

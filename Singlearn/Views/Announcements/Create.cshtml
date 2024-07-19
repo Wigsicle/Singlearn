@@ -1,4 +1,5 @@
-﻿@model Singlearn.ViewModels.AnnouncementViewModel
+﻿@using System.Security.Claims
+@model IEnumerable<Singlearn.Models.Entities.Announcement>
 
 @{
     ViewData["Title"] = "Create";
@@ -11,13 +12,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create Announcement</title>
     <link rel="stylesheet" href="~/css/site.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
         body {
             background-color: #f7f7f9; /* Light pastel background color */
         }
 
         .main-container {
-            margin-top: 50px; /* Additional padding from the header */
             padding: 150px;
         }
 
@@ -84,71 +85,69 @@
                 </div>
             </div>
             <div class="form-container">
-                <form asp-action="Create" method="post">
+                <form asp-action="Create" asp-controller="Announcements" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="Title" class="control-label"></label>
-                        <input asp-for="Title" class="form-control" placeholder="Insert your Title Here" />
-                        <span asp-validation-for="Title" class="text-danger"></span>
+                        <label asp-for="title" class="control-label"></label>
+                        <input asp-for="title" class="form-control" placeholder="Insert your Title Here" />
+                        <span asp-validation-for="title" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Description" class="control-label"></label>
-                        <input asp-for="Description" class="form-control" placeholder="Insert your Description Here" />
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <label asp-for="description" class="control-label"></label>
+                        <textarea asp-for="description" class="form-control" placeholder="Insert your Description Here"></textarea>
+                        <span asp-validation-for="description" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Category" class="control-label"></label>
-                        <select asp-for="Category" class="form-control" id="categorySelect">
+                        <label asp-for="image" class="control-label"></label>
+                        <input asp-for="image" class="form-control" placeholder="Insert your Image URL Here" />
+                        <span asp-validation-for="image" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="url" class="control-label"></label>
+                        <input asp-for="url" class="form-control" placeholder="Insert your URL Here" />
+                        <span asp-validation-for="url" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="category" class="control-label"></label>
+                        <select asp-for="category" class="form-control" id="categoryDropdown">
                             <option value="News">News</option>
                             <option value="Events">Events</option>
                             <option value="Subject">Subject</option>
                         </select>
-                        <span asp-validation-for="Category" class="text-danger"></span>
-                    </div>
-                    <div class="form-group hidden" id="classesRow">
-                        <label>Your Classes</label>
-                        <div class="checkbox-group">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="P1ENG" name="classes[]" value="ClassId">
-                                <label class="form-check-label" for="P1ENG">P1 ENG</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="P3ENG" name="classes[]" value="ClassId">
-                                <label class="form-check-label" for="P3ENG">P3 ENG</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="P5ENG" name="classes[]" value="ClassId">
-                                <label class="form-check-label" for="P5ENG">P5 ENG</label>
-                            </div>
-                        </div>
+                        <span asp-validation-for="category" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Status" class="control-label"></label>
-                        <select asp-for="Status" class="form-control">
+                        <label asp-for="status" class="control-label"></label>
+                        <select asp-for="status" class="form-control">
                             <option value="Visible">Visible</option>
-                            <option value="Non Visible">Non Visible</option>
+                            <option value="Non-Visible">Non-Visible</option>
                         </select>
-                        <span asp-validation-for="Status" class="text-danger"></span>
+                        <span asp-validation-for="status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group hidden" id="subjectGroup">
+                        <label asp-for="subject_id" class="control-label"></label>
+                        <select asp-for="subject_id" class="form-control" asp-items="ViewBag.Subjects"></select>
+                        <span asp-validation-for="subject_id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group hidden" id="classGroup">
+                        <label class="control-label">Classes</label>
+                        <div id="classCheckboxes">
+                            <!-- Checkboxes will be inserted here via AJAX -->
+                        </div>
+                        <span asp-validation-for="class_id" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Image" class="control-label"></label>
-                        <input asp-for="Image" class="form-control" placeholder="www.referencedwebsite.com" />
-                        <span asp-validation-for="Image" class="text-danger"></span>
+                        <label asp-for="staff_id" class="control-label"></label>
+                        @{
+                            var staffId = User?.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
+                        }
+                        <input asp-for="staff_id" class="form-control" value="@staffId" readonly />
+                        <span asp-validation-for="staff_id" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Date" class="control-label"></label>
-                        <input asp-for="Date" class="form-control" />
-                        <span asp-validation-for="Date" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Url" class="control-label"></label>
-                        <input asp-for="Url" class="form-control" placeholder="www.referencedwebsite.com" />
-                        <span asp-validation-for="Url" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="hidden" asp-for="SubjectId" value="1" />
-                        <input type="hidden" asp-for="StaffId" value="1" />
-                        <input type="hidden" asp-for="ClassId" value="1" />
+                        <label asp-for="date" class="control-label"></label>
+                        <input asp-for="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
+                        <span asp-validation-for="date" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Create" class="btn btn-primary" />
@@ -161,21 +160,68 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('categorySelect').addEventListener('change', function () {
-            var classesRow = document.getElementById('classesRow');
-            if (this.value === 'Subject') {
-                classesRow.classList.remove('hidden');
-            } else {
-                classesRow.classList.add('hidden');
-            }
-        });
-    </script>
-
     @section Scripts {
         @{
             await Html.RenderPartialAsync("_ValidationScriptsPartial");
         }
+        <script>
+            $(document).ready(function () {
+                // Hide class group by default
+                $('#classGroup').hide();
+                $('#subjectGroup').hide();
+                $('teacherGroup').hide();
+
+                // Show or hide class group based on selected category
+                $('#categoryDropdown').change(function () {
+                    if ($(this).val() === 'Subject') {
+                        $('#subjectGroup').show();
+                        $('#classGroup').show();
+                    } else {
+                        $('#subjectGroup').hide();
+                        $('#classGroup').hide();
+                    }
+                });
+
+                $(document).ready(function () {
+                    var staffId = '@ViewData["StaffId"]';
+                    $.getJSON('/Announcements1/GetClassesByStaff', { staff_id: staffId }, function (data) {
+                        var select = $('#class_id');
+                        $.each(data, function (index, item) {
+                            select.append($('<option/>', {
+                                value: item.value,
+                                text: item.text
+                            }));
+                        });
+                    });
+                });
+
+                $('#staffDropdown').change(function () {
+                    var staffId = $(this).val();
+                    $.ajax({
+                        url: '@Url.Action("GetClassesByStaff", "Announcements1")',
+                        type: 'GET',
+                        data: { staff_id: staffId },
+                        success: function (data) {
+                            var classCheckboxes = $('#classCheckboxes');
+                            classCheckboxes.empty();
+                            $.each(data, function (index, value) {
+                                classCheckboxes.append(
+                                    $('<div>').append(
+                                        $('<input>').attr({
+                                            type: 'checkbox',
+                                            name: 'class_id',
+                                            value: value.value
+                                        }).addClass('form-check-input')
+                                    ).append(
+                                        $('<label>').text(value.text).addClass('form-check-label')
+                                    ).addClass('form-check')
+                                );
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
     }
 </body>
 </html>
