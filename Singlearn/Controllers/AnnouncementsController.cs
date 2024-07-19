@@ -253,11 +253,24 @@ namespace Singlearn.Controllers
         }
 
         [HttpGet]
+        public JsonResult GetSubjectsByStaff(string staff_id)
+        {
+            var subjects = _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == staff_id)
+                .Select(stc => new { value = stc.subject_id, text = _context.Subjects.First(s => s.subject_id == stc.subject_id).name })
+                .Distinct()
+                .ToList();
+
+            return Json(subjects);
+        }
+
+        [HttpGet]
         public JsonResult GetClassesByStaff(string staff_id)
         {
             var classes = _context.SubjectTeacherClasses
                 .Where(stc => stc.teacher_id == staff_id)
                 .Select(stc => new { value = stc.class_id, text = _context.Classes.First(c => c.class_id == stc.class_id).name })
+                .Distinct()
                 .ToList();
 
             return Json(classes);
