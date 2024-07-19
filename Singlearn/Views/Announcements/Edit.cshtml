@@ -1,7 +1,12 @@
-﻿@model Singlearn.Models.Entities.Announcement
+﻿<!-- Edit.cshtml -->
+@model Singlearn.Models.Entities.Announcement
 
 @{
     ViewData["Title"] = "Edit";
+}
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var staffId = HttpContextAccessor.HttpContext.Session.GetString("staff_id");
 }
 
 <!DOCTYPE html>
@@ -14,7 +19,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
         body {
-            background-color: #f7f7f9; /* Light pastel background color */
+            background-color: #f7f7f9;
         }
 
         .main-container {
@@ -25,17 +30,17 @@
             text-align: left;
             margin-right: 20px;
             display: flex;
-            align-items: center; /* Center vertically */
-            height: 100%; /* Full height of parent */
+            align-items: center;
+            height: 100%;
         }
 
         .form-container {
-            background-color: #ffffff; /* White background for the form */
+            background-color: #ffffff;
             border-radius: 8px;
             padding: 30px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             flex: 1;
-            max-width: 500px; /* Smaller width */
+            max-width: 500px;
         }
 
         .btn-primary {
@@ -50,13 +55,13 @@
 
         .content-wrapper {
             display: flex;
-            align-items: center; /* Center vertically */
-            justify-content: center; /* Center horizontally */
+            align-items: center;
+            justify-content: center;
         }
 
         ::placeholder {
             color: lightgray;
-            opacity: 1; /* Firefox */
+            opacity: 1;
         }
 
         .form-group.hidden {
@@ -64,7 +69,7 @@
         }
 
         .form-group {
-            margin-bottom: 20px; /* Add space between form groups */
+            margin-bottom: 20px;
         }
 
         .checkbox-group {
@@ -73,6 +78,66 @@
             padding: 20px 0;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+            var staffId = "@staffId";
+
+            if (staffId) {
+                $.getJSON('/Announcements/GetSubjectsByStaff', { staff_id: staffId }, function (data) {
+                    var subjectSelect = $('#subject_id');
+                    subjectSelect.empty();
+                    $.each(data, function (index, item) {
+                        subjectSelect.append($('<option/>', {
+                            value: item.value,
+                            text: item.text
+                        }));
+                    });
+
+                    var selectedSubject = '@Model.subject_id';
+                    if (selectedSubject) {
+                        subjectSelect.val(selectedSubject).change();
+                    }
+                });
+
+                $('#subject_id').change(function () {
+                    var subjectId = $(this).val();
+                    if (subjectId) {
+                        $.getJSON('/Announcements/GetClassesByStaff', { staff_id: staffId, subject_id: subjectId }, function (data) {
+                            var classSelect = $('#class_id');
+                            classSelect.empty();
+                            $.each(data, function (index, item) {
+                                classSelect.append($('<option/>', {
+                                    value: item.value,
+                                    text: item.text
+                                }));
+                            });
+
+                            var selectedClass = '@Model.class_id';
+                            if (selectedClass) {
+                                classSelect.val(selectedClass).change();
+                            }
+                        });
+                    } else {
+                        $('#class_id').empty();
+                    }
+                });
+            }
+
+            // Handle category change
+            $('#category').change(function () {
+                var selectedCategory = $(this).val();
+                if (selectedCategory === 'News' || selectedCategory === 'Events') {
+                    $('#subject_id').val('').trigger('change');
+                    $('#class_id').val('').trigger('change');
+                    $('#subject_id').parent().addClass('hidden');
+                    $('#class_id').parent().addClass('hidden');
+                } else if (selectedCategory === 'Subject') {
+                    $('#subject_id').parent().removeClass('hidden');
+                    $('#class_id').parent().removeClass('hidden');
+                }
+            }).trigger('change'); // Trigger change on page load to handle initial state
+        });
+    </script>
 </head>
 <body>
     <div class="container main-container">
@@ -84,42 +149,45 @@
                 </div>
             </div>
             <div class="form-container">
-                <form asp-action="Edit" method="post">
+                <form asp-action="Edit" asp-controller="Announcements" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="announcement_id" />
                     <div class="form-group">
                         <label asp-for="title" class="control-label"></label>
-                        <input asp-for="title" class="form-control" placeholder="Insert your Title Here" />
+                        <input asp-for="title" class="form-control" />
                         <span asp-validation-for="title" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="description" class="control-label"></label>
-                        <input asp-for="description" class="form-control" placeholder="Insert your Description Here" />
+                        <textarea asp-for="description" class="form-control"></textarea>
                         <span asp-validation-for="description" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="image" class="control-label"></label>
-                        <input asp-for="image" class="form-control" placeholder="Insert your Image URL Here" />
+                        <input asp-for="image" class="form-control" />
                         <span asp-validation-for="image" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="date" class="control-label"></label>
-                        <input asp-for="date" class="form-control" placeholder="Insert the Date Here" />
-                        <span asp-validation-for="date" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
                         <label asp-for="url" class="control-label"></label>
-                        <input asp-for="url" class="form-control" placeholder="Insert your URL Here" />
+                        <input asp-for="url" class="form-control" />
                         <span asp-validation-for="url" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="category" class="control-label"></label>
-                        <select asp-for="category" class="form-control" id="categoryDropdown">
+                        <select asp-for="category" class="form-control" id="category">
                             <option value="News">News</option>
                             <option value="Events">Events</option>
                             <option value="Subject">Subject</option>
                         </select>
                         <span asp-validation-for="category" class="text-danger"></span>
+                    </div>
+                    <div class="form-group hidden" id="subject-group">
+                        <label asp-for="subject_id" class="control-label">Subject</label>
+                        <select asp-for="subject_id" class="form-control" id="subject_id"></select>
+                    </div>
+                    <div class="form-group hidden" id="class-group">
+                        <label asp-for="class_id" class="control-label">Class</label>
+                        <select asp-for="class_id" class="form-control" id="class_id"></select>
                     </div>
                     <div class="form-group">
                         <label asp-for="status" class="control-label"></label>
@@ -130,22 +198,17 @@
                         <span asp-validation-for="status" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="subject_id" class="control-label"></label>
-                        <select asp-for="subject_id" class="form-control" asp-items="ViewBag.Subjects"></select>
-                        <span asp-validation-for="subject_id" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
                         <label asp-for="staff_id" class="control-label"></label>
-                        <select asp-for="staff_id" class="form-control" asp-items="ViewBag.Staffs" id="staffDropdown"></select>
+                        <input asp-for="staff_id" class="form-control" value="@staffId" readonly />
                         <span asp-validation-for="staff_id" class="text-danger"></span>
                     </div>
-                    <div class="form-group hidden" id="classGroup">
-                        <label asp-for="class_id" class="control-label"></label>
-                        <select asp-for="class_id" class="form-control" asp-items="ViewBag.Classes" id="classDropdown"></select>
-                        <span asp-validation-for="class_id" class="text-danger"></span>
-                    </div>
                     <div class="form-group">
-                        <input type="submit" value="Save" class="btn btn-primary" />
+                        <label asp-for="date" class="control-label"></label>
+                        <input asp-for="date" class="form-control" />
+                        <span asp-validation-for="date" class="text-danger"></span>
+                    </div>
+                    <div class="btn-container">
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
@@ -159,41 +222,6 @@
         @{
             await Html.RenderPartialAsync("_ValidationScriptsPartial");
         }
-        <script>
-            $(document).ready(function () {
-                // Show or hide class group based on initial category value
-                if ($('#categoryDropdown').val() === 'Subject') {
-                    $('#classGroup').show();
-                } else {
-                    $('#classGroup').hide();
-                }
-
-                // Show or hide class group based on selected category
-                $('#categoryDropdown').change(function () {
-                    if ($(this).val() === 'Subject') {
-                        $('#classGroup').show();
-                    } else {
-                        $('#classGroup').hide();
-                    }
-                });
-
-                $('#staffDropdown').change(function () {
-                    var staffId = $(this).val();
-                    $.ajax({
-                        url: '@Url.Action("GetClassesByStaff", "Announcements1")',
-                        type: 'GET',
-                        data: { staff_id: staffId },
-                        success: function (data) {
-                            var classDropdown = $('#classDropdown');
-                            classDropdown.empty();
-                            $.each(data, function (index, value) {
-                                classDropdown.append($('<option>').text(value.text).attr('value', value.value));
-                            });
-                        }
-                    });
-                });
-            });
-        </script>
     }
 </body>
 </html>

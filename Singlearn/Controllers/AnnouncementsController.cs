@@ -79,15 +79,29 @@ namespace Singlearn.Controllers
         public IActionResult Create()
         {
             var staffId = HttpContext.Session.GetString("staff_id");
+            if (string.IsNullOrEmpty(staffId))
+            {
+                return Unauthorized(); // Handle unauthorized access as needed
+            }
+
             var announcement = new Announcement
             {
                 staff_id = staffId,
                 date = DateTime.Now
             };
 
-            ViewBag.Subjects = new SelectList(_context.Subjects, "subject_id", "name");
+            // Fetch subjects associated with the staff
+            var subjects = _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == staffId)
+                .Select(stc => new { stc.subject_id, SubjectName = _context.Subjects.First(s => s.subject_id == stc.subject_id).name })
+                .Distinct()
+                .ToList();
+
+            ViewBag.Subjects = new SelectList(subjects, "subject_id", "SubjectName");
+
             return View(announcement);
         }
+
 
 
         // POST: Announcements/Create
@@ -111,7 +125,6 @@ namespace Singlearn.Controllers
         }
 
 
-
         // GET: Announcements/Edit/
         public async Task<IActionResult> Edit(int? id)
         {
@@ -126,27 +139,35 @@ namespace Singlearn.Controllers
                 return NotFound();
             }
 
-            var staffId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var staffId = HttpContext.Session.GetString("staff_id");
+            if (string.IsNullOrEmpty(staffId))
+            {
+                return Unauthorized(); // Handle unauthorized access as needed
+            }
 
-            ViewData["Subjects"] = new SelectList(
-                _context.Subjects
-                    .Where(subject => _context.SubjectTeacherClasses
-                        .Any(stc => stc.teacher_id == staffId && stc.subject_id == subject.subject_id)),
-                "subject_id",
-                "name",
-                announcement.subject_id
-            );
+            // Fetch subjects associated with the staff
+            var subjects = _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == staffId)
+                .Select(stc => new { stc.subject_id, SubjectName = _context.Subjects.First(s => s.subject_id == stc.subject_id).name })
+                .Distinct()
+                .ToList();
 
-            ViewData["StaffId"] = staffId;
-            ViewData["StaffName"] = User.Identity.Name;
+            ViewBag.Subjects = new SelectList(subjects, "subject_id", "SubjectName", announcement.subject_id);
 
+            // Fetch classes associated with the subject
+            var classes = _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == staffId && stc.subject_id == announcement.subject_id)
+                .Select(stc => new { stc.class_id, ClassName = _context.Classes.First(c => c.class_id == stc.class_id).name })
+                .ToList();
+
+            ViewBag.Classes = new MultiSelectList(classes, "class_id", "ClassName", announcement.class_id);
             return View(announcement);
         }
 
         // POST: Announcements/Edit/
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("announcement_id,subject_id,title,description,image,date,url,category,status")] Announcement announcement, int[] class_id)
+        public async Task<IActionResult> Edit(int id, [Bind("announcement_id,title,description,image,url,category,status,subject_id,class_id,staff_id,date")] Announcement announcement)
         {
             if (id != announcement.announcement_id)
             {
@@ -157,31 +178,7 @@ namespace Singlearn.Controllers
             {
                 try
                 {
-                    // Update the announcement
-                    announcement.date = DateTime.Now;
                     _context.Update(announcement);
-                    await _context.SaveChangesAsync();
-
-                    // Remove existing class associations
-                    var existingClasses = _context.SubjectTeacherClasses
-                        .Where(stc => stc.teacher_id == announcement.staff_id && stc.subject_id == announcement.subject_id)
-                        .ToList();
-
-                    _context.SubjectTeacherClasses.RemoveRange(existingClasses);
-                    await _context.SaveChangesAsync();
-
-                    // Add the selected classes
-                    foreach (var classId in class_id)
-                    {
-                        var subjectTeacherClass = new SubjectTeacherClass
-                        {
-                            subject_id = announcement.subject_id.Value,
-                            teacher_id = announcement.staff_id,
-                            class_id = classId.ToString() // Assuming class_id is a string
-                        };
-                        _context.Add(subjectTeacherClass);
-                    }
-
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -198,37 +195,65 @@ namespace Singlearn.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var staffId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var staffId = HttpContext.Session.GetString("staff_id");
+            if (string.IsNullOrEmpty(staffId))
+            {
+                return Unauthorized(); // Handle unauthorized access as needed
+            }
 
-            ViewData["Subjects"] = new SelectList(
-                _context.Subjects
-                    .Where(subject => _context.SubjectTeacherClasses
-                        .Any(stc => stc.teacher_id == staffId && stc.subject_id == subject.subject_id)),
-                "subject_id",
-                "name",
-                announcement.subject_id
-            );
+            // Fetch subjects associated with the staff
+            var subjects = _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == staffId)
+                .Select(stc => new { stc.subject_id, SubjectName = _context.Subjects.First(s => s.subject_id == stc.subject_id).name })
+                .Distinct()
+                .ToList();
 
-            ViewData["StaffId"] = staffId;
-            ViewData["StaffName"] = User.Identity.Name;
+            ViewBag.Subjects = new SelectList(subjects, "subject_id", "SubjectName", announcement.subject_id);
+
+            // Fetch classes associated with the subject
+            var classes = _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == staffId && stc.subject_id == announcement.subject_id)
+                .Select(stc => new { stc.class_id, ClassName = _context.Classes.First(c => c.class_id == stc.class_id).name })
+                .ToList();
+
+            ViewBag.Classes = new MultiSelectList(classes, "class_id", "ClassName", announcement.class_id);
+            return View(announcement);
+        }
+
+        // GET: Announcements/Delete/
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var announcement = await _context.Announcements
+                .FirstOrDefaultAsync(m => m.announcement_id == id);
+            if (announcement == null)
+            {
+                return NotFound();
+            }
 
             return View(announcement);
         }
 
+
         // POST: Announcements/Delete/
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var announcement = await _context.Announcements.FindAsync(id);
             if (announcement != null)
             {
                 _context.Announcements.Remove(announcement);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool AnnouncementExists(int id)
         {

@@ -135,11 +135,11 @@
                 <span class="details-value">@Html.DisplayFor(model => model.status)</span>
             </div>
             <div class="actions">
-                <form asp-action="Delete" style="display: inline;">
+                <form asp-action="Delete" method="post">
                     <input type="hidden" asp-for="announcement_id" />
                     <input type="submit" value="Delete" class="btn btn-danger" />
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
                 </form>
-                <a asp-action="Index">Back to List</a>
             </div>
         </div>
     </div>
