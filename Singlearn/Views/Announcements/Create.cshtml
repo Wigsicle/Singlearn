@@ -130,7 +130,7 @@
                     </div>
                     <div class="form-group hidden" id="subjectGroup">
                         <label asp-for="subject_id" class="control-label"></label>
-                        <select asp-for="subject_id" class="form-control" asp-items="ViewBag.Subjects" readonly></select>
+                        <select asp-for="subject_id" class="form-control" asp-items="ViewBag.Subjects"></select>
                         <span asp-validation-for="subject_id" class="text-danger"></span>
                     </div>
                     <div class="form-group hidden" id="classGroup">
@@ -167,45 +167,44 @@
         }
         <script>
             $(document).ready(function () {
-                // Hide class group by default
-                $('#classGroup').hide();
                 $('#subjectGroup').hide();
+                $('#classGroup').hide();
+                $('#subjectDropdown').empty(); // Ensure subjectDropdown is empty initially
 
-                // Show or hide class group based on selected category
                 $('#categoryDropdown').change(function () {
                     if ($(this).val() === 'Subject') {
                         $('#subjectGroup').show();
                         $('#classGroup').show();
 
-                        // Load subjects based on StaffId
-                        var staffId = '@staffId';
+                        // Load subjects and classes based on StaffId via AJAX
+                        var staffId = '@staffId'; // Use `@staffId` for correct value
+
                         $.ajax({
                             url: '@Url.Action("GetSubjectsByStaff", "Announcements")',
                             type: 'GET',
                             data: { staff_id: staffId },
                             success: function (data) {
-                                var subjectDropdown = $('#SubjectId');
-                                subjectDropdown.empty();
+                                var subjectDropdown = $('#subjectDropdown');
+                                subjectDropdown.empty(); // Ensure the dropdown is empty before adding new options
                                 $.each(data, function (index, value) {
                                     subjectDropdown.append($('<option>').text(value.text).attr('value', value.value));
                                 });
                             }
                         });
 
-                        // Load classes based on StaffId
                         $.ajax({
                             url: '@Url.Action("GetClassesByStaff", "Announcements")',
                             type: 'GET',
                             data: { staff_id: staffId },
                             success: function (data) {
                                 var classCheckboxes = $('#classCheckboxes');
-                                classCheckboxes.empty();
+                                classCheckboxes.empty(); // Clear existing checkboxes
                                 $.each(data, function (index, value) {
                                     classCheckboxes.append(
                                         $('<div>').append(
                                             $('<input>').attr({
                                                 type: 'checkbox',
-                                                name: 'ClassId',
+                                                name: 'class_id',
                                                 value: value.value
                                             }).addClass('form-check-input')
                                         ).append(
@@ -218,10 +217,15 @@
                     } else {
                         $('#subjectGroup').hide();
                         $('#classGroup').hide();
+
+                        // Clear the subject_id and class_id fields when not 'Subject'
+                        $('#subjectDropdown').empty();
+                        $('#classCheckboxes').empty();
                     }
                 });
             });
-        </script>   
+        </script>
+
     }
 </body>
 </html>

@@ -20,14 +20,6 @@
             padding: 150px;
         }
 
-        .header-container {
-            text-align: left;
-            margin-right: 20px;
-            display: flex;
-            align-items: center; /* Center vertically */
-            height: 100%; /* Full height of parent */
-        }
-
         .details-container {
             background-color: #ffffff; /* White background for the card */
             border-radius: 8px;
@@ -122,6 +114,19 @@
                 <span class="details-label">@Html.DisplayNameFor(model => model.status):</span>
                 <span class="details-value">@Html.DisplayFor(model => model.status)</span>
             </div>
+
+            @if (Model.category == "subject")
+            {
+                <div class="details-section">
+                    <span class="details-label">Subject_ID:</span>
+                    <span class="details-value">@Model.subject_id</span>
+                </div>
+                <div class="details-section">
+                    <span class="details-label">Class_ID:</span>
+                    <span class="details-value">@Model.class_id</span>
+                </div>
+            }
+
             <div class="actions">
                 <a asp-action="Edit" asp-route-id="@Model.announcement_id">Edit</a> |
                 <a asp-action="Index">Back to List</a>
