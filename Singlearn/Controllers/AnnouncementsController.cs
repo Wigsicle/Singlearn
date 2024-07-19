@@ -98,8 +98,14 @@ namespace Singlearn.Controllers
         {
             if (ModelState.IsValid)
             {
-/*                var staffId = HttpContext.Session.GetString("staff_id");
-                announcement.staff_id = staffId;*/
+                /*                var staffId = HttpContext.Session.GetString("staff_id");
+                                announcement.staff_id = staffId;*/
+
+                if (announcement.category != "Subject")
+                {
+                    announcement.subject_id = null;
+                }
+
                 announcement.date = DateTime.Now;
 
                 _context.Announcements.Add(announcement);
@@ -215,20 +221,39 @@ namespace Singlearn.Controllers
             return View(announcement);
         }
 
-        // POST: Announcements/Delete/
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+
+        // GET: Announcements/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            var announcement = await _context.Announcements.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var announcement = await _context.Announcements
+                .FirstOrDefaultAsync(m => m.announcement_id == id);
+            if (announcement == null)
+            {
+                return NotFound();
+            }
+
+            return View(announcement);
+        }
+
+        // POST: Announcements/Delete/
+        [HttpPost, ActionName("DeleteConfirmed")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int announcement_id)
+        {
+            var announcement = await _context.Announcements.FindAsync(announcement_id);
             if (announcement != null)
             {
                 _context.Announcements.Remove(announcement);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool AnnouncementExists(int id)
         {
