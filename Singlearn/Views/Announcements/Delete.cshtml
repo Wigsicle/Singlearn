@@ -136,7 +136,7 @@
             </div>
             <div class="actions">
                 <form asp-action="Delete" style="display: inline;">
-                    <input type="hidden" asp-for="announcement_id" value="@Model.announcement_id" />
+                    <input type="hidden" asp-for="announcement_id" />
                     <input type="submit" value="Delete" class="btn btn-danger" />
                 </form>
                 <a asp-action="Index">Back to List</a>
