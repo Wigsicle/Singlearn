@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = "Delete";
 }
+@inject IHttpContextAccessor HTTPCONTEXTACCESSOR;
+@{
+    var staffId = HTTPCONTEXTACCESSOR.HttpContext.Session.GetString("staff_id");
+}
 
 <!DOCTYPE html>
 <html lang="en">

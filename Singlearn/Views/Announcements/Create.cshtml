@@ -92,63 +92,63 @@
                 <form asp-action="Create" asp-controller="Announcements" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="Title" class="control-label"></label>
-                        <input asp-for="Title" class="form-control" placeholder="Insert your Title Here" />
-                        <span asp-validation-for="Title" class="text-danger"></span>
+                        <label asp-for="title" class="control-label"></label>
+                        <input asp-for="title" class="form-control" placeholder="Insert your Title Here" />
+                        <span asp-validation-for="title" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Description" class="control-label"></label>
-                        <textarea asp-for="Description" class="form-control" placeholder="Insert your Description Here"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <label asp-for="description" class="control-label"></label>
+                        <textarea asp-for="description" class="form-control" placeholder="Insert your Description Here"></textarea>
+                        <span asp-validation-for="description" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Image" class="control-label"></label>
-                        <input asp-for="Image" class="form-control" placeholder="Insert your Image URL Here" />
-                        <span asp-validation-for="Image" class="text-danger"></span>
+                        <label asp-for="image" class="control-label"></label>
+                        <input asp-for="image" class="form-control" placeholder="Insert your Image URL Here" />
+                        <span asp-validation-for="image" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Url" class="control-label"></label>
-                        <input asp-for="Url" class="form-control" placeholder="Insert your URL Here" />
-                        <span asp-validation-for="Url" class="text-danger"></span>
+                        <label asp-for="url" class="control-label"></label>
+                        <input asp-for="url" class="form-control" placeholder="Insert your URL Here" />
+                        <span asp-validation-for="url" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Category" class="control-label"></label>
-                        <select asp-for="Category" class="form-control" id="categoryDropdown">
+                        <label asp-for="category" class="control-label"></label>
+                        <select asp-for="category" class="form-control" id="categoryDropdown">
                             <option value="News">News</option>
                             <option value="Events">Events</option>
                             <option value="Subject">Subject</option>
                         </select>
-                        <span asp-validation-for="Category" class="text-danger"></span>
+                        <span asp-validation-for="category" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Status" class="control-label"></label>
-                        <select asp-for="Status" class="form-control">
+                        <label asp-for="status" class="control-label"></label>
+                        <select asp-for="status" class="form-control">
                             <option value="Visible">Visible</option>
                             <option value="Non-Visible">Non-Visible</option>
                         </select>
-                        <span asp-validation-for="Status" class="text-danger"></span>
+                        <span asp-validation-for="status" class="text-danger"></span>
                     </div>
                     <div class="form-group hidden" id="subjectGroup">
-                        <label asp-for="SubjectId" class="control-label"></label>
-                        <select asp-for="SubjectId" class="form-control" asp-items="ViewBag.Subjects"></select>
-                        <span asp-validation-for="SubjectId" class="text-danger"></span>
+                        <label asp-for="subject_id" class="control-label"></label>
+                        <select asp-for="subject_id" class="form-control" asp-items="ViewBag.Subjects" readonly></select>
+                        <span asp-validation-for="subject_id" class="text-danger"></span>
                     </div>
                     <div class="form-group hidden" id="classGroup">
                         <label class="control-label">Classes</label>
                         <div id="classCheckboxes">
                             <!-- Checkboxes will be inserted here via AJAX -->
                         </div>
-                        <span asp-validation-for="ClassId" class="text-danger"></span>
+                        <span asp-validation-for="class_id" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="StaffId" class="control-label"></label>
-                        <input asp-for="StaffId" class="form-control" value="@staffId" readonly />
-                        <span asp-validation-for="StaffId" class="text-danger"></span>
+                        <label asp-for="staff_id" class="control-label"></label>
+                        <input asp-for="staff_id" class="form-control" value="@staffId" readonly />
+                        <span asp-validation-for="staff_id" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Date" class="control-label"></label>
-                        <input asp-for="Date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
-                        <span asp-validation-for="Date" class="text-danger"></span>
+                        <label asp-for="date" class="control-label"></label>
+                        <input asp-for="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
+                        <span asp-validation-for="date" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Create" class="btn btn-primary" />
@@ -170,7 +170,6 @@
                 // Hide class group by default
                 $('#classGroup').hide();
                 $('#subjectGroup').hide();
-                $('teacherGroup').hide();
 
                 // Show or hide class group based on selected category
                 $('#categoryDropdown').change(function () {
@@ -222,7 +221,7 @@
                     }
                 });
             });
-        </script>
+        </script>   
     }
 </body>
 </html>
