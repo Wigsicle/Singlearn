@@ -136,12 +136,12 @@
         const modalBody = document.querySelector('#announcementModal .modal-body');
 
         let htmlContent = `
-                        <img src="${image}" alt="Image" class="img-fluid mb-3" />
+                            <img src="${image}" alt="Image" class="img-fluid mb-3 mx-auto d-block" />
                         <p>${description}</p>`;
 
         // Add link if URL is provided
         if (url) {
-            htmlContent += `<p><a href="${url}" target="_blank">Link</a></p>`;
+            htmlContent += `<p><a class="btn btn-primary" role="button" href="${url}" target="_blank">Link</a></p>`;
         }
 
         htmlContent += `

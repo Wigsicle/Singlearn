@@ -20,7 +20,7 @@
 <div class="container-fluid">
     <div class="col-lg-12">
         <div class="demo-inline-spacing mt-3">
-            <div class="list-group list-group-horizontal-md text-md-center" ;">
+            <div class="list-group list-group-horizontal-md text-md-center">
                 <a class="list-group-item list-group-item-action active"
                    id="home-list-item"
                    data-bs-toggle="list"
@@ -43,78 +43,118 @@
             {
                 <div class="tab-content px-0 mt-0">
                     <div class="tab-pane fade show active" id="vidlesson">
-                        <div class="row">
-                            @foreach (var material in Model.Where(m => m.type == "Video Lessons" && m.status == "Visible"))
-                            {
-                                <div class="col-lg-6 padding-bottom-20">
-                                    <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
-                                        <div class="card mb-2 card-hover-effect">
-                                            <div class="card-body">
-                                                <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
-                                                <p class="card-text">@material.description</p>
+                        @{
+                            var videoLessons = Model.Where(m => m.type == "Video Lessons" && m.status == "Visible");
+                        }
+                        @if (videoLessons.Any())
+                        {
+                            <div class="row">
+                                @foreach (var material in videoLessons)
+                                {
+                                    <div class="col-lg-6 padding-bottom-20">
+                                        <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
+                                            <div class="card mb-2 card-hover-effect">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
+                                                    <p class="card-text">@material.description</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            }
-                        </div>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p style="margin:0 auto; text-align:center; padding-top:50px; padding-bottom:50px;">No materials of this type are available.</p>
+                        }
                     </div>
                     <div class="tab-pane fade" id="lessnotes">
-                        <div class="row">
-                            @foreach (var material in Model.Where(m => m.type == "Lesson Notes" && m.status == "Visible"))
-                            {
-                                <div class="col-lg-6 padding-bottom-20">
-                                    <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
-                                        <div class="card mb-2 card-hover-effect">
-                                            <div class="card-body">
-                                                <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
-                                                <p class="card-text">@material.description</p>
+                        @{
+                            var lessonNotes = Model.Where(m => m.type == "Lesson Notes" && m.status == "Visible");
+                        }
+                        @if (lessonNotes.Any())
+                        {
+                            <div class="row">
+                                @foreach (var material in lessonNotes)
+                                {
+                                    <div class="col-lg-6 padding-bottom-20">
+                                        <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
+                                            <div class="card mb-2 card-hover-effect">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
+                                                    <p class="card-text">@material.description</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            }
-                        </div>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p style="margin:0 auto; text-align:center; padding-top:50px; padding-bottom:50px;">No materials of this type are available.</p>
+                        }
                     </div>
                     <div class="tab-pane fade" id="classwork">
-                        <div class="row">
-                            @foreach (var material in Model.Where(m => m.type == "Classwork" && m.status == "Visible"))
-                            {
-                                <div class="col-lg-6 padding-bottom-20">
-                                    <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
-                                        <div class="card mb-2 card-hover-effect">
-                                            <div class="card-body">
-                                                <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
-                                                <p class="card-text">@material.description</p>
+                        @{
+                            var classwork = Model.Where(m => m.type == "Classwork" && m.status == "Visible");
+                        }
+                        @if (classwork.Any())
+                        {
+                            <div class="row">
+                                @foreach (var material in classwork)
+                                {
+                                    <div class="col-lg-6 padding-bottom-20">
+                                        <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
+                                            <div class="card mb-2 card-hover-effect">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
+                                                    <p class="card-text">@material.description</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            }
-                        </div>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p style="margin:0 auto; text-align:center; padding-top:50px; padding-bottom:50px;">No materials of this type are available.</p>
+                        }
                     </div>
                     <div class="tab-pane fade" id="homework">
-                        <div class="row">
-                            @foreach (var material in Model.Where(m => m.type == "Homework" && m.status == "Visible"))
-                            {
-                                <div class="col-lg-6 padding-bottom-20">
-                                    <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
-                                        <div class="card mb-2 card-hover-effect">
-                                            <div class="card-body">
-                                                <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
-                                                <p class="card-text">@material.description</p>
+                        @{
+                            var homework = Model.Where(m => m.type == "Homework" && m.status == "Visible");
+                        }
+                        @if (homework.Any())
+                        {
+                            <div class="row">
+                                @foreach (var material in homework)
+                                {
+                                    <div class="col-lg-6 padding-bottom-20">
+                                        <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
+                                            <div class="card mb-2 card-hover-effect">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
+                                                    <p class="card-text">@material.description</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            }
-                        </div>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p style="margin:0 auto; text-align:center; padding-top:50px; padding-bottom:50px;">No materials of this type are available.</p>
+                        }
                     </div>
                 </div>
             }
             else
             {
-                <p style="margin:0 auto; text-align:center; padding-top:50px; padding-bottom:50px;">No subjects found for this student.</p>
+                <p style="margin:0 auto; text-align:center; padding-top:50px; padding-bottom:50px;">No materials found for this chapter.</p>
             }
         </div>
     </div>

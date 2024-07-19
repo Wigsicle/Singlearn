@@ -1,7 +1,7 @@
 @model IEnumerable<Singlearn.Models.Entities.Subject>
 
 @{
-    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    Layout = "~/Views/Shared/_LayoutFixed2.cshtml";
     ViewData["Title"] = "Subjects";
 
     var subjects = Model.Select(m => m.name).Distinct().OrderBy(subject => subject).ToList();
@@ -98,9 +98,17 @@
                                     <td class="col-label">@Html.DisplayFor(modelItem => item.no_chapters)</td>
                                     <td class="col-label">@Html.DisplayFor(modelItem => item.image)</td>
                                     <td>
-                                        <a asp-action="DetailsSubject" asp-route-id="@item.subject_id"><i class="fa fa-eye text-primary"></i></a> |
-                                        <a asp-action="EditSubject" asp-route-id="@item.subject_id"><i class="fa fa-pencil text-warning"></i></a> |
-                                        <a asp-action="DeleteSubject" asp-route-id="@item.subject_id"><i class="fa fa-trash text-danger"></i></a>
+                                        <ul class="button-list">
+                                            <li>
+                                                <a asp-action="DetailsSubject" asp-controller="SubjectMaterialChapter" asp-route-id="@item.subject_id" class="btn btn-primary" role="button">Details</a>
+                                            </li>
+                                            <li>
+                                                <a asp-action="EditSubject" asp-controller="SubjectMaterialChapter" asp-route-id="@item.subject_id" class="btn btn-warning" role="button">Edit</a>
+                                            </li>
+                                            <li>
+                                                <a asp-action="DeleteSubject" asp-controller="SubjectMaterialChapter" asp-route-id="@item.subject_id" class="btn btn-danger" role="button">Delete</a>
+                                            </li>
+                                        </ul>
                                     </td>
                                 </tr>
                             }
@@ -162,9 +170,18 @@
                                             <td>${item.no_chapters}</td>
                                             <td>${item.image}</td>
                                             <td>
-                                                <a href="/Subjects/Details/${item.subject_id}"><i class="fa fa-eye text-primary"></i></a> |
-                                                <a href="/Subjects/Edit/${item.subject_id}"><i class="fa fa-pencil text-warning"></i></a> |
-                                                <a href="/Subjects/Delete/${item.subject_id}"><i class="fa fa-trash text-danger"></i></a>
+
+                                                                                                                <ul class="button-list">
+                    <li>
+                                        <a href="/Subjects/Details/${item.subject_id}" class="btn btn-primary" role="button">Details</a>
+                    </li>
+                    <li>
+                                        <a href="/Subjects/Edit/${item.subject_id}" class="btn btn-warning" role="button">Edit</a>
+                    </li>
+                    <li>
+                                        <a href="/Subjects/Delete/${item.subject_id}" class="btn btn-danger" role="button">Delete</a>
+                    </li>
+                </ul>
                                             </td>
                                         </tr>`;
                     tableBody.innerHTML += row;
@@ -267,5 +284,20 @@
         .table-responsive {
             margin-top: 20px;
         }
+        .button-list {
+            list-style: none; /* Removes the default list item bullets */
+            padding: 0; /* Removes default padding */
+            margin: 0; /* Removes default margin */
+            display: flex; /* Aligns the list items horizontally */
+        }
+
+        .button-list li {
+            margin-right: 10px; /* Adds spacing between list items */
+        }
+
+            .button-list li:last-child {
+                margin-right: 0; /* Removes right margin from the last item */
+            }
+
     </style>
 }

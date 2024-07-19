@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Singlearn.Models.Entities.Material>
 
 @{
+    Layout = "~/Views/Shared/_LayoutFixed2.cshtml";
     ViewData["Title"] = "Index";
 }
 
@@ -47,9 +48,18 @@
                                     <td>@Html.DisplayFor(modelItem => item.link)</td>
                                     <td>@Html.DisplayFor(modelItem => item.status)</td>
                                     <td>
-                                        <a asp-action="DetailsMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="@item.material_id"><i class="fa fa-eye text-primary"></i></a> |
-                                        <a asp-action="EditMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="@item.material_id"><i class="fa fa-pencil text-warning"></i></a> |
-                                        <a asp-action="DeleteMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="@item.material_id"><i class="fa fa-trash text-danger"></i></a>
+                                        <ul class="button-list">
+                                            <li>
+                                                <a asp-action="DetailsMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="${item.material_id}" class="btn btn-primary" role="button">Details</a>
+                                            </li>
+                                            <li>
+                                                <a asp-action="EditMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="${item.material_id}" class="btn btn-warning" role="button">Edit</a>
+                                            </li>
+                                            <li>
+                                                <a asp-action="DeleteMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="${item.material_id}" class="btn btn-danger" role="button">Delete</a>
+                                            </li>
+                                        </ul>
+
                                     </td>
                                 </tr>
                             }
@@ -114,9 +124,18 @@
                                             <td>${item.link}</td>
                                             <td>${item.status}</td>
                                             <td>
-                                                <a href="/Materials/Details/${item.material_id}"><i class="fa fa-eye text-primary"></i></a>
-                                                <a href="/Materials/Edit/${item.material_id}"><i class="fa fa-pencil text-warning"></i></a> 
-                                                <a href="/Materials/Delete/${item.material_id}"><i class="fa fa-trash text-danger"></i></a>
+                                                        <ul class="button-list">
+            <li>
+                <a href="/Materials/Details/${item.material_id}" class="btn btn-primary" role="button">Details</a>
+            </li>
+            <li>
+                <a href="/Materials/Edit/${item.material_id}" class="btn btn-warning" role="button">Edit</a>
+            </li>
+            <li>
+                <a href="/Materials/Delete/${item.material_id}" class="btn btn-danger" role="button">Delete</a>
+            </li>
+        </ul>
+
                                             </td>
                                         </tr>`;
                     tableBody.innerHTML += row;
@@ -201,4 +220,21 @@
             updatePagination();
         });
     </script>
+    <style>
+        .button-list {
+            list-style: none; /* Removes the default list item bullets */
+            padding: 0; /* Removes default padding */
+            margin: 0; /* Removes default margin */
+            display: flex; /* Aligns the list items horizontally */
+        }
+
+            .button-list li {
+                margin-right: 10px; /* Adds spacing between list items */
+            }
+
+                .button-list li:last-child {
+                    margin-right: 0; /* Removes right margin from the last item */
+                }
+
+    </style>
 }
