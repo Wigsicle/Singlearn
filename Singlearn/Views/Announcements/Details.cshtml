@@ -1,79 +1,138 @@
-﻿@model Singlearn.ViewModels.AnnouncementViewModel
+﻿@model Singlearn.Models.Entities.Announcement
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Details - Announcement</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        body {
+            background-color: #f7f7f9; /* Light pastel background color */
+        }
 
-<div>
-    <h4>Announcement</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Image)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Image)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Url)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Url)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SubjectId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SubjectId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StaffId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StaffId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ClassId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ClassId)
-        </dd>
-    </dl>
-</div>
+        .main-container {
+            padding: 150px;
+        }
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.AnnouncementId" class="btn btn-primary">Edit</a> |
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</div>
+        .header-container {
+            text-align: left;
+            margin-right: 20px;
+            display: flex;
+            align-items: center; /* Center vertically */
+            height: 100%; /* Full height of parent */
+        }
+
+        .details-container {
+            background-color: #ffffff; /* White background for the card */
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px; /* Control width */
+            margin: auto; /* Center horizontally */
+        }
+
+        .details-header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .details-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .details-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .details-value {
+            color: #555;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .actions {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+            .actions a {
+                margin: 0 10px;
+                color: #007bff;
+                text-decoration: none;
+            }
+
+                .actions a:hover {
+                    text-decoration: underline;
+                }
+    </style>
+</head>
+<body>
+    <div class="container main-container">
+        <div class="details-container">
+            <div class="details-header">
+                <h1>Announcement Details</h1>
+                <h4>@Model.title</h4>
+            </div>
+            <div class="details-section">
+                <span class="details-label">@Html.DisplayNameFor(model => model.subject_id):</span>
+                <span class="details-value">@Html.DisplayFor(model => model.subject_id)</span>
+            </div>
+            <div class="details-section">
+                <span class="details-label">@Html.DisplayNameFor(model => model.staff_id):</span>
+                <span class="details-value">@Html.DisplayFor(model => model.staff_id)</span>
+            </div>
+            <div class="details-section">
+                <span class="details-label">@Html.DisplayNameFor(model => model.class_id):</span>
+                <span class="details-value">@Html.DisplayFor(model => model.class_id)</span>
+            </div>
+            <div class="details-section">
+                <span class="details-label">@Html.DisplayNameFor(model => model.description):</span>
+                <span class="details-value">@Html.DisplayFor(model => model.description)</span>
+            </div>
+            <div class="details-section">
+                <span class="details-label">@Html.DisplayNameFor(model => model.image):</span>
+                <span class="details-value">@Html.DisplayFor(model => model.image)</span>
+            </div>
+            <div class="details-section">
+                <span class="details-label">@Html.DisplayNameFor(model => model.date):</span>
+                <span class="details-value">@Html.DisplayFor(model => model.date)</span>
+            </div>
+            <div class="details-section">
+                <span class="details-label">@Html.DisplayNameFor(model => model.url):</span>
+                <span class="details-value">@Html.DisplayFor(model => model.url)</span>
+            </div>
+            <div class="details-section">
+                <span class="details-label">@Html.DisplayNameFor(model => model.category):</span>
+                <span class="details-value">@Html.DisplayFor(model => model.category)</span>
+            </div>
+            <div class="details-section">
+                <span class="details-label">@Html.DisplayNameFor(model => model.status):</span>
+                <span class="details-value">@Html.DisplayFor(model => model.status)</span>
+            </div>
+            <div class="actions">
+                <a asp-action="Edit" asp-route-id="@Model.announcement_id">Edit</a> |
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>
