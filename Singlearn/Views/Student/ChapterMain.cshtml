@@ -52,7 +52,7 @@
                                 @foreach (var material in videoLessons)
                                 {
                                     <div class="col-lg-6 padding-bottom-20">
-                                        <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
+                                        <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link no-underline">
                                             <div class="card mb-2 card-hover-effect">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
@@ -79,11 +79,12 @@
                                 @foreach (var material in lessonNotes)
                                 {
                                     <div class="col-lg-6 padding-bottom-20">
-                                        <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
+                                        <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link no-underline">
                                             <div class="card mb-2 card-hover-effect">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
                                                     <p class="card-text">@material.description</p>
+                                                    <p class="card-text">@material.file_type</p>
                                                 </div>
                                             </div>
                                         </a>
@@ -106,11 +107,12 @@
                                 @foreach (var material in classwork)
                                 {
                                     <div class="col-lg-6 padding-bottom-20">
-                                        <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
+                                        <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link no-underline">
                                             <div class="card mb-2 card-hover-effect">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
                                                     <p class="card-text">@material.description</p>
+                                                    <p class="card-text">@material.file_type</p>
                                                 </div>
                                             </div>
                                         </a>
@@ -133,11 +135,12 @@
                                 @foreach (var material in homework)
                                 {
                                     <div class="col-lg-6 padding-bottom-20">
-                                        <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link">
+                                        <a asp-controller="Student" asp-action="GetMaterial" asp-route-subject_id="@material.subject_id" asp-route-chapter_id="@material.chapter_id" asp-route-class_id="@ViewData["ClassId"]" asp-route-material_id="@material.material_id" class="card-link no-underline">
                                             <div class="card mb-2 card-hover-effect">
                                                 <div class="card-body">
                                                     <h5 class="card-title fw-bold py-3 mb-2">@material.name</h5>
                                                     <p class="card-text">@material.description</p>
+                                                    <p class="card-text">@material.file_type</p>
                                                 </div>
                                             </div>
                                         </a>
@@ -159,3 +162,11 @@
         </div>
     </div>
 </div>
+
+
+<style>
+    .no-underline {
+        text-decoration: none; /* Removes the underline */
+    }
+
+</style>
