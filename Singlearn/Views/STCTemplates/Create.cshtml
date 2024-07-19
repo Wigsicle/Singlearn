@@ -1,35 +1,40 @@
 ﻿@model Singlearn.Models.Entities.STCTemplate
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create STCTemplate";
 }
 
-<h1>Create</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div style="padding: 15% 3% 3% 3%;">
+                <h2>Create STCTemplate</h2>
+                <hr />
 
-<h4>STCTemplate</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="stc_id" class="control-label"></label>
-                <input asp-for="stc_id" class="form-control" />
-                <span asp-validation-for="stc_id" class="text-danger"></span>
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="stc_id" class="control-label">STC ID</label>
+                        <input asp-for="stc_id" class="form-control" />
+                        <span asp-validation-for="stc_id" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="template_id" class="control-label">Template ID</label>
+                        <input asp-for="template_id" class="form-control" />
+                        <span asp-validation-for="template_id" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group text-center mt-3 mb-3">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="template_id" class="control-label"></label>
-                <input asp-for="template_id" class="form-control" />
-                <span asp-validation-for="template_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-

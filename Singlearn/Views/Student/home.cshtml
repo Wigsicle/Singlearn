@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["StudentTitle"] = "Homepage";
+    Layout = "~/Views/Shared/_LayoutStudent.cshtml";
 }
 @using Singlearn.ViewModels
 @using Microsoft.AspNetCore.Http;
@@ -76,7 +77,7 @@
                 @foreach (var subject in Model.Subjects)
                 {
                     <div class="col-lg-4 padding-bottom-20">
-                        <a asp-controller="Student" asp-action="SubjectIndex" asp-route-subject_id="@subject.subject_id" class="card-link">
+                        <a asp-controller="Student" asp-action="SubjectIndex" asp-route-subject_id="@subject.subject_id" asp-route-class_id="@subject.class_id" class="card-link">
                             <div class="card mb-2 card-hover-effect">
                                 <img class="card-img-top card-img-custom" src="@subject.image" alt="Card image cap" />
                                 <div class="card-body">

@@ -14,9 +14,5 @@ namespace Singlearn.Models.Entities
 
         public string class_id { get; set; }
 
-
-        public Subject Subject { get; set; }
-        public Class Class { get; set; }
-
     }
 }
