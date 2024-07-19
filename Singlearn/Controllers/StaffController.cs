@@ -19,34 +19,74 @@ namespace Singlearn.Controllers
             this.hostingEnvironment = hostEnvironment;
         }
 
-        public async Task<IActionResult> Home(string id)
+        public async Task<IActionResult> Home()
         {
-            ViewData["StaffId"] = id;
+            var staffId = HttpContext.Session.GetString("staff_id");
 
             var subjectsWithClassId = await dbContext.Subjects
-                .Join(
-                    dbContext.SubjectTeacherClasses,
-                    s => s.subject_id,
-                    stc => stc.subject_id,
-                    (s, stc) => new {
-                        Subject = s,
-                        SubjectTeacherClass = stc
-                    }
-                )
-                .Where(joined => joined.SubjectTeacherClass.teacher_id == id)
-                .Select(joined => new SubjectViewModel
-                {
-                    subject_id = joined.Subject.subject_id,
-                    name = joined.Subject.name,
-                    academic_level = joined.Subject.academic_level,
-                    image = joined.Subject.image,
-                    no_chapters = joined.Subject.no_chapters,
-                    year = joined.Subject.year,
-                    class_id = joined.SubjectTeacherClass.class_id
-                })
+             .Join(
+                 dbContext.SubjectTeacherClasses,
+                 s => s.subject_id,
+                 stc => stc.subject_id,
+                 (s, stc) => new {
+                     Subject = s,
+                     SubjectTeacherClass = stc
+                 }
+             )
+             .Join(
+                 dbContext.Classes,
+                 joined => joined.SubjectTeacherClass.class_id,
+                 c => c.class_id,
+                 (joined, c) => new {
+                     joined.Subject,
+                     joined.SubjectTeacherClass,
+                     Class = c
+                 }
+             )
+             .Where(joined => joined.SubjectTeacherClass.teacher_id == staffId)
+             .Select(joined => new SubjectViewModel
+             {
+                 subject_id = joined.Subject.subject_id,
+                 name = joined.Subject.name,
+                 academic_level = joined.Subject.academic_level,
+                 image = joined.Subject.image,
+                 no_chapters = joined.Subject.no_chapters,
+                 year = joined.Subject.year,
+                 class_id = joined.SubjectTeacherClass.class_id,
+                 class_name = joined.Class.name // Include class name here
+             })
+             .ToListAsync();
+
+            // Query announcements
+            var announcements = await dbContext.Announcements
+                .Where(a => a.category == "News" || a.category == "Events")
+                .Join(dbContext.Staff,
+                      a => a.staff_id,
+                      s => s.staff_id,
+                      (a, s) => new AnnouncementViewModel
+                      {
+                          AnnouncementId = a.announcement_id,
+                          Title = a.title,
+                          Category = a.category,
+                          Status = a.status,
+                          Image = a.image,
+                          Description = a.description,
+                          Date = a.date,
+                          SubjectId = a.subject_id,
+                          StaffId = a.staff_id,
+                          StaffName = s.name, // Include staff name here
+                          ClassId = a.class_id,
+                          Url = a.url,
+                      })
                 .ToListAsync();
 
-            return View(subjectsWithClassId);
+            var viewModel = new HomepageViewModel
+            {
+                Subjects = subjectsWithClassId,
+                Announcements = announcements
+            };
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> SubjectIndex(int subject_id, string class_id)
@@ -275,5 +315,19 @@ namespace Singlearn.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+        public async Task<IActionResult> GetMaterial(int material_id)
+        {
+            // Fetch the material by material_id
+            var material = await dbContext.Materials
+                .FirstOrDefaultAsync(m => m.material_id == material_id);
+
+            if (material == null)
+            {
+                return NotFound();
+            }
+
+            return View("Material", material);
+        }
+
     }
 }

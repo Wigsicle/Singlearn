@@ -1,0 +1,10 @@
+﻿@* Views/Shared/_CookieConsentPartial.cshtml *@
+<div class="cookie-consent">
+    <p>We use cookies to ensure you get the best experience on our website. <a href="/privacy-policy">Learn more</a></p>
+    <button class="btn btn-primary" id="acceptCookies">Accept</button>
+</div>
+<script>
+    document.getElementById('acceptCookies').addEventListener('click', function () {
+        document.querySelector('.cookie-consent').style.display = 'none';
+    });
+</script>

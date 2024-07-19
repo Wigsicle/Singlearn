@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "~/Views/Shared/_LayoutStudent.cshtml";
+    Layout = "~/Views/Shared/_LayoutFixed.cshtml";
     ViewData["StudentTitle"] = "Homepage";
 }
 @using Singlearn.ViewModels
@@ -11,11 +11,13 @@
 
 
 @model HomepageViewModel
-<div class="container-fluid" style="padding-top: 100px;">
+<div class="container-fluid">
     <div class="row">
         <!-- Bootstrap carousel -->
-        <h1 class="fw-bold py-3 mb-2">News & Events</h1>
-        <div class="col-lg-12">
+        <div class="col-lg-10 offset-lg-1">
+            <h1 class="fw-bold py-3 mb-2">News & Events</h1>
+        </div>
+        <div class="col-lg-10 offset-lg-1">
             @if (Model.Announcements != null && Model.Announcements.Any())
             {
                 <div id="carouselExample" class="padding-bottom-40 carousel carousel-dark slide" data-bs-ride="carousel">
@@ -34,10 +36,10 @@
                                     <div class="col-lg">
                                         <div class="card mb-3">
                                             <div class="row g-0">
-                                                <div class="col-lg-5">
+                                                <div class="col-lg-4">
                                                     <img class="card-img card-img-left carousel-img" src="@announcement.Image" alt="Card image" />
                                                 </div>
-                                                <div class="col-lg-7">
+                                                <div class="col-lg-8">
                                                     <div class="card-body">
                                                         <h5 class="card-title fw-bold py-3 mb-2">@announcement.Title</h5>
                                                         <p class="card-text">Post Date: @announcement.Date</p>
@@ -70,23 +72,27 @@
     </div>
     <!-- Subject Display -->
     <div class="row">
-        <h1 class="fw-bold py-3 mb-2">Subjects</h1>
+        <div class="col-lg-10 offset-lg-1">
+            <h1 class="fw-bold py-3 mb-2">Subjects</h1>
+        </div>
         @if (Model.Subjects != null && Model.Subjects.Any())
         {
-            <div class="row">
-                @foreach (var subject in Model.Subjects)
-                {
-                    <div class="col-lg-4 padding-bottom-20">
-                        <a asp-controller="Student" asp-action="SubjectIndex" asp-route-subject_id="@subject.subject_id" class="card-link">
-                            <div class="card mb-2 card-hover-effect">
-                                <img class="card-img-top card-img-custom" src="@subject.image" alt="Card image cap" />
-                                <div class="card-body">
-                                    <h5 class="card-title fw-bold py-3 mb-2">@subject.academic_level @subject.year @subject.name (@subject.class_name)</h5>
+            <div class="col-lg-10 offset-lg-1">
+                <div class="row">
+                    @foreach (var subject in Model.Subjects)
+                    {
+                        <div class="col-lg-3 padding-bottom-20">
+                            <a asp-controller="Student" asp-action="SubjectIndex" asp-route-subject_id="@subject.subject_id" class="card-link">
+                                <div class="card mb-2 card-hover-effect">
+                                    <img class="card-img-top card-img-custom" src="@subject.image" alt="Card image cap" />
+                                    <div class="card-body">
+                                        <h5 class="card-title fw-bold py-3 mb-2">@subject.academic_level @subject.year @subject.name (@subject.class_name)</h5>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                }
+                            </a>
+                        </div>
+                    }
+                </div>
             </div>
         }
         else

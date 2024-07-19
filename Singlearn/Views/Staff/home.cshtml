@@ -1,128 +1,98 @@
 ﻿@{
-    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    Layout = "~/Views/Shared/_LayoutFixed2.cshtml";
     ViewData["StaffTitle"] = "Homepage";
 }
-@using Singlearn.Models.Entities  // Import the namespace where Subject model is defined
+@using Singlearn.ViewModels
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var studentId = HttpContextAccessor.HttpContext.Session.GetString("student_id");
+}
 
-@model List<Singlearn.ViewModels.SubjectViewModel>
 
-<div class="container-fluid" style="padding-top: 100px;">
+@model HomepageViewModel
+<div class="container-fluid">
     <div class="row">
         <!-- Bootstrap carousel -->
-        <div class="col-md">
+        <div class="col-lg-10 offset-lg-1">
             <h1 class="fw-bold py-3 mb-2">News & Events</h1>
-
-            <div id="carouselExample" class="padding-bottom-40 carousel carousel-dark slide" data-bs-ride="carousel">
-                <ol class="carousel-indicators">
-                    <li data-bs-target="#carouselExample" data-bs-slide-to="0" class="active"></li>
-                    <li data-bs-target="#carouselExample" data-bs-slide-to="1"></li>
-                    <li data-bs-target="#carouselExample" data-bs-slide-to="2"></li>
-                </ol>
-                <div class="carousel-inner round-corner">
-                    <div class="carousel-item active">
-                        <div class="row mb-3">
-                            <div class="col-md">
-                                <div class="card mb-3">
-                                    <div class="row g-0">
-                                        <div class="col-md-4">
-                                            <img class="card-img card-img-left carousel-img" src="https://img.freepik.com/free-vector/realistic-back-school-background-with-school-supplies_23-2149489926.jpg" alt="Card image" />
-                                        </div>
-                                        <div class="col-md-8">
-                                            <div class="card-body">
-                                                <h5 class="card-title fw-bold py-3 mb-2">Welcome back to school for Year 1 students</h5>
-                                                <p class="card-text">
-                                                    A new semester has begun! We hope that the holidays have been
-                                                    good for you. In this new semester, Mr Goh will be in charge of
-                                                    Student Welfare community so if you have any concerns, feel free
-                                                    to talk to him. He is very approachable and can be found on Level
-                                                    6 of the Student Campus Building.
-                                                </p>
-                                                <a href="javascript:void(0)" class="card-link">Find out more ></a>
+        </div>
+        <div class="col-lg-10 offset-lg-1">
+            @if (Model.Announcements != null && Model.Announcements.Any())
+            {
+                <div id="carouselExample" class="padding-bottom-40 carousel carousel-dark slide" data-bs-ride="carousel">
+                    <ol class="carousel-indicators">
+                        @for (var i = 0; i < Model.Announcements.Count; i++)
+                        {
+                            <li data-bs-target="#carouselExample" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
+                        }
+                    </ol>
+                    <div class="carousel-inner round-corner">
+                        @for (var i = 0; i < Model.Announcements.Count; i++)
+                        {
+                            var announcement = Model.Announcements[i];
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <div class="row mb-3">
+                                    <div class="col-lg">
+                                        <div class="card mb-3">
+                                            <div class="row g-0">
+                                                <div class="col-lg-4">
+                                                    <img class="card-img card-img-left carousel-img" src="@announcement.Image" alt="Card image" />
+                                                </div>
+                                                <div class="col-lg-8">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title fw-bold py-3 mb-2">@announcement.Title</h5>
+                                                        <p class="card-text">Post Date: @announcement.Date</p>
+                                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#announcementModal"
+                                                                data-title="@announcement.Title"
+                                                                data-description="@announcement.Description"
+                                                                data-image="@announcement.Image"
+                                                                data-url="@announcement.Url"
+                                                                data-date="@announcement.Date"
+                                                                data-staffname="@announcement.StaffName"
+                                                                onclick="loadAnnouncementDetails(this)">
+                                                            Find out more
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <div class="row mb-3">
-                            <div class="col-md">
-                                <div class="card mb-3">
-                                    <div class="row g-0">
-                                        <div class="col-md-4">
-                                            <img class="card-img card-img-left carousel-img" src="https://asiasociety.org/sites/default/files/styles/1200w/public/2023-11/DALL%C2%B7E%202023-11-09%2016.28.45%20-%20Lunar%20New%20Year%202024_v3.png" alt="Card image" />
-                                        </div>
-                                        <div class="col-md-8">
-                                            <div class="card-body">
-                                                <h5 class="card-title fw-bold py-3 mb-2">Welcome back to school for Year 1 students</h5>
-                                                <p class="card-text">
-                                                    A new semester has begun! We hope that the holidays have been
-                                                    good for you. In this new semester, Mr Goh will be in charge of
-                                                    Student Welfare community so if you have any concerns, feel free
-                                                    to talk to him. He is very approachable and can be found on Level
-                                                    6 of the Student Campus Building.
-                                                </p>
-                                                <a href="javascript:void(0)" class="card-link">Find out more ></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <div class="row mb-3">
-                            <div class="col-md">
-                                <div class="card mb-3">
-                                    <div class="row g-0">
-                                        <div class="col-md-4">
-                                            <img class="card-img card-img-left carousel-img" src="https://static.vecteezy.com/system/resources/thumbnails/003/111/945/small/singapore-national-day-with-skyline-and-flag-background-free-vector.jpg" alt="Card image" />
-                                        </div>
-                                        <div class="col-md-8">
-                                            <div class="card-body">
-                                                <h5 class="card-title fw-bold py-3 mb-2">Welcome back to school for Year 1 students</h5>
-                                                <p class="card-text">
-                                                    A new semester has begun! We hope that the holidays have been
-                                                    good for you. In this new semester, Mr Goh will be in charge of
-                                                    Student Welfare community so if you have any concerns, feel free
-                                                    to talk to him. He is very approachable and can be found on Level
-                                                    6 of the Student Campus Building.
-                                                </p>
-                                                <a href="javascript:void(0)" class="card-link">Find out more ></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        }
                     </div>
                 </div>
-            </div>
+            }
+            else
+            {
+                <p>No announcements found.</p>
+            }
         </div>
     </div>
     <!-- Subject Display -->
     <div class="row">
-        <h1 class="fw-bold py-3 mb-2">Subjects</h1>
-        @if (Model != null && Model.Any())
+        <div class="col-lg-10 offset-lg-1">
+            <h1 class="fw-bold py-3 mb-2">Subjects</h1>
+        </div>
+        @if (Model.Subjects != null && Model.Subjects.Any())
         {
-            <div class="row">
-                @foreach (var subject in Model)
-                {
-                    <div class="col-md-6 col-lg-3 padding-bottom-20">
-                        @* <a asp-controller="Staff" asp-action="GetChapters" asp-route-subject_id="@subject.subject_id" asp-route-class_id="@subject.class_id" class="card-link"> *@
-                        <a href="~/HomeworkHub/staff_homework?subjectId=@subject.subject_id" class="card-link">
-                            <div class="card mb-2 card-hover-effect">
-                                <img class="card-img-top card-img-custom" src="@subject.image" alt="Card image cap" />
-                                <div class="card-body">
-                                    <h5 class="card-title fw-bold py-3 mb-2">@subject.academic_level @subject.year @subject.name (@subject.class_id) @subject.subject_id</h5>
-                                    
+            <div class="col-lg-10 offset-lg-1">
+                <div class="row">
+                    @foreach (var subject in Model.Subjects)
+                    {
+                        <div class="col-lg-3 padding-bottom-20">
+                            <a asp-controller="Staff" asp-action="SubjectIndex" asp-route-subject_id="@subject.subject_id" asp-route-class_id="@subject.class_id" class="card-link">
+                                <div class="card mb-2 card-hover-effect">
+                                    <img class="card-img-top card-img-custom" src="@subject.image" alt="Card image cap" />
+                                    <div class="card-body">
+                                        <h5 class="card-title fw-bold py-3 mb-2">@subject.academic_level @subject.year @subject.name (@subject.class_name)</h5>
                                     </div>
                                 </div>
                             </a>
-                        
-                    </div>
-                }
+                        </div>
+                    }
+                </div>
             </div>
         }
         else
@@ -132,7 +102,63 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="announcementModalLabel">Announcement Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="announcementDetails">
+                    <!-- Modal content will be dynamically loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function loadAnnouncementDetails(button) {
+        const title = button.getAttribute('data-title');
+        const description = button.getAttribute('data-description');
+        const image = button.getAttribute('data-image');
+        const url = button.getAttribute('data-url');
+        const date = button.getAttribute('data-date');
+        const staffname = button.getAttribute('data-staffname');
+
+        document.querySelector('#announcementModalLabel').textContent = title;
+        const modalBody = document.querySelector('#announcementModal .modal-body');
+
+        let htmlContent = `
+                        <img src="${image}" alt="Image" class="img-fluid mb-3" />
+                        <p>${description}</p>`;
+
+        // Add link if URL is provided
+        if (url) {
+            htmlContent += `<p><a href="${url}" target="_blank">Link</a></p>`;
+        }
+
+        htmlContent += `
+                        <p>Posted by: ${staffname}</p>
+                        <p>Posted at: ${date}</p>
+                    `;
+
+        modalBody.innerHTML = htmlContent;
+    }
+</script>
+
+
 <style>
+    .modal-title {
+        color: black; /* Set title color to black */
+    }
+
     .carousel-img {
         height: 300px;
         width: 100%;
