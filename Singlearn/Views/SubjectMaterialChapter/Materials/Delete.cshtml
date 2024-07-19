@@ -4,72 +4,77 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Material</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.subject_id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.subject_id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.teacher_id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.teacher_id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.class_id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.class_id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.chapter_id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.chapter_id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.type)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.type)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.link)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.link)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.status)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.status)
-        </dd>
-    </dl>
-
-    <form asp-action="DeleteConfirmedMaterial" method="post" asp-route-id="@Model.material_id">
-        <input type="hidden" asp-for="material_id" />
-        <input type="submit" value="Delete" class="btn btn-danger" />
-        <a asp-action="IndexMaterials" class="btn btn-secondary">Back to List</a>
-    </form>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div style="padding: 15% 3% 3% 3%;">
+                    <h3>Are you sure you want to delete this?</h3>
+                    <hr />
+                    <dl class="row">
+                        <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.subject_id)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.subject_id)
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.teacher_id)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.teacher_id)
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.class_id)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.class_id)
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.name)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.name)
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.description)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.description)
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.chapter_id)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.chapter_id)
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.type)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.type)
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.link)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.link)
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.status)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.status)
+                    </dd>
+                </dl>
+                <div>
+                    <br />
+                    <form asp-action="DeleteConfirmedMaterial" method="post" asp-route-id="@Model.material_id">
+                        <input type="hidden" asp-for="material_id" />
+                        <button class="btn btn-danger" type="submit" value="Delete"><i class="fa fa-trash"></i> Delete</button>
+                        <a class="btn btn-secondary" asp-action="IndexMaterials" asp-controller="SubjectMaterialChapter">Back to List</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
