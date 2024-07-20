@@ -108,12 +108,22 @@ namespace Singlearn.Controllers
         [HttpPost]
         [Route("Announcements/Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("subject_id, class_id, title, description, image, url, category, status, staff_id")] Announcement announcement)
+        public async Task<IActionResult> Create([Bind("subject_id, title, description, image, url, category, status, staff_id")] Announcement announcement, string[] selectedClassIds)
         {
             if (ModelState.IsValid)
             {
-/*                var staffId = HttpContext.Session.GetString("staff_id");
-                announcement.staff_id = staffId;*/
+                /*var staffId = HttpContext.Session.GetString("staff_id");
+                                announcement.staff_id = staffId;*/
+
+                if (announcement.category != "Subject")
+                {
+                    announcement.subject_id = null;
+                }
+                else
+                {
+                    announcement.class_id = string.Join(",", selectedClassIds);
+                }
+
                 announcement.date = DateTime.Now;
 
                 _context.Announcements.Add(announcement);
@@ -172,6 +182,12 @@ namespace Singlearn.Controllers
             if (id != announcement.announcement_id)
             {
                 return NotFound();
+            }
+
+            if (announcement.category != "Subject")
+            {
+                announcement.subject_id = null;
+                announcement.class_id = null;
             }
 
             if (ModelState.IsValid)
@@ -273,15 +289,16 @@ namespace Singlearn.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetClassesByStaff(string staff_id)
+        public IActionResult GetClassesByStaff(string staff_id)
         {
             var classes = _context.SubjectTeacherClasses
                 .Where(stc => stc.teacher_id == staff_id)
-                .Select(stc => new { value = stc.class_id, text = _context.Classes.First(c => c.class_id == stc.class_id).name })
+                .Select(stc => new { stc.class_id, ClassName = _context.Classes.First(c => c.class_id == stc.class_id).name })
                 .Distinct()
                 .ToList();
 
-            return Json(classes);
+            var classCheckboxList = classes.Select(c => new { value = c.class_id, text = c.ClassName });
+            return Json(classCheckboxList);
         }
     }
 }

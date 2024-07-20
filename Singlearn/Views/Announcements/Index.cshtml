@@ -107,7 +107,7 @@
                                 <td>@item.Category</td>
                                 <td>@item.Status</td>
                                 <td class="button-group">
-                                    <a asp-action="Edit" asp-route-id="@item.AnnouncementId" class="btn btn-warning btn-sm">Edit</a>
+                                    <a asp-action="Edit" asp-route-id="@item.AnnouncementId" asp-route-teacherId="@staffId" class="btn btn-warning btn-sm">Edit</a>
                                     <a asp-action="Details" asp-route-id="@item.AnnouncementId" class="btn btn-info btn-sm">Details</a>
                                     <a asp-action="Delete" asp-route-id="@item.AnnouncementId" class="btn btn-danger btn-sm">Delete</a>
                                 </td>

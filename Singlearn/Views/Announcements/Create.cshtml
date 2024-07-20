@@ -177,7 +177,7 @@
                         $('#classGroup').show();
 
                         // Load subjects and classes based on StaffId via AJAX
-                        var staffId = '@staffId'; // Use `@staffId` for correct value
+                        var staffId = '@staffId'; 
 
                         $.ajax({
                             url: '@Url.Action("GetSubjectsByStaff", "Announcements")',
@@ -204,7 +204,7 @@
                                         $('<div>').append(
                                             $('<input>').attr({
                                                 type: 'checkbox',
-                                                name: 'class_id',
+                                                name: 'selectedClassIds',
                                                 value: value.value
                                             }).addClass('form-check-input')
                                         ).append(
