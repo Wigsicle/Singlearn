@@ -78,17 +78,20 @@
                 <h1>Announcement Details</h1>
                 <h4>@Model.title</h4>
             </div>
-            <div class="details-section">
-                <span class="details-label">@Html.DisplayNameFor(model => model.subject_id):</span>
-                <span class="details-value">@Html.DisplayFor(model => model.subject_id)</span>
-            </div>
+            @if (Model.category == "Subject")
+            {
+                    <div class="details-section">
+                        <span class="details-label">@Html.DisplayNameFor(model => model.subject_id):</span>
+                        <span class="details-value">@Html.DisplayFor(model => model.subject_id)</span>
+                    </div>
+                    <div class="details-section">
+                        <span class="details-label">@Html.DisplayNameFor(model => model.class_id):</span>
+                        <span class="details-value">@Html.DisplayFor(model => model.class_id)</span>
+                    </div>
+            }
             <div class="details-section">
                 <span class="details-label">@Html.DisplayNameFor(model => model.staff_id):</span>
                 <span class="details-value">@Html.DisplayFor(model => model.staff_id)</span>
-            </div>
-            <div class="details-section">
-                <span class="details-label">@Html.DisplayNameFor(model => model.class_id):</span>
-                <span class="details-value">@Html.DisplayFor(model => model.class_id)</span>
             </div>
             <div class="details-section">
                 <span class="details-label">@Html.DisplayNameFor(model => model.description):</span>
@@ -114,18 +117,6 @@
                 <span class="details-label">@Html.DisplayNameFor(model => model.status):</span>
                 <span class="details-value">@Html.DisplayFor(model => model.status)</span>
             </div>
-
-            @if (Model.category == "subject")
-            {
-                <div class="details-section">
-                    <span class="details-label">Subject_ID:</span>
-                    <span class="details-value">@Model.subject_id</span>
-                </div>
-                <div class="details-section">
-                    <span class="details-label">Class_ID:</span>
-                    <span class="details-value">@Model.class_id</span>
-                </div>
-            }
 
             <div class="actions">
                 <a asp-action="Edit" asp-route-id="@Model.announcement_id">Edit</a> |

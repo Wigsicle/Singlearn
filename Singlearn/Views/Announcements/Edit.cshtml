@@ -129,8 +129,8 @@
             // Handle category change
             $('#category').change(function () {
                 var selectedCategory = $(this).val();
+                $('#subject_id').val('')
                 if (selectedCategory === 'News' || selectedCategory === 'Events') {
-                    $('#subject_id').val('').trigger('change');
                     $('#class-checkboxes').empty();
                     $('#subject-group').addClass('hidden');
                     $('#class-group').addClass('hidden');
