@@ -29,7 +29,9 @@
                 </li>
             </ul>
         </div>
-        <a class="btn btn-outline-primary my-2 my-sm-0" href="/" role="button">Log Out</a>
+        <form asp-controller="Auth" asp-action="Logout" method="post" class="form-inline my-2 my-lg-0">
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Log Out</button>
+        </form>
     </nav>
 
     <div class="container body-content">
