@@ -1,7 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutFixed.cshtml";
     ViewData["StudentTitle"] = "Homepage";
-    Layout = "~/Views/Shared/_LayoutStudent.cshtml";
 }
 @using Singlearn.ViewModels
 @using Microsoft.AspNetCore.Http;
@@ -75,14 +74,13 @@
     <div class="row">
         <div class="col-lg-10 offset-lg-1">
             <h1 class="fw-bold py-3 mb-2">Subjects</h1>
-        </div>
         @if (Model.Subjects != null && Model.Subjects.Any())
         {
             <div class="row">
                 @foreach (var subject in Model.Subjects)
                 {
-                    <div class="col-lg-4 padding-bottom-20">
-                        <a asp-controller="Student" asp-action="SubjectIndex" asp-route-subject_id="@subject.subject_id" class="card-link">
+                    <div class="col-lg-3 padding-bottom-20">
+                            <a asp-controller="Student" asp-action="SubjectIndex" asp-route-subject_id="@subject.subject_id" class="card-link no-underline">
                             <div class="card mb-2 card-hover-effect">
                                 <img class="card-img-top card-img-custom" src="@subject.image" alt="Card image cap" />
                                 <div class="card-body">
@@ -98,6 +96,7 @@
         {
             <p>No subjects found for this student.</p>
         }
+        </div>
     </div>
 </div>
 
@@ -135,12 +134,12 @@
         const modalBody = document.querySelector('#announcementModal .modal-body');
 
         let htmlContent = `
-                    <img src="${image}" alt="Image" class="img-fluid mb-3" />
+                        <img src="${image}" alt="Image" class="img-fluid mb-3 mx-auto d-block" />
                     <p>${description}</p>`;
 
         // Add link if URL is provided
         if (url) {
-            htmlContent += `<p><a href="${url}" target="_blank">Link</a></p>`;
+            htmlContent += `<p><a class="btn btn-primary" role="button" href="${url}" target="_blank">Link</a></p>`;
         }
 
         htmlContent += `
@@ -220,4 +219,8 @@
             transform: scale(1.05); /* Increase size on hover */
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
         }
+    .no-underline {
+        text-decoration: none; /* Removes the underline */
+    }
+
 </style>

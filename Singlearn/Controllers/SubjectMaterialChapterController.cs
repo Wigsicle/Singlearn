@@ -538,5 +538,49 @@ namespace Singlearn.Controllers
             ViewBag.TypeOptions = typeOptions;
             ViewBag.StatusOptions = statusOptions;
         }
-    }
+
+        public IActionResult DownloadDocument(int id)
+        {
+            try
+            {
+                var material = _context.Materials.Find(id);
+
+                if (material == null || material.data == null || material.data.Length == 0)
+                {
+                    return NotFound();
+                }
+
+                string contentType;
+                string fileExtension;
+
+                switch (material.file_type)
+                {
+                    case "DOCX":
+                        contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                        fileExtension = ".docx";
+                        break;
+                    case "PPTX":
+                        contentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                        fileExtension = ".pptx";
+                        break;
+                    case "XLSX":
+                        contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        fileExtension = ".xlsx";
+                        break;
+                    default:
+                        contentType = "application/pdf";
+                        fileExtension = ".pdf";
+                        break;
+                }
+
+                return File(material.data, contentType, material.name + fileExtension);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                // Handle the exception (e.g., return a 500 error)
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        }
 }

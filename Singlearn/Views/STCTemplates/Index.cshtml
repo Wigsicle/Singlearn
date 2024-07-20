@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Singlearn.Models.Entities.STCTemplate>
 
 @{
-    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    Layout = "~/Views/Shared/_LayoutFixed2.cshtml";
     ViewData["Title"] = "STCTemplates";
 
     var stcTemplates = Model.ToList();
@@ -39,6 +39,18 @@
                                         <a asp-action="Details" asp-route-id="@item.stc_id"><i class="fa fa-eye text-primary"></i></a>
                                         <a asp-action="Edit" asp-route-id="@item.stc_t_id"><i class="fa fa-pencil text-warning"></i></a>
                                         <a asp-action="Delete" asp-route-id="@item.stc_id"><i class="fa fa-trash text-danger"></i></a>
+
+                                        <ul class="button-list">
+                                            <li>
+                                                <a asp-action="Details" asp-controller="STCTemplatesController" asp-route-id="@item.stc_id" class="btn btn-primary" role="button">Details</a>
+                                            </li>
+                                            <li>
+                                                <a asp-action="Edit" asp-controller="STCTemplatesController" asp-route-id="@item.stc_t_id" class="btn btn-warning" role="button">Edit</a>
+                                            </li>
+                                            <li>
+                                                <a asp-action="Delete" asp-controller="STCTemplatesController" asp-route-id="@item.stc_id" class="btn btn-danger" role="button">Delete</a>
+                                            </li>
+                                        </ul>
                                     </td>
                                 </tr>
                             }
@@ -96,9 +108,17 @@
                                                     <td class="col-id">${item.stc_id}</td>
                                                     <td class="col-id">${item.template_id}</td>
                                                     <td>
-                                                        <a href="/STCTemplates/Details/${item.stc_id}"><i class="fa fa-eye text-primary"></i></a>
-                                                        <a href="/STCTemplates/Edit/${item.stc_t_id}"><i class="fa fa-pencil text-warning"></i></a>
-                                                        <a href="/STCTemplates/Delete/${item.stc_id}"><i class="fa fa-trash text-danger"></i></a>
+                                                                <ul class="button-list">
+                            <li>
+                                                                <a href="/STCTemplates/Details/${item.stc_id}" class="btn btn-primary" role="button">Details</a>
+                            </li>
+                            <li>
+                                                                        <a href="/STCTemplates/Edit/${item.stc_t_id}" class="btn btn-warning" role="button">Edit</a>
+                            </li>
+                            <li>
+                                                                <a href="/STCTemplates/Delete/${item.stc_id}" class="btn btn-danger" role="button">Delete</a>
+                            </li>
+                        </ul>
                                                     </td>
                                                 </tr>`;
                     tableBody.innerHTML += row;
@@ -186,7 +206,24 @@
 }
 
 <style>
+
     .table-responsive {
         margin-top: 30px;
     }
+
+    .button-list {
+        list-style: none; /* Removes the default list item bullets */
+        padding: 0; /* Removes default padding */
+        margin: 0; /* Removes default margin */
+        display: flex; /* Aligns the list items horizontally */
+    }
+
+        .button-list li {
+            margin-right: 10px; /* Adds spacing between list items */
+        }
+
+            .button-list li:last-child {
+                margin-right: 0; /* Removes right margin from the last item */
+            }
+
 </style>
