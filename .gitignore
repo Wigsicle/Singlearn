@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /Singlearn/appsettings.Development.json
 /Singlearn/appsettings.Development.json
 /Singlearn/appsettings.Development.json
+/Singlearn/Controllers/StudentController.cs

@@ -19,67 +19,78 @@ namespace Singlearn.Controllers
 
         public async Task<IActionResult> Home()
         {
-            // Getting the store session cookie info
-            var studentId = HttpContext.Session.GetString("student_id");
-            var classId = HttpContext.Session.GetString("class_id");
-
-            // Query for subject IDs associated with the class ID
-            var subject_ids = await dbContext.SubjectTeacherClasses
-                .Where(stc => stc.class_id == classId)
-                .Select(stc => stc.subject_id)
-                .ToListAsync();
-
-            var className = await dbContext.Classes
-                .Where(c => c.class_id == classId)
-                .Select(c => c.name)
-                .FirstOrDefaultAsync();
-
-            // Query subjects based on the retrieved subject IDs
-            var subjects = await dbContext.Subjects
-                .Where(s => subject_ids.Contains(s.subject_id))
-                .Select(s => new SubjectViewModel
-                {
-                    subject_id = s.subject_id,
-                    name = s.name,
-                    academic_level = s.academic_level,
-                    image = s.image,
-                    no_chapters = s.no_chapters,
-                    year = s.year,
-                    class_id = classId,
-                    class_name = className
-                })
-                .ToListAsync();
-
-            // Query announcements
-            var announcements = await dbContext.Announcements
-                .Where(a => a.category == "News" || a.category == "Events")
-                .Join(dbContext.Staff,
-                      a => a.staff_id,
-                      s => s.staff_id,
-                      (a, s) => new AnnouncementViewModel
-                      {
-                          AnnouncementId = a.announcement_id,
-                          Title = a.title,
-                          Category = a.category,
-                          Status = a.status,
-                          Image = a.image,
-                          Description = a.description,
-                          Date = a.date,
-                          SubjectId = a.subject_id,
-                          StaffId = a.staff_id,
-                          StaffName = s.name, // Include staff name here
-                          ClassId = a.class_id,
-                          Url = a.url,
-                      })
-                .ToListAsync();
-
-            var viewModel = new HomepageViewModel
+            try
             {
-                Subjects = subjects,
-                Announcements = announcements
-            };
+                var studentId = HttpContext.Session.GetString("student_id");
+                var classId = HttpContext.Session.GetString("class_id");
+                if (string.IsNullOrEmpty(studentId) || string.IsNullOrEmpty(classId))
+                {
+                    return RedirectToAction("Login", "Auth"); // Redirect to login if student_id or class_id is not found
+                }
 
-            return View(viewModel);
+                // Query for subject IDs associated with the class ID
+                var subject_ids = await dbContext.SubjectTeacherClasses
+                    .Where(stc => stc.class_id == classId)
+                    .Select(stc => stc.subject_id)
+                    .ToListAsync();
+
+                var className = await dbContext.Classes
+                    .Where(c => c.class_id == classId)
+                    .Select(c => c.name)
+                    .FirstOrDefaultAsync();
+
+                // Query subjects based on the retrieved subject IDs
+                var subjects = await dbContext.Subjects
+                    .Where(s => subject_ids.Contains(s.subject_id))
+                    .Select(s => new SubjectViewModel
+                    {
+                        subject_id = s.subject_id,
+                        name = s.name,
+                        academic_level = s.academic_level,
+                        image = s.image,
+                        no_chapters = s.no_chapters,
+                        year = s.year,
+                        class_id = classId,
+                        class_name = className
+                    })
+                    .ToListAsync();
+
+                // Query announcements
+                var announcements = await dbContext.Announcements
+                    .Where(a => a.category == "News" || a.category == "Events")
+                    .Join(dbContext.Staff,
+                          a => a.staff_id,
+                          s => s.staff_id,
+                          (a, s) => new AnnouncementViewModel
+                          {
+                              AnnouncementId = a.announcement_id,
+                              Title = a.title,
+                              Category = a.category,
+                              Status = a.status,
+                              Image = a.image,
+                              Description = a.description,
+                              Date = a.date,
+                              SubjectId = a.subject_id,
+                              StaffId = a.staff_id,
+                              StaffName = s.name, // Include staff name here
+                              ClassId = a.class_id,
+                              Url = a.url,
+                          })
+                    .ToListAsync();
+
+                var viewModel = new HomepageViewModel
+                {
+                    Subjects = subjects,
+                    Announcements = announcements
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in TemplateEditor: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         public async Task<IActionResult> SubjectIndex(int subject_id)
