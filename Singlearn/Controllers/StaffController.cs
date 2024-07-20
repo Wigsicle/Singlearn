@@ -189,16 +189,22 @@ namespace Singlearn.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> TemplateEditor(string teacher_id)
+        public async Task<IActionResult> TemplateEditor()
         {
             try
             {
+                var teacherId = HttpContext.Session.GetString("staff_id");
+                if (string.IsNullOrEmpty(teacherId))
+                {
+                    return RedirectToAction("Login", "Auth"); // Redirect to login if teacher_id is not found
+                }
+
                 var subjects = await dbContext.Subjects
                     .Join(dbContext.SubjectTeacherClasses,
                         subject => subject.subject_id,
                         stc => stc.subject_id,
                         (subject, stc) => new { Subject = subject, stc.teacher_id })
-                    .Where(result => result.teacher_id.Equals(teacher_id))
+                    .Where(result => result.teacher_id.Equals(teacherId))
                     .Select(result => result.Subject)
                     .Distinct()
                     .ToListAsync();
@@ -217,11 +223,18 @@ namespace Singlearn.Controllers
             }
         }
 
+
         [HttpGet]
-        public async Task<IActionResult> GetClassesForSubject(int subject_id, string teacher_id)
+        public async Task<IActionResult> GetClassesForSubject(int subject_id)
         {
+            var teacherId = HttpContext.Session.GetString("staff_id");
+            if (string.IsNullOrEmpty(teacherId))
+            {
+                return Json(new List<Class>()); // Return an empty list if staff_id is not found
+            }
+
             var classes = await dbContext.SubjectTeacherClasses
-                .Where(stc => stc.subject_id == subject_id && stc.teacher_id.Equals(teacher_id))
+                .Where(stc => stc.subject_id == subject_id && stc.teacher_id.Equals(teacherId))
                 .Join(dbContext.Classes,
                       stc => stc.class_id,
                       c => c.class_id,
@@ -231,6 +244,7 @@ namespace Singlearn.Controllers
 
             return Json(classes);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> SaveTemplateSelection(int subject_id, string class_id, int template_id)

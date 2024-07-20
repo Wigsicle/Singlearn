@@ -1,7 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutFixed2.cshtml";
     ViewData["Title"] = "Template Editor";
-    var teacherId = Context.Request.Query["teacher_id"].ToString(); // Get teacherId from the query string
 }
 
 <!DOCTYPE html>
@@ -26,11 +25,11 @@
 
         #templatePreview {
             width: 100%;
-            height: 600px; /* Fixed height to avoid pushing content */
-            background-color: #f8f9fa; /* Light grey background */
+            height: 600px;
+            background-color: #f8f9fa;
             padding: 10px;
             border: 1px solid #ddd;
-            overflow-y: auto; /* Allow scrolling if content overflows */
+            overflow-y: auto;
         }
 
         .container-flex {
@@ -42,7 +41,7 @@
 
         .form-container, .preview-container {
             flex: 1;
-            min-width: 800px; /* Ensure containers don't shrink too small */
+            min-width: 800px;
             margin: 10px;
         }
     </style>
@@ -52,7 +51,6 @@
     <div class="container main-body">
         <div class="container-flex">
             <div class="form-container centered-form">
-                <input type="hidden" id="teacher_id" value="@teacherId" />
                 <div class="form-group">
                     <label for="subjectSelect">Select Subject:</label>
                     <select id="subjectSelect" class="form-control">
@@ -90,12 +88,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            var teacher_id = $('#teacher_id').val(); // Get the teacherId from the hidden input
-
             $('#subjectSelect').change(function () {
                 var subject_id = $(this).val();
                 if (subject_id) {
-                    $.get('/Staff/GetClassesForSubject', { subject_id: subject_id, teacher_id: teacher_id }, function (data) {
+                    $.get('/Staff/GetClassesForSubject', { subject_id: subject_id }, function (data) {
                         var classSelect = $('#classSelect');
                         classSelect.empty();
                         classSelect.append('<option value="">--Select a Class--</option>');
