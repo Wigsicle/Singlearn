@@ -16,7 +16,7 @@ namespace Singlearn.Controllers
             this.dbContext = dbContext;
         }
 
-
+        [HttpGet]
         public async Task<IActionResult> Home()
         {
             try
@@ -93,6 +93,7 @@ namespace Singlearn.Controllers
             }
         }
 
+        [HttpGet]
         public async Task<IActionResult> SubjectIndex(int subject_id)
         {
             try
@@ -164,6 +165,7 @@ namespace Singlearn.Controllers
             }
         }
 
+        [HttpGet]
         public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id)
         {
             try
@@ -188,6 +190,7 @@ namespace Singlearn.Controllers
             }
         }
 
+        [HttpGet]
         public async Task<IActionResult> GetMaterial(int material_id)
         {
             try

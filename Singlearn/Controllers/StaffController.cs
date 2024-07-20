@@ -19,6 +19,7 @@ namespace Singlearn.Controllers
             this.hostingEnvironment = hostEnvironment;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Home()
         {
             try
@@ -101,6 +102,7 @@ namespace Singlearn.Controllers
             }
         }
 
+        [HttpGet]
         public async Task<IActionResult> SubjectIndex(int subject_id, string class_id)
         {
             try
@@ -173,6 +175,7 @@ namespace Singlearn.Controllers
             }
         }
 
+        [HttpGet]
         public async Task<IActionResult> MaterialsBySubject(int subject_id, int chapter_id, string class_id)
         {
             try
