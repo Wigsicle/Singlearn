@@ -223,6 +223,30 @@
                         $('#classCheckboxes').empty();
                     }
                 });
+
+                function validateClassSelection() {
+                    var selectedCount = $('input[name="selectedClassIds"]:checked').length;
+                    if (selectedCount > 1) {
+                        alert('Only one class can be selected for a subject-based announcement.');
+                        $('input[name="selectedClassIds"]:checked').prop('checked', false);
+                    }
+                }
+
+                // Form submission validation
+                $('form').submit(function (e) {
+                    var category = $('#categoryDropdown').val();
+                    if (category === 'Subject') {
+                        var selectedCount = $('input[name="selectedClassIds"]:checked').length;
+                        if (selectedCount === 0) {
+                            alert('Please select at least one class for a subject-based announcement.');
+                            e.preventDefault();
+                        } else if (selectedCount > 1) {
+                            alert('Only one class can be selected for a subject-based announcement.');
+                            e.preventDefault();
+                        }
+                    }
+                });
+
             });
         </script>
 
