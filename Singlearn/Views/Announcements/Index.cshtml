@@ -79,6 +79,7 @@
                 <table class="table table-bordered table-striped text-center table-responsive-md">
                     <thead class="thead-light">
                         <tr>
+                            <th>@Html.DisplayNameFor(model => model[0].AnnouncementId)</th>
                             <th>@Html.DisplayNameFor(model => model[0].SubjectId)</th>
                             <th>@Html.DisplayNameFor(model => model[0].StaffId)</th>
                             <th>@Html.DisplayNameFor(model => model[0].ClassId)</th>
@@ -96,6 +97,7 @@
                         @foreach (var item in Model)
                         {
                             <tr>
+                                <td>@item.AnnouncementId</td>
                                 <td>@item.SubjectId</td>
                                 <td>@item.StaffId</td>
                                 <td>@item.ClassId</td>
