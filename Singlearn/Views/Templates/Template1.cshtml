@@ -9,36 +9,6 @@
     <title>Template 1</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .horizontal-links {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-            padding-left: 0;
-            list-style: none;
-            width: 100%;
-        }
-
-            .horizontal-links .nav-item {
-                flex: 1;
-                text-align: center;
-            }
-
-            .horizontal-links .nav-link {
-                color: #007bff;
-                text-decoration: none;
-            }
-
-                .horizontal-links .nav-link:hover {
-                    text-decoration: underline;
-                }
-
-        .card-title {
-            background-color: #f8f9fa; /* Light gray background */
-            padding: 10px;
-            margin-bottom: 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-
         .card-hover-effect {
             overflow: hidden;
             position: relative;
@@ -47,20 +17,20 @@
         }
 
             .card-hover-effect:hover {
-                transform: scale(1.05); /* Increase size on hover */
-                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
+                transform: scale(1.05);
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             }
 
         .announcement-item {
             margin-bottom: 30px;
-            border-bottom: 1px solid black; /* Black line underneath each announcement */
+            border-bottom: 1px solid black;
             padding-bottom: 15px;
         }
 
             .announcement-item img {
-                width: 200px; /* Fixed width */
-                height: 150px; /* Fixed height */
-                object-fit: cover; /* Ensures the image covers the entire area */
+                width: 200px;
+                height: 150px;
+                object-fit: cover;
                 margin-top: 10px;
             }
 
@@ -70,12 +40,12 @@
         }
 
         .announcement-description {
-            color: black; /* Set description color to black */
+            color: black;
         }
 
         .chapter-card {
-            width: 200px; /* Fixed width */
-            height: 120px; /* Fixed height */
+            width: 200px;
+            height: 120px;
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -96,41 +66,46 @@
     <div class="container mt-5">
         <div class="card mt-3">
             <div class="card-body">
-                <h5 class="card-title text-center">Link Panel</h5>
-                <ul class="horizontal-links nav">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/">Subjects</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/">Announcements</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/">Homework Hub</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="card mt-3">
-            <div class="card-body">
                 <h5 class="card-title text-center">Subject Announcements</h5>
                 <div id="announcement-container">
                     @if (announcements.Any())
                     {
-                        <div class="announcement-item">
-                            <h4>@announcements.First().title</h4>
-                            <p class="announcement-meta">
-                                @ViewData["StaffName"] posted on @announcements.First().date.ToString("MMMM dd, yyyy h:mm tt")
-                            </p>
-                            <p class="announcement-description">@announcements.First().description</p>
-                            @if (!string.IsNullOrEmpty(announcements.First().image))
-                            {
-                                <img src="@announcements.First().image" />
-                            }
-                        </div>
+                        @for (int i = 0; i < Math.Min(3, announcements.Count); i++)
+                        {
+                            <div class="announcement-item">
+                                <h4>@announcements[i].title</h4>
+                                <p class="announcement-meta">
+                                    @ViewData["StaffName"] posted on @announcements[i].date.ToString("MMMM dd, yyyy h:mm tt")
+                                </p>
+                                <p class="announcement-description">@announcements[i].description</p>
+                                @if (!string.IsNullOrEmpty(announcements[i].image))
+                                {
+                                    <img src="@announcements[i].image" />
+                                }
+                            </div>
+                        }
                     }
                     else
                     {
                         <p>No announcements available.</p>
                     }
                 </div>
-                @if (announcements.Count > 1)
+                @if (announcements.Count > 3)
                 {
-                    <button id="viewMoreBtn" class="btn btn-primary">View More</button>
+                    <nav aria-label="Announcements navigation">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Previous" id="previousPage">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next" id="nextPage">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 }
             </div>
         </div>
@@ -167,13 +142,20 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            var announcements = @Html.Raw(Json.Serialize(announcements.Skip(1).ToList()));
-            var currentIndex = 0;
-            $('#viewMoreBtn').click(function () {
-                var nextAnnouncements = announcements.slice(currentIndex, currentIndex + 2);
-                currentIndex += 2;
-                nextAnnouncements.forEach(function (announcement) {
-                    $('#announcement-container').append(
+            var announcements = @Html.Raw(Json.Serialize(announcements.ToList()));
+            var currentPage = 1;
+            var rowsPerPage = 3;
+
+            function updateAnnouncements(page) {
+                var startIndex = (page - 1) * rowsPerPage;
+                var endIndex = startIndex + rowsPerPage;
+                var slicedAnnouncements = announcements.slice(startIndex, endIndex);
+
+                var container = $('#announcement-container');
+                container.empty();
+
+                slicedAnnouncements.forEach(function (announcement) {
+                    container.append(
                         `<div class="announcement-item">
                                     <h4>${announcement.title}</h4>
                                     <p class="announcement-meta">
@@ -184,10 +166,25 @@
                                 </div>`
                     );
                 });
-                if (currentIndex >= announcements.length) {
-                    $('#viewMoreBtn').hide();
+            }
+
+            $('#previousPage').click(function (event) {
+                event.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateAnnouncements(currentPage);
                 }
             });
+
+            $('#nextPage').click(function (event) {
+                event.preventDefault();
+                if (currentPage < Math.ceil(announcements.length / rowsPerPage)) {
+                    currentPage++;
+                    updateAnnouncements(currentPage);
+                }
+            });
+
+            updateAnnouncements(currentPage);
         });
     </script>
 </body>

@@ -42,7 +42,7 @@
         }
 
         .announcement-description {
-            color: black; /* Set description color to black */
+            color: black;
         }
 
         .chapter-card {
@@ -62,7 +62,6 @@
         .row {
             margin-top: 10px;
         }
-
     </style>
 </head>
 <body>
@@ -70,42 +69,47 @@
         <div class="jumbotron">
             <h2 class="display-4">@ViewData["SubjectName"] - @Model?.class_id</h2>
         </div>
-        <div class="card mt-3">
-            <div class="card-body">
-                <h5 class="card-title">Link Panel</h5>
-                <div class="list-group">
-                    <a href="/" class="list-group-item list-group-item-action">Home</a>
-                    <a href="/" class="list-group-item list-group-item-action">Subjects</a>
-                    <a href="/" class="list-group-item list-group-item-action">Announcements</a>
-                    <a href="/" class="list-group-item list-group-item-action">Homework Hub</a>
-                </div>
-            </div>
-        </div>
         <div class="alert alert-info mt-3" role="alert">
             <h4 class="alert-heading">Subject Announcements</h4>
             <div id="announcement-container">
                 @if (Model?.Announcements != null && Model.Announcements.Any())
                 {
-                    <div class="announcement-item">
-                        <h4>@Model.Announcements.First().title</h4>
-                        <p class="announcement-meta">
-                            @ViewData["StaffName"] posted on @Model.Announcements.First().date.ToString("MMMM dd, yyyy h:mm tt")
-                        </p>
-                        <p class="announcement-description">@Model.Announcements.First().description</p>
-                        @if (!string.IsNullOrEmpty(Model.Announcements.First().image))
-                        {
-                            <img src="@Model.Announcements.First().image" />
-                        }
-                    </div>
+                    @for (int i = 0; i < Math.Min(3, Model.Announcements.Count); i++)
+                    {
+                        <div class="announcement-item">
+                            <h4>@Model.Announcements[i].title</h4>
+                            <p class="announcement-meta">
+                                @ViewData["StaffName"] posted on @Model.Announcements[i].date.ToString("MMMM dd, yyyy h:mm tt")
+                            </p>
+                            <p class="announcement-description">@Model.Announcements[i].description</p>
+                            @if (!string.IsNullOrEmpty(Model.Announcements[i].image))
+                            {
+                                <img src="@Model.Announcements[i].image" />
+                            }
+                        </div>
+                    }
                 }
                 else
                 {
                     <p>No announcements available.</p>
                 }
             </div>
-            @if (Model?.Announcements != null && Model.Announcements.Count > 1)
+            @if (Model?.Announcements != null && Model.Announcements.Count > 3)
             {
-                <button id="viewMoreBtn" class="btn btn-primary">View More</button>
+                <nav aria-label="Announcements navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous" id="previousPage">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next" id="nextPage">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             }
         </div>
         <div class="alert alert-warning mt-3" role="alert">
@@ -139,15 +143,22 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            var announcements = @Html.Raw(Json.Serialize(Model?.Announcements?.Skip(1)?.ToList() ?? new List<Singlearn.Models.Entities.Announcement>()));
-            var currentIndex = 0;
-            $('#viewMoreBtn').click(function () {
-                var nextAnnouncements = announcements.slice(currentIndex, currentIndex + 2);
-                currentIndex += 2;
-                nextAnnouncements.forEach(function (announcement) {
-                    $('#announcement-container').append(
+            var announcements = @Html.Raw(Json.Serialize(Model?.Announcements?.ToList() ?? new List<Singlearn.Models.Entities.Announcement>()));
+            var currentPage = 1;
+            var rowsPerPage = 3;
+
+            function updateAnnouncements(page) {
+                var startIndex = (page - 1) * rowsPerPage;
+                var endIndex = startIndex + rowsPerPage;
+                var slicedAnnouncements = announcements.slice(startIndex, endIndex);
+
+                var container = $('#announcement-container');
+                container.empty();
+
+                slicedAnnouncements.forEach(function (announcement) {
+                    container.append(
                         `<div class="announcement-item">
-                                    <h5>${announcement.title}</h5>
+                                    <h4>${announcement.title}</h4>
                                     <p class="announcement-meta">
                                         ${'@ViewData["StaffName"]'} posted on ${new Date(announcement.date).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}
                                     </p>
@@ -156,10 +167,25 @@
                                 </div>`
                     );
                 });
-                if (currentIndex >= announcements.length) {
-                    $('#viewMoreBtn').hide();
+            }
+
+            $('#previousPage').click(function (event) {
+                event.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateAnnouncements(currentPage);
                 }
             });
+
+            $('#nextPage').click(function (event) {
+                event.preventDefault();
+                if (currentPage < Math.ceil(announcements.length / rowsPerPage)) {
+                    currentPage++;
+                    updateAnnouncements(currentPage);
+                }
+            });
+
+            updateAnnouncements(currentPage);
         });
     </script>
 </body>

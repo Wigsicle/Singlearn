@@ -61,6 +61,13 @@ namespace Singlearn.Controllers
         [HttpPost]
         public IActionResult Logout()
         {
+            // Clear all the session data
+            HttpContext.Session.Clear();
+
+            // Optionally clear authentication cookies if using cookie authentication
+            Response.Cookies.Delete(".AspNetCore.Cookies");
+
+            // Redirect to the login page or home page
             return RedirectToAction("Login");
         }
     }

@@ -6,23 +6,7 @@
     <title>Template 3</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .link-panel a {
-            display: block;
-            color: #007bff;
-            text-decoration: none;
-            padding: 10px 0;
-            width: 300px;
-        }
-
-            .link-panel a:hover {
-                text-decoration: underline;
-            }
-
         .card {
-            margin-bottom: 20px;
-        }
-
-        .link-panel {
             margin-bottom: 20px;
         }
 
@@ -44,14 +28,14 @@
 
         .announcement-item {
             margin-bottom: 30px;
-            border-bottom: 1px solid black; /* Black line underneath each announcement */
+            border-bottom: 1px solid black;
             padding-bottom: 15px;
         }
 
             .announcement-item img {
-                width: 200px; /* Fixed width */
-                height: 150px; /* Fixed height */
-                object-fit: cover; /* Ensures the image covers the entire area */
+                width: 200px;
+                height: 150px;
+                object-fit: cover;
                 margin-top: 10px;
             }
 
@@ -61,21 +45,21 @@
         }
 
         .announcement-description {
-            color: black; /* Set description color to black */
+            color: black;
         }
 
         .chapter-card {
-            width: 150px; /* Smaller fixed width */
-            height: 100px; /* Smaller fixed height */
+            width: 150px;
+            height: 100px;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 10px; /* Add margin between cards */
+            margin: 10px;
         }
 
         .chapter-card-title {
-            font-size: 0.9rem; /* Smaller font size */
+            font-size: 0.9rem;
             text-align: center;
         }
     </style>
@@ -84,20 +68,7 @@
     <div class="container mt-5">
         <h2 class="text-success">@ViewData["SubjectName"] - @Model.class_id</h2>
         <div class="row mt-3">
-            <div class="col-md-4">
-                <div class="card link-panel">
-                    <div class="card-body">
-                        <h5 class="card-title">Link Panel</h5>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><a href="/">Home</a></li>
-                            <li class="list-group-item"><a href="/">Subjects</a></li>
-                            <li class="list-group-item"><a href="/">Announcements</a></li>
-                            <li class="list-group-item"><a href="/">Homework Hub</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Subject Announcements</h5>
@@ -121,13 +92,28 @@
                                 <p>No announcements available.</p>
                             }
                         </div>
-                        @if (Model.Announcements != null && Model.Announcements.Count > 1)
+                        @if (Model.Announcements != null && Model.Announcements.Count > 3)
                         {
-                            <button id="viewMoreBtn" class="btn btn-primary">View More</button>
+                            <nav aria-label="Announcements navigation">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Previous" id="previousPage">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Next" id="nextPage">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
                         }
                     </div>
                 </div>
-                <div class="card mt-3">
+            </div>
+            <div class="col-md-6">
+                <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Subject Chapters</h5>
                         <div class="row">
@@ -136,7 +122,7 @@
                                 <div class="row">
                                     @foreach (var chapter in Model.Chapters)
                                     {
-                                        <div class="col-md-6 col-lg-3 padding-bottom-20">
+                                        <div class="col-md-6 col-lg-4 padding-bottom-20">
                                             <a asp-controller="Staff" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@ViewData["ClassId"]" class="card-link">
                                                 <div class="card mb-2 card-hover-effect chapter-card">
                                                     <div class="card-body">
@@ -162,13 +148,20 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            var announcements = @Html.Raw(Json.Serialize(Model?.Announcements?.Skip(1)?.ToList() ?? new List<Singlearn.Models.Entities.Announcement>()));
-            var currentIndex = 0;
-            $('#viewMoreBtn').click(function () {
-                var nextAnnouncements = announcements.slice(currentIndex, currentIndex + 2);
-                currentIndex += 2;
-                nextAnnouncements.forEach(function (announcement) {
-                    $('#announcement-container').append(
+            var announcements = @Html.Raw(Json.Serialize(Model?.Announcements?.ToList() ?? new List<Singlearn.Models.Entities.Announcement>()));
+            var currentPage = 1;
+            var rowsPerPage = 3;
+
+            function updateAnnouncements(page) {
+                var startIndex = (page - 1) * rowsPerPage;
+                var endIndex = startIndex + rowsPerPage;
+                var slicedAnnouncements = announcements.slice(startIndex, endIndex);
+
+                var container = $('#announcement-container');
+                container.empty();
+
+                slicedAnnouncements.forEach(function (announcement) {
+                    container.append(
                         `<div class="announcement-item">
                                     <h4>${announcement.title}</h4>
                                     <p class="announcement-meta">
@@ -179,10 +172,25 @@
                                 </div>`
                     );
                 });
-                if (currentIndex >= announcements.length) {
-                    $('#viewMoreBtn').hide();
+            }
+
+            $('#previousPage').click(function (event) {
+                event.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateAnnouncements(currentPage);
                 }
             });
+
+            $('#nextPage').click(function (event) {
+                event.preventDefault();
+                if (currentPage < Math.ceil(announcements.length / rowsPerPage)) {
+                    currentPage++;
+                    updateAnnouncements(currentPage);
+                }
+            });
+
+            updateAnnouncements(currentPage);
         });
     </script>
 </body>
