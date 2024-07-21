@@ -119,6 +119,11 @@
                             selectedClasses.forEach(function (classId) {
                                 $('#class_' + classId).prop('checked', true);
                             });
+
+                            // Add change event to checkboxes for validation
+                            $('input[name="class_id"]').change(function () {
+                                validateClassSelection();
+                            });
                         });
                     } else {
                         $('#class-checkboxes').empty();
@@ -139,6 +144,30 @@
                     $('#class-group').removeClass('hidden');
                 }
             }).trigger('change'); // Trigger change on page load to handle initial state
+
+            function validateClassSelection() {
+                var selectedCount = $('input[name="class_id"]:checked').length;
+                if (selectedCount > 1) {
+                    alert('Only one class can be selected for a subject-based announcement.');
+                    $('input[name="class_id"]:checked').prop('checked', false);
+                }
+            }
+
+            // Form submission validation
+            $('form').submit(function (e) {
+                var category = $('#category').val();
+                if (category === 'Subject') {
+                    var selectedCount = $('input[name="class_id"]:checked').length;
+                    if (selectedCount === 0) {
+                        alert('Please select at least one class for a subject-based announcement.');
+                        e.preventDefault();
+                    } else if (selectedCount > 1) {
+                        alert('Only one class can be selected for a subject-based announcement.');
+                        e.preventDefault();
+                    }
+                }
+            });
+
         });
     </script>
 </head>
