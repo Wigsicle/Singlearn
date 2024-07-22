@@ -85,7 +85,10 @@ namespace Singlearn.Controllers
                               ClassId = a.class_id,
                               Url = a.url,
                           })
+                    .OrderByDescending(a => a.Date) // Assuming you want the latest announcements, order by date in descending order
+                    .Take(5) // Limit the result to 5
                     .ToListAsync();
+
 
                 var viewModel = new HomepageViewModel
                 {
