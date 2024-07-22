@@ -20,14 +20,24 @@
         display: flex; /* Aligns the list items horizontally */
     }
 
-        .button-list li {
-            margin-right: 10px; /* Adds spacing between list items */
-        }
+    .button-list li {
+        margin-right: 10px; /* Adds spacing between list items */
+    }
 
-            .button-list li:last-child {
-                margin-right: 0; /* Removes right margin from the last item */
-            }
+    .button-list li:last-child {
+        margin-right: 0; /* Removes right margin from the last item */
+    }
 
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .table th, .table td {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 250px;
+    }
 </style>
 
 <body>
@@ -210,10 +220,10 @@
                     </li>
                 `;
 
-                for (var page = 1; page <= totalPages; page++) {
+                for (var i = 1; i <= totalPages; i++) {
                     pagination.innerHTML += `
-                        <li class="page-item ${page === currentPage ? 'active' : ''}">
-                            <a class="page-link" href="#" data-page="${page}">${page}</a>
+                        <li class="page-item ${i === currentPage ? 'active' : ''}">
+                            <a class="page-link" href="#" data-page="${i}">${i}</a>
                         </li>
                     `;
                 }
@@ -227,56 +237,19 @@
                     </li>
                 `;
 
-                var pageLinks = document.querySelectorAll("#pagination .page-link");
-
-                pageLinks.forEach(function (pageLink) {
-                    pageLink.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        var page = parseInt(pageLink.getAttribute("data-page"));
-                        if (page >= 1 && page <= totalPages) {
-                            currentPage = page;
-                            updateTable(currentPage);
+                var pageLinks = pagination.querySelectorAll('.page-link');
+                pageLinks.forEach(function (link) {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        var page = parseInt(e.target.getAttribute('data-page'));
+                        if (!isNaN(page) && page >= 1 && page <= totalPages) {
+                            updateTable(page);
                         }
                     });
                 });
             }
 
-            function searchAnnouncements() {
-                var searchInput = document.getElementById('searchInput').value.toLowerCase();
-                var filteredAnnouncements = announcements.filter(function (announcement) {
-                    return (
-                        announcement.Title.toLowerCase().includes(searchInput) ||
-                        announcement.Description.toLowerCase().includes(searchInput)
-                    );
-                });
-                updateTableContent(filteredAnnouncements);
-            }
-
-            document.getElementById('searchInput').addEventListener('input', searchAnnouncements);
-
             updateTable(currentPage);
         });
     </script>
 }
-
-<style>
-    .col-id {
-        width: 5%;
-    }
-
-    .button-list {
-        list-style: none; /* Removes the default list item bullets */
-        padding: 0; /* Removes default padding */
-        margin: 0; /* Removes default margin */
-        display: flex; /* Aligns the list items horizontally */
-    }
-
-        .button-list li {
-            margin-right: 10px; /* Adds spacing between list items */
-        }
-
-            .button-list li:last-child {
-                margin-right: 0; /* Removes right margin from the last item */
-            }
-
-</style>
