@@ -1,4 +1,8 @@
 ﻿@model Singlearn.ViewModels.MaterialCreateViewModel
+@inject IHttpContextAccessor HTTPCONTEXTACCESSOR;
+@{
+    var staffId = HTTPCONTEXTACCESSOR.HttpContext.Session.GetString("staff_id");
+}
 
 @{
     Layout = "~/Views/Shared/_LayoutFixed2.cshtml";
@@ -13,22 +17,29 @@
                 <hr />
                 <form asp-action="CreateMaterial" method="post" asp-controller="SubjectMaterialChapter" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    
-                    <div class="form-group" style="padding-bottom:10px;">
-                        <label asp-for="subject_id" class="control-label"></label>
-                        <input asp-for="subject_id" class="form-control" required />
+
+                    <!-- Subject dropdown -->
+                    <div class="form-group">
+                        <label asp-for="subject_id" class="control-label">Subject</label>
+                        <select asp-for="subject_id" asp-items="@ViewBag.SubjectOptions" class="form-control" onchange="fetchClasses(this.value)">
+                            <option value="">Select a subject</option>
+                        </select>
                         <span asp-validation-for="subject_id" class="text-danger"></span>
                     </div>
+
                     
                     <div class="form-group" style="padding-bottom:10px;">
                         <label asp-for="teacher_id" class="control-label"></label>
-                        <input asp-for="teacher_id" class="form-control" required />
+                        <input asp-for="teacher_id" class="form-control" value="@staffId" readonly />
                         <span asp-validation-for="teacher_id" class="text-danger"></span>
                     </div>
                     
-                    <div class="form-group" style="padding-bottom:10px;">
-                        <label asp-for="class_id" class="control-label"></label>
-                        <input asp-for="class_id" class="form-control" />
+                    <!-- Class dropdown -->
+                    <div class="form-group">
+                        <label asp-for="class_id" class="control-label">Class</label>
+                        <select asp-for="class_id" class="form-control" id="classDropdown" onchange="updateDropdowns(this.value)" disabled>
+                            <option value="">Select a class</option>
+                        </select>
                         <span asp-validation-for="class_id" class="text-danger"></span>
                     </div>
                     
@@ -45,8 +56,11 @@
                     </div>
                     
                     <div class="form-group" style="padding-bottom:10px;">
-                        <label asp-for="chapter_id" class="control-label"></label>
-                        <input asp-for="chapter_id" class="form-control" required />
+                        <label asp-for="chapter_id" class="control-label">Chapter</label>
+                        <select asp-for="chapter_id" class="form-control" id="chapterDropdown" disabled>
+                            <option value="">Select a chapter</option>
+                        </select>
+
                         <span asp-validation-for="chapter_id" class="text-danger"></span>
                     </div>
                     
@@ -140,12 +154,81 @@
             }
         }
 
+        function updateDropdowns(classId) {
+            var subjectId = document.querySelector('select[name="subject_id"]').value;
+
+            if (!classId || !subjectId) {
+                document.getElementById('chapterDropdown').disabled = true;
+                document.getElementById('chapterDropdown').innerHTML = '<option value="">Select a chapter</option>';
+                return;
+            }
+
+            fetchChapters(subjectId, classId);
+        }
+
+
+        function fetchClasses(subjectId) {
+            if (!subjectId) {
+                document.getElementById('classDropdown').disabled = true;
+                document.getElementById('classDropdown').innerHTML = '<option value="">Select a class</option>';
+                document.getElementById('chapterDropdown').disabled = true;
+                document.getElementById('chapterDropdown').innerHTML = '<option value="">Select a chapter</option>';
+                return;
+            }
+
+            fetch(`/SubjectMaterialChapter/GetClassesForSubject/${subjectId}`)
+                .then(response => response.json())
+                .then(data => {
+                    var classDropdown = document.getElementById('classDropdown');
+                    classDropdown.disabled = false;
+                    classDropdown.innerHTML = '<option value="">Select a class</option>';
+                    data.forEach(c => {
+                        var option = document.createElement('option');
+                        option.value = c.value;
+                        option.text = c.text;
+                        classDropdown.add(option);
+                    });
+
+                    // Reset chapter dropdown
+                    document.getElementById('chapterDropdown').disabled = true;
+                    document.getElementById('chapterDropdown').innerHTML = '<option value="">Select a chapter</option>';
+                });
+        }
+
+
+        function fetchChapters(subjectId, classId) {
+            if (!subjectId || !classId) {
+                document.getElementById('chapterDropdown').disabled = true;
+                document.getElementById('chapterDropdown').innerHTML = '<option value="">Select a chapter</option>';
+                return;
+            }
+
+            fetch(`/SubjectMaterialChapter/GetChaptersForSubjectClass/${subjectId}/${classId}`)
+                .then(response => response.json())
+                .then(data => {
+                    var chapterDropdown = document.getElementById('chapterDropdown');
+                    chapterDropdown.disabled = false;
+                    chapterDropdown.innerHTML = '<option value="">Select a chapter</option>';
+                    data.forEach(chapter => {
+                        var option = document.createElement('option');
+                        option.value = chapter.id;
+                        option.text = `${chapter.number}`;
+                        chapterDropdown.add(option);
+                    });
+                });
+        }
+
+
         document.addEventListener("DOMContentLoaded", function () {
             toggleFileInputs();
+            document.getElementById('chapterDropdown').disabled = true;
         });
+
 
     </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+

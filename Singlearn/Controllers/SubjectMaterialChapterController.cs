@@ -26,7 +26,22 @@ namespace Singlearn.Controllers
         [Route("/Materials/Index")]
         public async Task<IActionResult> IndexMaterials()
         {
-            return View("Materials/Index", await _context.Materials.ToListAsync());
+
+            // Retrieve the staff ID from session
+            var staffId = HttpContext.Session.GetString("staff_id");
+
+            if (string.IsNullOrEmpty(staffId))
+            {
+                return Unauthorized(); // Handle this case as needed
+            }
+
+            // Filter materials where teacher_id matches the staffId
+            var materials = await _context.Materials
+                .Where(m => m.teacher_id == staffId)
+                .ToListAsync();
+
+            // Return the filtered materials to the view
+            return View("Materials/Index", materials);
         }
 
         [HttpGet]
@@ -50,11 +65,63 @@ namespace Singlearn.Controllers
 
         [HttpGet]
         [Route("/Materials/Create")]
-        public IActionResult CreateMaterial()
+        public async Task<IActionResult> CreateMaterial()
         {
-            PopulateViewBag();
+            var staffId = HttpContext.Session.GetString("staff_id");
+            if (string.IsNullOrEmpty(staffId))
+            {
+                return Unauthorized(); // Handle unauthorized access as needed
+            }
+
+            // Fetch subject IDs for the given staffId
+            var subjectIds = await _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == staffId)
+                .Select(stc => stc.subject_id)
+                .Distinct()
+                .ToListAsync();
+
+            // Fetch subjects
+            var subjects = await _context.Subjects
+                .Where(s => subjectIds.Contains(s.subject_id))
+                .ToListAsync();
+
+            // Fetch class IDs
+            var classIds = await _context.SubjectTeacherClasses
+                .Where(stc => subjectIds.Contains(stc.subject_id))
+                .Select(stc => stc.class_id)
+                .Distinct()
+                .ToListAsync();
+
+            // Fetch classes
+            var classes = await _context.Classes
+                .Where(c => classIds.Contains(c.class_id))
+                .Select(c => new
+                {
+                    c.class_id,
+                    c.name,
+                    c.academic_level,
+                    c.year
+                })
+                .ToListAsync();
+
+            // Populate ViewBag with dropdown options
+            ViewBag.SubjectOptions = subjects.Select(s => new SelectListItem
+            {
+                Value = s.subject_id.ToString(),
+                Text = s.name
+            }).ToList();
+
+            ViewBag.ClassOptions = classes.Select(c => new SelectListItem
+            {
+                Value = c.class_id,
+                Text = $"{c.name} - {c.academic_level} - {c.year}"
+            }).ToList();
+
+            PopulateViewBag(); // If needed for other data
             return View("Materials/Create");
         }
+
+
 
         [HttpPost]
         [Route("/Materials/Create")]
@@ -102,21 +169,126 @@ namespace Singlearn.Controllers
         }
 
         [HttpGet]
-        [Route("/Materials/Edit/{id?}")]
-        public async Task<IActionResult> EditMaterial(int? id)
+        [Route("/SubjectMaterialChapter/GetClassesForSubject/{subjectId}")]
+        public async Task<IActionResult> GetClassesForSubject(int subjectId)
         {
-            if (id == null)
+            var staffId = HttpContext.Session.GetString("staff_id");
+            if (string.IsNullOrEmpty(staffId))
             {
-                return NotFound();
+                return Unauthorized();
             }
 
+            // Fetch class IDs based on subjectId and staffId
+            var classIds = await _context.SubjectTeacherClasses
+                .Where(stc => stc.subject_id == subjectId && stc.teacher_id == staffId)
+                .Select(stc => stc.class_id)
+                .Distinct()
+                .ToListAsync();
+
+            // Fetch classes based on class IDs
+            var classes = await _context.Classes
+                .Where(c => classIds.Contains(c.class_id))
+                .Select(c => new
+                {
+                    Value = c.class_id,
+                    Text = $"{c.name} - {c.academic_level} - {c.year}"
+                })
+                .ToListAsync();
+
+            return Json(classes);
+        }
+
+        [HttpGet]
+        [Route("/SubjectMaterialChapter/GetChaptersForSubjectClass/{subjectId}/{classId}")]
+        public async Task<IActionResult> GetChaptersForSubjectClass(int subjectId, int classId)
+        {
+            var staffId = HttpContext.Session.GetString("staff_id");
+            if (string.IsNullOrEmpty(staffId))
+            {
+                return Unauthorized();
+            }
+
+            // Fetch the number of chapters based on subjectId
+            var subject = await _context.Subjects
+                .Where(s => s.subject_id == subjectId)
+                .Select(s => new { s.no_chapters })
+                .FirstOrDefaultAsync();
+
+            if (subject == null)
+            {
+                return Json(new List<object>());
+            }
+
+            // Generate chapters based on the number of chapters
+            var chapters = Enumerable.Range(1, subject.no_chapters)
+                                     .Select(n => new { id = n, number = n })
+                                     .ToList();
+
+            return Json(chapters);
+        }
+
+        [HttpGet]
+        [Route("/Materials/Edit/{id}")]
+        public async Task<IActionResult> EditMaterial(int id)
+        {
             var material = await _context.Materials.FindAsync(id);
+
             if (material == null)
             {
                 return NotFound();
             }
 
-            var viewModel = new MaterialEditViewModel
+            var staffId = HttpContext.Session.GetString("staff_id");
+            if (string.IsNullOrEmpty(staffId))
+            {
+                return Unauthorized(); // Handle unauthorized access as needed
+            }
+
+            // Fetch subject IDs for the given staffId
+            var subjectIds = await _context.SubjectTeacherClasses
+                .Where(stc => stc.teacher_id == staffId)
+                .Select(stc => stc.subject_id)
+                .Distinct()
+                .ToListAsync();
+
+            // Fetch subjects
+            var subjects = await _context.Subjects
+                .Where(s => subjectIds.Contains(s.subject_id))
+                .ToListAsync();
+
+            // Fetch class IDs
+            var classIds = await _context.SubjectTeacherClasses
+                .Where(stc => subjectIds.Contains(stc.subject_id))
+                .Select(stc => stc.class_id)
+                .Distinct()
+                .ToListAsync();
+
+            // Fetch classes
+            var classes = await _context.Classes
+                .Where(c => classIds.Contains(c.class_id))
+                .Select(c => new
+                {
+                    c.class_id,
+                    c.name,
+                    c.academic_level,
+                    c.year
+                })
+                .ToListAsync();
+
+            // Populate ViewBag with dropdown options
+            ViewBag.SubjectOptions = subjects.Select(s => new SelectListItem
+            {
+                Value = s.subject_id.ToString(),
+                Text = s.name
+            }).ToList();
+
+            ViewBag.ClassOptions = classes.Select(c => new SelectListItem
+            {
+                Value = c.class_id.ToString(),
+                Text = $"{c.name} - {c.academic_level} - {c.year}"
+            }).ToList();
+
+            var model = new MaterialEditViewModel
             {
                 material_id = material.material_id,
                 subject_id = material.subject_id,
@@ -127,15 +299,19 @@ namespace Singlearn.Controllers
                 chapter_id = material.chapter_id,
                 type = material.type,
                 link = material.link,
-                status = material.status
+                status = material.status,
+                file_type = material.file_type,
+                DataFile = material.data != null ? new FormFile(new MemoryStream(material.data), 0, material.data.Length, null, "datafile") : null,
+                PDFFile = material.pdf_file != null ? new FormFile(new MemoryStream(material.pdf_file), 0, material.pdf_file.Length, null, "pdffile") : null
             };
 
-            PopulateViewBag();
-            return View("Materials/Edit", viewModel);
+            PopulateViewBag(); // If needed for other data
+            return View("Materials/Edit", model);
         }
 
+
         [HttpPost]
-        [Route("/Materials/Edit/{id?}")]
+        [Route("/Materials/Edit/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditMaterial(int id, MaterialEditViewModel material)
         {
@@ -197,6 +373,11 @@ namespace Singlearn.Controllers
             }
             return View("Materials/Edit", material);
         }
+
+
+
+
+
 
         // GET: Materials/Delete/5
         [HttpGet]
