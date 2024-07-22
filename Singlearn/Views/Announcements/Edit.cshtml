@@ -1,6 +1,7 @@
 ﻿@model Singlearn.Models.Entities.Announcement
 
 @{
+    Layout = "~/Views/Shared/_LayoutFixed2.cshtml";
     ViewData["Title"] = "Edit";
 }
 @inject IHttpContextAccessor HttpContextAccessor;
@@ -22,15 +23,7 @@
         }
 
         .main-container {
-            padding: 150px;
-        }
-
-        .header-container {
-            text-align: left;
-            margin-right: 20px;
-            display: flex;
-            align-items: center;
-            height: 100%;
+            padding: 5% 0;
         }
 
         .form-container {
@@ -38,8 +31,8 @@
             border-radius: 8px;
             padding: 30px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            flex: 1;
-            max-width: 500px;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .btn-primary {
@@ -52,10 +45,8 @@
             margin-top: 20px;
         }
 
-        .content-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .form-group {
+            margin-bottom: 20px;
         }
 
         ::placeholder {
@@ -63,19 +54,14 @@
             opacity: 1;
         }
 
-        .form-group.hidden {
-            display: none;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            padding: 20px 0;
+        }
+
+        .hidden {
+            display: none;
         }
     </style>
     <script>
@@ -114,13 +100,11 @@
                                 );
                             });
 
-                            // Set the selected classes
                             var selectedClasses = '@Model.class_id'.split(',');
                             selectedClasses.forEach(function (classId) {
                                 $('#class_' + classId).prop('checked', true);
                             });
 
-                            // Add change event to checkboxes for validation
                             $('input[name="class_id"]').change(function () {
                                 validateClassSelection();
                             });
@@ -131,10 +115,9 @@
                 });
             }
 
-            // Handle category change
             $('#category').change(function () {
                 var selectedCategory = $(this).val();
-                $('#subject_id').val('')
+                $('#subject_id').val('');
                 if (selectedCategory === 'News' || selectedCategory === 'Events') {
                     $('#class-checkboxes').empty();
                     $('#subject-group').addClass('hidden');
@@ -143,7 +126,7 @@
                     $('#subject-group').removeClass('hidden');
                     $('#class-group').removeClass('hidden');
                 }
-            }).trigger('change'); // Trigger change on page load to handle initial state
+            }).trigger('change');
 
             function validateClassSelection() {
                 var selectedCount = $('input[name="class_id"]:checked').length;
@@ -153,7 +136,6 @@
                 }
             }
 
-            // Form submission validation
             $('form').submit(function (e) {
                 var category = $('#category').val();
                 if (category === 'Subject') {
@@ -173,77 +155,71 @@
 </head>
 <body>
     <div class="container main-container">
-        <div class="content-wrapper">
-            <div class="header-container">
-                <div>
-                    <h1>Edit</h1>
-                    <h4>Announcement</h4>
+        <div class="form-container">
+            <h2>Edit Announcement</h2>
+            <hr />
+            <form asp-action="Edit" asp-controller="Announcements" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="announcement_id" />
+                <div class="form-group">
+                    <label asp-for="title" class="control-label"></label>
+                    <input asp-for="title" class="form-control" />
+                    <span asp-validation-for="title" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="form-container">
-                <form asp-action="Edit" asp-controller="Announcements" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="announcement_id" />
-                    <div class="form-group">
-                        <label asp-for="title" class="control-label"></label>
-                        <input asp-for="title" class="form-control" />
-                        <span asp-validation-for="title" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="description" class="control-label"></label>
-                        <textarea asp-for="description" class="form-control"></textarea>
-                        <span asp-validation-for="description" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="image" class="control-label"></label>
-                        <input asp-for="image" class="form-control" />
-                        <span asp-validation-for="image" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="url" class="control-label"></label>
-                        <input asp-for="url" class="form-control" />
-                        <span asp-validation-for="url" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="category" class="control-label"></label>
-                        <select asp-for="category" class="form-control" id="category">
-                            <option value="News">News</option>
-                            <option value="Events">Events</option>
-                            <option value="Subject">Subject</option>
-                        </select>
-                        <span asp-validation-for="category" class="text-danger"></span>
-                    </div>
-                    <div class="form-group hidden" id="subject-group">
-                        <label asp-for="subject_id" class="control-label">Subject</label>
-                        <select asp-for="subject_id" class="form-control" id="subject_id"></select>
-                    </div>
-                    <div class="form-group hidden" id="class-group">
-                        <label asp-for="class_id" class="control-label">Class</label>
-                        <div id="class-checkboxes" class="checkbox-group"></div>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="status" class="control-label"></label>
-                        <select asp-for="status" class="form-control">
-                            <option value="Visible">Visible</option>
-                            <option value="Non-Visible">Non-Visible</option>
-                        </select>
-                        <span asp-validation-for="status" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="staff_id" class="control-label"></label>
-                        <input asp-for="staff_id" class="form-control" value="@staffId" readonly />
-                        <span asp-validation-for="staff_id" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="date" class="control-label"></label>
-                        <input asp-for="date" class="form-control" />
-                        <span asp-validation-for="date" class="text-danger"></span>
-                    </div>
-                    <div class="btn-container">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
-                </form>
-            </div>
+                <div class="form-group">
+                    <label asp-for="description" class="control-label"></label>
+                    <textarea asp-for="description" class="form-control"></textarea>
+                    <span asp-validation-for="description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="image" class="control-label"></label>
+                    <input asp-for="image" class="form-control" />
+                    <span asp-validation-for="image" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="url" class="control-label"></label>
+                    <input asp-for="url" class="form-control" />
+                    <span asp-validation-for="url" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="category" class="control-label"></label>
+                    <select asp-for="category" class="form-control" id="category">
+                        <option value="News">News</option>
+                        <option value="Events">Events</option>
+                        <option value="Subject">Subject</option>
+                    </select>
+                    <span asp-validation-for="category" class="text-danger"></span>
+                </div>
+                <div class="form-group hidden" id="subject-group">
+                    <label asp-for="subject_id" class="control-label">Subject</label>
+                    <select asp-for="subject_id" class="form-control" id="subject_id"></select>
+                </div>
+                <div class="form-group hidden" id="class-group">
+                    <label asp-for="class_id" class="control-label">Class</label>
+                    <div id="class-checkboxes" class="checkbox-group"></div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="status" class="control-label"></label>
+                    <select asp-for="status" class="form-control">
+                        <option value="Visible">Visible</option>
+                        <option value="Non-Visible">Non-Visible</option>
+                    </select>
+                    <span asp-validation-for="status" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="staff_id" class="control-label"></label>
+                    <input asp-for="staff_id" class="form-control" value="@staffId" readonly />
+                    <span asp-validation-for="staff_id" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="date" class="control-label"></label>
+                    <input asp-for="date" class="form-control" />
+                    <span asp-validation-for="date" class="text-danger"></span>
+                </div>
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
         </div>
         <div class="back-link">
             <a asp-action="Index">Back to List</a>
