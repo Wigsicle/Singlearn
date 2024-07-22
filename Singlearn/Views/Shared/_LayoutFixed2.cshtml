@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var staffId = HttpContextAccessor.HttpContext.Session.GetString("staff_id");
+    var role = HttpContextAccessor.HttpContext.Session.GetString("role");
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -37,14 +44,8 @@
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="SubjectMaterialChapter" asp-action="IndexMaterials">Materials Editor</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Homework Hub
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Dashboard</a>
-                        <a class="dropdown-item" href="#">Dropbox</a>
-                    </div>
+                <li class="nav-item">
+                    <a class="nav-link" href="~/HomeworkHub/staff_subject?teacherId=@staffId">Homework Hub</a>
                 </li>
             </ul>
         </div>
