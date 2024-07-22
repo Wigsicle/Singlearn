@@ -105,9 +105,17 @@
                                     <td>@item.Category</td>
                                     <td>@item.Status</td>
                                     <td>
-                                        <a asp-action="Details" asp-route-id="@item.AnnouncementId" asp-route-teacherId="@staffId"><i class="fa fa-eye text-primary"></i>Details</a> |
-                                        <a asp-action="Edit" asp-route-id="@item.AnnouncementId"><i class="fa fa-pencil text-warning"></i>Edit</a> |
-                                        <a asp-action="Delete" asp-route-id="@item.AnnouncementId"><i class="fa fa-trash text-danger"></i>Delete</a>
+                                        <ul class="button-list">
+                                            <li>
+                                                <a asp-action="Details" asp-controller="Announcements" asp-route-id="${item.AnnouncementId}" class="btn btn-primary" role="button">Details</a>
+                                            </li>
+                                            <li>
+                                                <a asp-action="Edit" asp-controller="Announcements" asp-route-id="${item.AnnouncementId}" class="btn btn-warning" role="button">Edit</a>
+                                            </li>
+                                            <li>
+                                                <a asp-action="Delete" asp-controller="Announcements" asp-route-id="${item.AnnouncementId}" class="btn btn-danger" role="button">Delete</a>
+                                            </li>
+                                        </ul>
                                     </td>
                                 </tr>
                             }
@@ -195,9 +203,17 @@
                                 <td>${announcement.Category}</td>
                                 <td>${announcement.Status}</td>
                                 <td>
-                                    <a href="/Announcements/Details/${announcement.AnnouncementId}"><i class="fa fa-eye text-primary"></i>Details</a> |
-                                    <a href="/Announcements/Edit/${announcement.AnnouncementId}"><i class="fa fa-pencil text-warning"></i>Edit</a> |
-                                    <a href="/Announcements/Delete/${announcement.AnnouncementId}"><i class="fa fa-trash text-danger"></i>Delete</a>
+                                                                                                                                                            <ul class="button-list">
+                            <li>
+                                                                <a href="/Announcements/Details/${announcement.AnnouncementId}" class="btn btn-primary" role="button">Details</a>
+                            </li>
+                            <li>
+                                                                <a href="/Announcements/Edit/${announcement.AnnouncementId}" class="btn btn-warning" role="button">Edit</a>
+                            </li>
+                            <li>
+                                                                <a href="/Announcements/Delete/${announcement.AnnouncementId}" class="btn btn-danger" role="button">Delete</a>
+                            </li>
+                        </ul>
                                 </td>
                             `;
                     tableBody.appendChild(row);
@@ -265,3 +281,25 @@
         });
     </script>
 }
+
+<style>
+    .col-id {
+        width: 5%;
+    }
+
+    .button-list {
+        list-style: none; /* Removes the default list item bullets */
+        padding: 0; /* Removes default padding */
+        margin: 0; /* Removes default margin */
+        display: flex; /* Aligns the list items horizontally */
+    }
+
+        .button-list li {
+            margin-right: 10px; /* Adds spacing between list items */
+        }
+
+            .button-list li:last-child {
+                margin-right: 0; /* Removes right margin from the last item */
+            }
+
+</style>
