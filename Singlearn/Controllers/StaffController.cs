@@ -142,7 +142,7 @@ namespace Singlearn.Controllers
                     .ToListAsync();
 
                 var staff_name = await dbContext.Staff
-                    .Where(s => s.staff_id.Equals(s.staff_id))
+                    .Where(s => s.staff_id.Equals(teacherId))
                     .Select(s => s.name)
                     .FirstOrDefaultAsync();
 
