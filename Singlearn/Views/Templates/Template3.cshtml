@@ -4,12 +4,15 @@
 <html>
 <head>
     <title>Template 3</title>
+    <!-- Bootstrap CSS for styling -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Card style */
         .card {
             margin-bottom: 20px;
         }
 
+        /* Style for the card hover effect */
         .card-hover-effect {
             overflow: hidden;
             position: relative;
@@ -22,10 +25,12 @@
                 box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             }
 
+        /* Additional padding for elements */
         .padding-bottom-20 {
             padding-bottom: 20px;
         }
 
+        /* Style for announcement items */
         .announcement-item {
             margin-bottom: 30px;
             border-bottom: 1px solid black;
@@ -39,15 +44,18 @@
                 margin-top: 10px;
             }
 
+        /* Meta information for announcements */
         .announcement-meta {
             font-size: 0.9rem;
             color: gray;
         }
 
+        /* Description for announcements */
         .announcement-description {
             color: black;
         }
 
+        /* Style for chapter cards */
         .chapter-card {
             width: 150px;
             height: 100px;
@@ -66,9 +74,11 @@
 </head>
 <body>
     <div class="container mt-5">
+        <!-- Heading for the subject and class ID -->
         <h2 class="text-success">@ViewData["SubjectName"] - @Model.class_id</h2>
         <div class="row mt-3">
             <div class="col-md-6">
+                <!-- Card for displaying subject announcements -->
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Subject Announcements</h5>
@@ -94,6 +104,7 @@
                         </div>
                         @if (Model.Announcements != null && Model.Announcements.Count > 3)
                         {
+                            <!-- Pagination for announcements -->
                             <nav aria-label="Announcements navigation">
                                 <ul class="pagination justify-content-center">
                                     <li class="page-item">
@@ -113,6 +124,7 @@
                 </div>
             </div>
             <div class="col-md-6">
+                <!-- Card for displaying subject chapters -->
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Subject Chapters</h5>
@@ -145,13 +157,16 @@
         </div>
     </div>
 
+    <!-- jQuery for handling AJAX requests and DOM manipulation -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        // Convert the C# list of announcements to a JavaScript array
         $(document).ready(function () {
             var announcements = @Html.Raw(Json.Serialize(Model?.Announcements?.ToList() ?? new List<Singlearn.Models.Entities.Announcement>()));
             var currentPage = 1;
             var rowsPerPage = 3;
 
+            // Function to update the displayed announcements based on the current page
             function updateAnnouncements(page) {
                 var startIndex = (page - 1) * rowsPerPage;
                 var endIndex = startIndex + rowsPerPage;
@@ -174,6 +189,7 @@
                 });
             }
 
+            // Handle click event for the previous page button
             $('#previousPage').click(function (event) {
                 event.preventDefault();
                 if (currentPage > 1) {
@@ -182,6 +198,7 @@
                 }
             });
 
+            // Handle click event for the next page button
             $('#nextPage').click(function (event) {
                 event.preventDefault();
                 if (currentPage < Math.ceil(announcements.length / rowsPerPage)) {
@@ -190,6 +207,7 @@
                 }
             });
 
+            // Initial update of announcements on page load
             updateAnnouncements(currentPage);
         });
     </script>

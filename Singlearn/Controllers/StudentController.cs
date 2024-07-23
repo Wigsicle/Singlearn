@@ -101,19 +101,25 @@ namespace Singlearn.Controllers
         {
             try
             {
+                // Retrieve the student ID and class ID from the session
                 var studentId = HttpContext.Session.GetString("student_id");
                 var classId = HttpContext.Session.GetString("class_id");
+                // Redirect to login if student_id or class_id is not found
                 if (string.IsNullOrEmpty(studentId) || string.IsNullOrEmpty(classId))
                 {
                     return RedirectToAction("Login", "Auth"); // Redirect to login if student_id or class_id is not found
                 }
 
+                // Set the subject ID in the ViewData
                 ViewData["SubjectId"] = subject_id;
+
+                // Fetch the subject name based on the subject ID
                 var subject_name = await dbContext.Subjects
                     .Where(s => s.subject_id.Equals(subject_id))
                     .Select(s => s.name)
                     .FirstOrDefaultAsync();
 
+                // Fetch the chapters associated with the subject ID
                 var chapters = await dbContext.ChapterNames
                     .Where(c => c.subject_id.Equals(subject_id))
                     .Select(c => new ChapterViewModel
@@ -125,36 +131,40 @@ namespace Singlearn.Controllers
                     })
                     .ToListAsync();
 
-
-
+                // Fetch the announcements associated with the subject ID and class ID
                 var announcements = await dbContext.Announcements
                     .Where(a => a.subject_id == subject_id && a.class_id.Equals(classId))
                     .ToListAsync();
 
+                // Fetch the staff ID associated with the subject ID and class ID
                 var staffId = await dbContext.SubjectTeacherClasses
                 .Where(stc => stc.subject_id == subject_id && stc.class_id == classId)
                 .Select(stc => stc.teacher_id)
                 .FirstOrDefaultAsync();
 
+                // Fetch the staff name based on the staff ID
                 var staff_name = await dbContext.Staff
                     .Where(s => s.staff_id == staffId)
                     .Select(s => s.name)
                     .FirstOrDefaultAsync();
 
-
+                // Set the staff name and subject name in the ViewData
                 ViewData["StaffName"] = staff_name;
-
                 ViewData["SubjectName"] = subject_name;
 
+                // Fetch the SubjectTeacherClass entity based on subject ID and class ID
                 var stc = await dbContext.SubjectTeacherClasses
                     .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id.Equals(classId));
 
+                // Fetch the STCTemplate entity based on stc_id
                 var stcTemplate = await dbContext.STCTemplates
                     .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
 
+                // Fetch the template based on template_id from the STCTemplate entity
                 var template = await dbContext.Templates
                     .FirstOrDefaultAsync(t => t.template_id == stcTemplate.template_id);
 
+                // Create a new SubjectViewModel with the fetched data
                 var viewModel = new SubjectViewModel
                 {
                     subject_id = subject_id,
@@ -165,10 +175,12 @@ namespace Singlearn.Controllers
                     Materials = new List<Material>()
                 };
 
+                // Return the "SubjectMain" view with the view model
                 return View("SubjectMain", viewModel);
             }
             catch (Exception ex)
             {
+                // Log the error and return a 500 internal server error status code
                 Console.WriteLine($"Error in Student SubjectIndex: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }

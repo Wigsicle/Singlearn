@@ -2,13 +2,18 @@
 
 
 @{
+    // Specify the layout page for this view
     Layout = "~/Views/Shared/_LayoutFixed2.cshtml";
+
+    // Set the title of the page to the subject name
     ViewData["Title"] = @ViewData["SubjectName"];
 }
 
-
+<!--Check if the TemplateViewName is not null or empty-->
 @if (!string.IsNullOrEmpty(Model.TemplateViewName))
 {
+    // Render the partial view for the template specified in Model.TemplateViewName
+    // Pass the current model to the partial view
     @await Html.PartialAsync($"~/Views/Templates/{Model.TemplateViewName}.cshtml", Model)
 }
 

@@ -7,8 +7,10 @@
 <html>
 <head>
     <title>Template 1</title>
+    <!-- Bootstrap CSS for styling -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Style for the card hover effect */
         .card-hover-effect {
             overflow: hidden;
             position: relative;
@@ -21,6 +23,7 @@
                 box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             }
 
+        /* Style for announcement items */
         .announcement-item {
             margin-bottom: 30px;
             border-bottom: 1px solid black;
@@ -34,15 +37,18 @@
                 margin-top: 10px;
             }
 
+        /* Meta information for announcements */
         .announcement-meta {
             font-size: 0.9rem;
             color: gray;
         }
 
+        /* Description for announcements */
         .announcement-description {
             color: black;
         }
 
+        /* Style for chapter cards */
         .chapter-card {
             width: 200px;
             height: 120px;
@@ -64,6 +70,7 @@
 </head>
 <body>
     <div class="container mt-5">
+        <!-- Announcements Section -->
         <div class="card mt-3">
             <div class="card-body">
                 <h5 class="card-title text-center">Subject Announcements</h5>
@@ -92,6 +99,7 @@
                 </div>
                 @if (announcements.Count > 3)
                 {
+                    <!-- Pagination for Announcements -->
                     <nav aria-label="Announcements navigation">
                         <ul class="pagination justify-content-center">
                             <li class="page-item">
@@ -109,6 +117,7 @@
                 }
             </div>
         </div>
+        <!-- Chapters Section -->
         <div class="card mt-3">
             <div class="card-body">
                 <h5 class="card-title text-center">Subject Chapters</h5>
@@ -139,6 +148,7 @@
         </div>
     </div>
 
+    <!-- jQuery for handling AJAX requests and DOM manipulation -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -146,6 +156,7 @@
             var currentPage = 1;
             var rowsPerPage = 3;
 
+            // Function to update announcements based on the current page
             function updateAnnouncements(page) {
                 var startIndex = (page - 1) * rowsPerPage;
                 var endIndex = startIndex + rowsPerPage;
@@ -168,6 +179,7 @@
                 });
             }
 
+            // Handle click event for the previous page button
             $('#previousPage').click(function (event) {
                 event.preventDefault();
                 if (currentPage > 1) {
@@ -176,6 +188,7 @@
                 }
             });
 
+            // Handle click event for the next page button
             $('#nextPage').click(function (event) {
                 event.preventDefault();
                 if (currentPage < Math.ceil(announcements.length / rowsPerPage)) {
@@ -184,6 +197,7 @@
                 }
             });
 
+            // Initial update of announcements on page load
             updateAnnouncements(currentPage);
         });
     </script>

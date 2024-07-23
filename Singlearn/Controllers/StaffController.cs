@@ -110,20 +110,25 @@ namespace Singlearn.Controllers
         {
             try
             {
+                // Retrieve the teacher's ID from the session
                 var teacherId = HttpContext.Session.GetString("staff_id");
                 if (string.IsNullOrEmpty(teacherId))
                 {
-                    return RedirectToAction("Login", "Auth"); // Redirect to login if teacher_id is not found
+                    // Redirect to login if the teacher ID is not found in the session
+                    return RedirectToAction("Login", "Auth");
                 }
 
+                // Store the subject ID and class ID in ViewData to be used in the view
                 ViewData["SubjectId"] = subject_id;
                 ViewData["ClassId"] = class_id;
 
+                // Retrieve the name of the subject
                 var subject_name = await dbContext.Subjects
                     .Where(s => s.subject_id.Equals(subject_id))
                     .Select(s => s.name)
                     .FirstOrDefaultAsync();
 
+                // Retrieve the chapters for the specified subject and map them to ChapterViewModel
                 var chapters = await dbContext.ChapterNames
                     .Where(c => c.subject_id.Equals(subject_id))
                     .Select(c => new ChapterViewModel
@@ -135,30 +140,34 @@ namespace Singlearn.Controllers
                     })
                     .ToListAsync();
 
-
-
+                // Retrieve the announcements for the specified subject and class
                 var announcements = await dbContext.Announcements
                     .Where(a => a.subject_id == subject_id && a.class_id.Equals(class_id))
                     .ToListAsync();
 
+                // Retrieve the name of the teacher who is teaching this class and subject
                 var staff_name = await dbContext.Staff
                     .Where(s => s.staff_id.Equals(teacherId))
                     .Select(s => s.name)
                     .FirstOrDefaultAsync();
 
+                // Store the staff name and subject name in ViewData to be used in the view
                 ViewData["StaffName"] = staff_name;
-
                 ViewData["SubjectName"] = subject_name;
 
+                // Retrieve the SubjectTeacherClass entry for the specified subject and class
                 var stc = await dbContext.SubjectTeacherClasses
                     .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id.Equals(class_id));
 
+                // Retrieve the STCTemplate entry associated with the SubjectTeacherClass entry
                 var stcTemplate = await dbContext.STCTemplates
                     .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
 
+                // Retrieve the template associated with the STCTemplate entry
                 var template = await dbContext.Templates
                     .FirstOrDefaultAsync(t => t.template_id == stcTemplate.template_id);
 
+                // Create a new SubjectViewModel and populate it with the retrieved data
                 var viewModel = new SubjectViewModel
                 {
                     subject_id = subject_id,
@@ -169,10 +178,12 @@ namespace Singlearn.Controllers
                     Materials = new List<Material>()
                 };
 
+                // Return the SubjectMain view with the populated view model
                 return View("SubjectMain", viewModel);
             }
             catch (Exception ex)
             {
+                // Log the error and return a 500 status code if an exception occurs
                 Console.WriteLine($"Error in Staff SubjectIndex: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
@@ -239,12 +250,15 @@ namespace Singlearn.Controllers
         {
             try
             {
+                // Retrieve the teacher's ID from the session
                 var teacherId = HttpContext.Session.GetString("staff_id");
                 if (string.IsNullOrEmpty(teacherId))
                 {
-                    return RedirectToAction("Login", "Auth"); // Redirect to login if teacher_id is not found
+                    // Redirect to login if teacher_id is not found in the session
+                    return RedirectToAction("Login", "Auth"); 
                 }
 
+                // Retrieve the subjects taught by the teacher
                 var subjects = await dbContext.Subjects
                     .Join(dbContext.SubjectTeacherClasses,
                         subject => subject.subject_id,
@@ -255,15 +269,20 @@ namespace Singlearn.Controllers
                     .Distinct()
                     .ToListAsync();
 
+                // Store the subjects in ViewBag to be used in the view
                 ViewBag.Subjects = subjects;
 
+                // Retrieve all available templates
                 var templates = await dbContext.Templates.ToListAsync();
+                // Store the templates in ViewBag to be used in the view
                 ViewBag.Templates = templates;
 
+                // Return the view for TemplateEditor
                 return View();
             }
             catch (Exception ex)
             {
+                // Log the error and return a 500 status code if an exception occurs
                 Console.WriteLine($"Error in TemplateEditor: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
@@ -273,12 +292,15 @@ namespace Singlearn.Controllers
         [HttpGet]
         public async Task<IActionResult> GetClassesForSubject(int subject_id)
         {
+            // Retrieve the teacher's ID from the session
             var teacherId = HttpContext.Session.GetString("staff_id");
             if (string.IsNullOrEmpty(teacherId))
             {
-                return Json(new List<Class>()); // Return an empty list if staff_id is not found
+                // Return an empty list if the teacher ID is not found in the session
+                return Json(new List<Class>());
             }
 
+            // Retrieve the classes associated with the specified subject and teacher
             var classes = await dbContext.SubjectTeacherClasses
                 .Where(stc => stc.subject_id == subject_id && stc.teacher_id.Equals(teacherId))
                 .Join(dbContext.Classes,
@@ -288,6 +310,7 @@ namespace Singlearn.Controllers
                 .Distinct()
                 .ToListAsync();
 
+            // Return the list of classes as JSON
             return Json(classes);
         }
 
@@ -297,21 +320,25 @@ namespace Singlearn.Controllers
         {
             try
             {
+                // Retrieve the SubjectTeacherClass entry for the specified subject and class
                 var stc = await dbContext.SubjectTeacherClasses
                     .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id.Equals(class_id));
 
                 if (stc != null)
                 {
+                    // Retrieve the existing STCTemplate entry or create a new one if it doesn't exist
                     var stcTemplate = await dbContext.STCTemplates
                         .FirstOrDefaultAsync(st => st.stc_id == stc.stc_id);
 
                     if (stcTemplate != null)
                     {
+                        // Update the template ID if the STCTemplate entry exists
                         stcTemplate.template_id = template_id;
                         dbContext.STCTemplates.Update(stcTemplate);
                     }
                     else
                     {
+                        // Create a new STCTemplate entry if it doesn't exist
                         stcTemplate = new STCTemplate
                         {
                             stc_id = stc.stc_id,
@@ -320,17 +347,21 @@ namespace Singlearn.Controllers
                         dbContext.STCTemplates.Add(stcTemplate);
                     }
 
+                    // Save the changes to the database
                     await dbContext.SaveChangesAsync();
                 }
                 else
                 {
+                    // Return a JSON response indicating that the SubjectTeacherClass entry was not found
                     return Json(new { success = false, message = "SubjectTeacherClass not found." });
                 }
 
+                // Return a JSON response indicating success
                 return Json(new { success = true, message = "Template saved successfully." });
             }
             catch (Exception ex)
             {
+                // Log the error and return a JSON response indicating failure if an exception occurs
                 Console.WriteLine($"Error in SaveTemplateSelection: {ex.Message}");
                 return Json(new { success = false, message = $"Internal server error: {ex.Message}" });
             }
@@ -341,24 +372,30 @@ namespace Singlearn.Controllers
         {
             try
             {
+                // Retrieve the template with the specified ID
                 var template = await dbContext.Templates.FirstOrDefaultAsync(t => t.template_id == template_id);
                 if (template == null)
                 {
+                    // Log an error and return a message if the template is not found
                     Console.WriteLine("Template not found.");
                     return Content("Template not found.");
                 }
                 Console.WriteLine($"Template found: {template.view_name}");
 
+                // Retrieve the SubjectTeacherClass entry for the specified subject and class
                 var stc = await dbContext.SubjectTeacherClasses
                     .FirstOrDefaultAsync(stc => stc.subject_id == subject_id && stc.class_id == class_id);
 
+                // Retrieve the name of the subject
                 var subject_name = await dbContext.Subjects
                 .Where(s => s.subject_id.Equals(subject_id))
                 .Select(s => s.name)
                 .FirstOrDefaultAsync();
 
+                // Store the subject name in ViewData to be used in the view
                 ViewData["SubjectName"] = subject_name;
 
+                // Create a new SubjectViewModel and populate it with the retrieved data
                 var viewModel = new SubjectViewModel
                 {
                     subject_id = subject_id,
@@ -367,10 +404,12 @@ namespace Singlearn.Controllers
                     TemplateViewName = template.view_name
                 };
 
+                // Return a partial view for the template preview
                 return PartialView($"~/Views/Templates/{template.view_name}.cshtml", viewModel);
             }
             catch (Exception ex)
             {
+                // Log the error and return a 500 status code if an exception occurs
                 Console.WriteLine($"Error in LoadTemplatePreview: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }

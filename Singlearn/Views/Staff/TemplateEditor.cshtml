@@ -6,23 +6,28 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Bootstrap CSS for styling -->
     <title>Template Editor</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
+        /* Style for the header */
         .header {
             margin-top: 120px;
             text-align: center;
         }
 
+        /* Center the form on the page */
         .centered-form {
             max-width: 600px;
             margin: auto;
         }
 
+        /* Add margin to the form groups */
         .form-group {
             margin-bottom: 1.5rem;
         }
 
+        /* Style for the template preview area */
         #templatePreview {
             width: 100%;
             height: 600px;
@@ -32,6 +37,7 @@
             overflow-y: auto;
         }
 
+        /* Flex container for the form and preview sections */
         .container-flex {
             display: flex;
             justify-content: center;
@@ -39,6 +45,7 @@
             flex-wrap: wrap;
         }
 
+        /* Ensure the form and preview containers have a minimum width */
         .form-container, .preview-container {
             flex: 1;
             min-width: 800px;
@@ -51,6 +58,7 @@
     <div class="container main-body">
         <div class="container-flex">
             <div class="form-container centered-form">
+                <!-- Dropdown for selecting a subject -->
                 <div class="form-group">
                     <label for="subjectSelect">Select Subject:</label>
                     <select id="subjectSelect" class="form-control">
@@ -61,12 +69,14 @@
                         }
                     </select>
                 </div>
+                <!-- Dropdown for selecting a class -->
                 <div class="form-group">
                     <label for="classSelect">Select Class:</label>
                     <select id="classSelect" class="form-control">
                         <option value="">--Select a Class--</option>
                     </select>
                 </div>
+                <!-- Dropdown for selecting a template -->
                 <div class="form-group">
                     <label for="templateSelect">Select Template:</label>
                     <select id="templateSelect" class="form-control">
@@ -77,20 +87,25 @@
                         }
                     </select>
                 </div>
+                <!-- Button to save the template selection -->
                 <button id="saveTemplate" class="btn btn-primary btn-block">Save Template</button>
             </div>
+            <!-- Area to preview the selected template -->
             <div class="preview-container" id="templatePreview">
                 <p class="text-center">Please select a template to preview.</p>
             </div>
         </div>
     </div>
 
+    <!-- jQuery for handling AJAX requests and DOM manipulation -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
+            // Handle the change event of the subject dropdown
             $('#subjectSelect').change(function () {
                 var subject_id = $(this).val();
                 if (subject_id) {
+                    // Fetch classes for the selected subject
                     $.get('/Staff/GetClassesForSubject', { subject_id: subject_id }, function (data) {
                         var classSelect = $('#classSelect');
                         classSelect.empty();
@@ -100,11 +115,13 @@
                         });
                     });
                 } else {
+                    // Clear the class dropdown if no subject is selected
                     $('#classSelect').empty();
                     $('#classSelect').append('<option value="">--Select a Class--</option>');
                 }
             });
 
+            // Handle the change event of the template dropdown
             $('#templateSelect').change(function () {
                 var template_id = $(this).val();
                 var subject_id = $('#subjectSelect').val();
@@ -120,6 +137,7 @@
                 }
             });
 
+            // Handle the click event of the save template button
             $('#saveTemplate').click(function () {
                 var subject_id = $('#subjectSelect').val();
                 var class_id = $('#classSelect').val();
