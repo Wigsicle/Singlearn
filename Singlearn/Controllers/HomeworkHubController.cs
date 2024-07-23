@@ -83,11 +83,14 @@ namespace SinglearnWeb.Controllers
                     description = model.description,
                     startdate = model.startdate,
                     enddate = model.enddate,
+
                 };
 
                 if (model.attachment != null && model.attachment.Length > 0)
                 {
                     homework.attachment = await GetPdfFileBytesAsync(model.attachment);
+                    homework.attachmentName = model.attachment.FileName;
+
                 }
 
                 dbContext.Add(homework);
@@ -110,6 +113,7 @@ namespace SinglearnWeb.Controllers
                 description = homework.description,
                 startdate = homework.startdate,
                 enddate = homework.enddate
+                
             };
 
             return View(viewModel);
@@ -132,6 +136,7 @@ namespace SinglearnWeb.Controllers
                 if (homework.attachment != null && homework.attachment.Length > 0)
                 {
                     existingHomeworks.attachment = await GetPdfFileBytesAsync(homework.attachment);
+                    existingHomeworks.attachmentName = homework.attachment.FileName;
                 }
 
                 dbContext.Update(existingHomeworks);
@@ -391,6 +396,39 @@ namespace SinglearnWeb.Controllers
             {
                 await pdfFile.CopyToAsync(memoryStream);
                 return memoryStream.ToArray();
+            }
+        }
+
+        public async Task<IActionResult> DownloadHomework(int homeworkId)
+        {
+            try
+            {
+                var homework = await dbContext.Homeworks.FirstOrDefaultAsync(h => h.homework_id == homeworkId);
+
+                if(homework == null || homework.attachment == null)
+                {
+                    return NotFound();
+                }
+
+                var fileData = homework.attachment;
+                var fileName = homework.attachmentName;
+                var fileExtension = Path.GetExtension(fileName);
+
+                var contentType = fileExtension switch
+                {
+                    ".pdf" => "application/pdf",
+                    ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    _ => "application/octet-stream"
+                };
+
+                return File(fileData, contentType, fileName);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                // Handle the exception (e.g., return a 500 error)
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
     }

@@ -22,6 +22,11 @@
 
         public string student_name { get; set; }
 
+        public string originalFilename_path { get; set; }
+
+        public string annotatedFilename_path { get; set; }
+
+
 
     }
 }

@@ -13,6 +13,8 @@ namespace Singlearn.Models.Entities
 
         public byte[]? attachment { get; set; }
 
+        public string attachmentName { get; set; }
+
         public DateTime startdate { get; set; }
 
         public DateTime enddate { get; set; }
