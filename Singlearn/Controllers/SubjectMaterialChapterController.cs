@@ -228,7 +228,7 @@ namespace Singlearn.Controllers
         }
 
         [HttpGet]
-        [Route("/Materials/Edit/{id}")]
+        [Route("/Materials/Edit/{id?}")]
         public async Task<IActionResult> EditMaterial(int id)
         {
             var material = await _context.Materials.FindAsync(id);
@@ -309,9 +309,68 @@ namespace Singlearn.Controllers
             return View("Materials/Edit", model);
         }
 
-
         [HttpPost]
-        [Route("/Materials/Edit/{id}")]
+        [Route("/Materials/Edit/{id?}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditMaterial(int id, MaterialEditViewModel material)
+        {
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var existingMaterial = await _context.Materials.FindAsync(id);
+                    if (existingMaterial == null)
+                    {
+                        return NotFound();
+                    }
+
+                    existingMaterial.subject_id = material.subject_id;
+                    existingMaterial.teacher_id = material.teacher_id;
+                    existingMaterial.class_id = material.class_id;
+                    existingMaterial.name = material.name;
+                    existingMaterial.description = material.description;
+                    existingMaterial.chapter_id = material.chapter_id;
+                    existingMaterial.type = material.type;
+                    existingMaterial.link = material.link;
+                    existingMaterial.status = material.status;
+                    existingMaterial.file_type = material.file_type;
+
+                    if (material.DataFile != null && material.DataFile.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await material.DataFile.CopyToAsync(memoryStream);
+                            existingMaterial.data = memoryStream.ToArray();
+                        }
+                    }
+
+                    if (material.PDFFile != null && material.PDFFile.Length > 0)
+                    {
+                        existingMaterial.pdf_file = await GetPdfFileBytesAsync(material.PDFFile);
+                    }
+
+                    _context.Update(existingMaterial);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MaterialExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(IndexMaterials));
+            }
+            return View("Materials/Edit", material);
+
+        }
+/*        [HttpPost]
+        [Route("/Materials/Edit/{id?}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditMaterial(int id, MaterialEditViewModel material)
         {
@@ -371,8 +430,8 @@ namespace Singlearn.Controllers
                 }
                 return RedirectToAction(nameof(IndexMaterials));
             }
-            return View("Materials/Edit", material);
-        }
+            return View("Materials/Edit",material);
+        }*/
 
 
 
