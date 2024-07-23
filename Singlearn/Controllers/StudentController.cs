@@ -131,10 +131,16 @@ namespace Singlearn.Controllers
                     .Where(a => a.subject_id == subject_id && a.class_id.Equals(classId))
                     .ToListAsync();
 
+                var staffId = await dbContext.SubjectTeacherClasses
+                .Where(stc => stc.subject_id == subject_id && stc.class_id == classId)
+                .Select(stc => stc.teacher_id)
+                .FirstOrDefaultAsync();
+
                 var staff_name = await dbContext.Staff
-                    .Where(s => s.staff_id.Equals(s.staff_id))
+                    .Where(s => s.staff_id == staffId)
                     .Select(s => s.name)
                     .FirstOrDefaultAsync();
+
 
                 ViewData["StaffName"] = staff_name;
 
