@@ -1,4 +1,8 @@
 ﻿@model Singlearn.ViewModels.MaterialEditViewModel
+@inject IHttpContextAccessor HTTPCONTEXTACCESSOR;
+@{
+    var staffId = HTTPCONTEXTACCESSOR.HttpContext.Session.GetString("staff_id");
+}
 
 @{
     Layout = "~/Views/Shared/_LayoutFixed2.cshtml";
@@ -112,68 +116,91 @@
             <h2>Edit Material</h2>
             <hr />
             <form asp-action="EditMaterial" asp-controller="SubjectMaterialChapter" method="post" enctype="multipart/form-data">
-                <input type="hidden" asp-for="material_id" />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Subject dropdown -->
                 <div class="form-group">
-                    <label asp-for="subject_id" class="control-label"></label>
-                    <input asp-for="subject_id" class="form-control" />
+                    <label asp-for="subject_id" class="control-label">Subject</label>
+                    <select asp-for="subject_id" asp-items="@ViewBag.SubjectOptions" class="form-control" onchange="fetchClasses(this.value)">
+                        <option value="">Select a subject</option>
+                    </select>
                     <span asp-validation-for="subject_id" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+
+
+                <div class="form-group" style="padding-bottom:10px;">
                     <label asp-for="teacher_id" class="control-label"></label>
-                    <input asp-for="teacher_id" class="form-control" />
+                    <input asp-for="teacher_id" class="form-control" value="@staffId" readonly />
                     <span asp-validation-for="teacher_id" class="text-danger"></span>
                 </div>
+
+                <!-- Class dropdown -->
                 <div class="form-group">
-                    <label asp-for="class_id" class="control-label"></label>
-                    <input asp-for="class_id" class="form-control" />
+                    <label asp-for="class_id" class="control-label">Class</label>
+                    <select asp-for="class_id" class="form-control" id="classDropdown" onchange="updateDropdowns(this.value)" disabled>
+                        <option value="">Select a class</option>
+                    </select>
                     <span asp-validation-for="class_id" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+
+                <div class="form-group" style="padding-bottom:10px;">
                     <label asp-for="name" class="control-label"></label>
-                    <input asp-for="name" class="form-control" />
+                    <input asp-for="name" class="form-control" required />
                     <span asp-validation-for="name" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+
+                <div class="form-group" style="padding-bottom:10px;">
                     <label asp-for="description" class="control-label"></label>
                     <input asp-for="description" class="form-control" />
                     <span asp-validation-for="description" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="chapter_id" class="control-label"></label>
-                    <input asp-for="chapter_id" class="form-control" />
+
+                <div class="form-group" style="padding-bottom:10px;">
+                    <label asp-for="chapter_id" class="control-label">Chapter</label>
+                    <select asp-for="chapter_id" class="form-control" id="chapterDropdown" disabled>
+                        <option value="">Select a chapter</option>
+                    </select>
+
                     <span asp-validation-for="chapter_id" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+
+                <div class="form-group" style="padding-bottom:10px;">
                     <label asp-for="type" class="control-label"></label>
                     <select asp-for="type" asp-items="ViewBag.TypeOptions" class="form-control" onchange="toggleFileInputs()"></select>
                     <span asp-validation-for="type" class="text-danger"></span>
                 </div>
 
-                <div class="form-group hidden" id="linkField">
+                <div class="form-group" style="padding-bottom:10px;" id="linkField">
                     <label asp-for="link" class="control-label"></label>
                     <input asp-for="link" class="form-control" id="linkInput">
                     <span asp-validation-for="link" class="text-danger"></span>
                 </div>
 
-                <div class="form-group hidden" id="dataFileDiv">
+                <div class="form-group" style="padding-bottom:10px;">
+                    <label asp-for="status" class="control-label"></label>
+                    <select asp-for="status" asp-items="ViewBag.StatusOptions" class="form-control"></select>
+                    <span asp-validation-for="status" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" style="padding-bottom:10px;" id="dataFileDiv">
                     <label asp-for="DataFile" class="control-label"></label>
                     <input asp-for="DataFile" type="file" id="datafile" class="form-control" onchange="showFileExtension(this)" />
                     <span asp-validation-for="DataFile" class="text-danger"></span>
                 </div>
 
-                <div class="form-group hidden" id="pdfFileDiv">
+                <div class="form-group" style="padding-bottom:10px;" id="pdfFileDiv">
                     <label asp-for="PDFFile" class="control-label"></label>
                     <input asp-for="PDFFile" type="file" id="pdffile" class="form-control" />
                     <span asp-validation-for="PDFFile" class="text-danger"></span>
                 </div>
 
-                <div class="form-group hidden" id="fileTypeDiv">
+                <div class="form-group" style="padding-bottom:10px;" id="fileTypeDiv">
                     <label asp-for="file_type" class="control-label">Data File Extension</label>
                     <input asp-for="file_type" id="fileExtensionDisplay" class="form-control" readonly />
                     <span asp-validation-for="file_type" class="text-danger"></span>
                 </div>
-                <div class="btn-container text-center mt-3 mb-3">
+
+                <div class="form-group text-center mt-3 mb-3">
                     <input type="submit" value="Update" class="btn btn-primary" />
                 </div>
             </form>
@@ -185,6 +212,116 @@
     </div>
 
     @section Scripts {
+        <script>
+            function showFileExtension(input) {
+                if (input.files && input.files.length > 0) {
+                    var fileExtension = input.files[0].name.split('.').pop().toUpperCase();
+                    document.getElementById('fileExtensionDisplay').value = fileExtension;
+                }
+            }
+
+            function toggleFileInputs() {
+                var typeSelect = document.querySelector('select[name="type"]');
+                var selectedValue = typeSelect.options[typeSelect.selectedIndex].text;
+                var linkField = document.getElementById('linkField');
+                var dataFileDiv = document.getElementById('dataFileDiv');
+                var pdfFileDiv = document.getElementById('pdfFileDiv');
+                var fileTypeDiv = document.getElementById('fileTypeDiv');
+                var linkInput = document.getElementById('linkInput');
+                var pdffile = document.getElementById('pdffile');
+                var datafile = document.getElementById('datafile');
+                var fileExtensionDisplay = document.getElementById('fileExtensionDisplay');
+
+                if (selectedValue === "Video Lessons") {
+                    linkField.style.display = 'block';
+                    dataFileDiv.style.display = 'none';
+                    pdfFileDiv.style.display = 'none';
+                    fileTypeDiv.style.display = 'none';
+                    pdffile.value = '' // Clear the pdf file input value
+                    datafile.value = '' // Clear the data file input value
+                    fileExtensionDisplay.value = ''; // Clear the file extension display value
+
+                } else {
+                    linkField.style.display = 'none';
+                    dataFileDiv.style.display = 'block';
+                    pdfFileDiv.style.display = 'block';
+                    fileTypeDiv.style.display = 'block';
+                    linkInput.value = ''; // Clear the link input value
+                }
+            }
+
+            function updateDropdowns(classId) {
+                var subjectId = document.querySelector('select[name="subject_id"]').value;
+
+                if (!classId || !subjectId) {
+                    document.getElementById('chapterDropdown').disabled = true;
+                    document.getElementById('chapterDropdown').innerHTML = '<option value="">Select a chapter</option>';
+                    return;
+                }
+
+                fetchChapters(subjectId, classId);
+            }
+
+
+            function fetchClasses(subjectId) {
+                if (!subjectId) {
+                    document.getElementById('classDropdown').disabled = true;
+                    document.getElementById('classDropdown').innerHTML = '<option value="">Select a class</option>';
+                    document.getElementById('chapterDropdown').disabled = true;
+                    document.getElementById('chapterDropdown').innerHTML = '<option value="">Select a chapter</option>';
+                    return;
+                }
+
+                fetch(`/SubjectMaterialChapter/GetClassesForSubject/${subjectId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var classDropdown = document.getElementById('classDropdown');
+                        classDropdown.disabled = false;
+                        classDropdown.innerHTML = '<option value="">Select a class</option>';
+                        data.forEach(c => {
+                            var option = document.createElement('option');
+                            option.value = c.value;
+                            option.text = c.text;
+                            classDropdown.add(option);
+                        });
+
+                        // Reset chapter dropdown
+                        document.getElementById('chapterDropdown').disabled = true;
+                        document.getElementById('chapterDropdown').innerHTML = '<option value="">Select a chapter</option>';
+                    });
+            }
+
+
+            function fetchChapters(subjectId, classId) {
+                if (!subjectId || !classId) {
+                    document.getElementById('chapterDropdown').disabled = true;
+                    document.getElementById('chapterDropdown').innerHTML = '<option value="">Select a chapter</option>';
+                    return;
+                }
+
+                fetch(`/SubjectMaterialChapter/GetChaptersForSubjectClass/${subjectId}/${classId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var chapterDropdown = document.getElementById('chapterDropdown');
+                        chapterDropdown.disabled = false;
+                        chapterDropdown.innerHTML = '<option value="">Select a chapter</option>';
+                        data.forEach(chapter => {
+                            var option = document.createElement('option');
+                            option.value = chapter.id;
+                            option.text = `${chapter.number}`;
+                            chapterDropdown.add(option);
+                        });
+                    });
+            }
+
+
+            document.addEventListener("DOMContentLoaded", function () {
+                toggleFileInputs();
+                document.getElementById('chapterDropdown').disabled = true;
+            });
+
+
+        </script>
         @{
             await Html.RenderPartialAsync("_ValidationScriptsPartial");
         }
