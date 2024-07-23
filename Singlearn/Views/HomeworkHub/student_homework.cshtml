@@ -52,6 +52,9 @@
                             <td>
                                 <a asp-action="student_review" asp-route-homeworkId="@item.homework_id" asp-route-studentId="@studentId">Review</a>
                             </td>
+                            <td>
+                                <a href="@Url.Action("DownloadHomework", "HomeworkHub", new {homeworkId = item.homework_id})" target="_blank">Download Attachment</a>
+                            </td>
                         </tr>
                     }
                     

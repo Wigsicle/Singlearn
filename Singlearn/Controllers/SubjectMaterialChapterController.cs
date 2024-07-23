@@ -309,6 +309,7 @@ namespace Singlearn.Controllers
             return View("Materials/Edit", model);
         }
 
+
         [HttpPost]
         [Route("/Materials/Edit/{id?}")]
         [ValidateAntiForgeryToken]
@@ -769,7 +770,6 @@ namespace Singlearn.Controllers
                 new SelectListItem{ Value = "Video Lessons", Text = "Video Lessons" },
                 new SelectListItem{ Value = "Lesson Notes", Text = "Lesson Notes"},
                 new SelectListItem{ Value = "Classwork", Text = "Classwork"},
-                new SelectListItem{ Value = "Homework", Text = "Homework"}
             };
             var statusOptions = new List<SelectListItem>
             {

@@ -162,27 +162,27 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="announcement_id" />
                 <div class="form-group">
-                    <label asp-for="title" class="control-label"></label>
+                    <label asp-for="title" class="control-label">Title</label>
                     <input asp-for="title" class="form-control" />
                     <span asp-validation-for="title" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="description" class="control-label"></label>
+                    <label asp-for="description" class="control-label">Description</label>
                     <textarea asp-for="description" class="form-control"></textarea>
                     <span asp-validation-for="description" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="image" class="control-label"></label>
+                    <label asp-for="image" class="control-label">Image URL</label>
                     <input asp-for="image" class="form-control" />
                     <span asp-validation-for="image" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="url" class="control-label"></label>
+                    <label asp-for="url" class="control-label">URL (optional)</label>
                     <input asp-for="url" class="form-control" />
                     <span asp-validation-for="url" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="category" class="control-label"></label>
+                    <label asp-for="category" class="control-label">Category</label>
                     <select asp-for="category" class="form-control" id="category">
                         <option value="News">News</option>
                         <option value="Events">Events</option>
@@ -199,7 +199,7 @@
                     <div id="class-checkboxes" class="checkbox-group"></div>
                 </div>
                 <div class="form-group">
-                    <label asp-for="status" class="control-label"></label>
+                    <label asp-for="status" class="control-label">Status</label>
                     <select asp-for="status" class="form-control">
                         <option value="Visible">Visible</option>
                         <option value="Non-Visible">Non-Visible</option>
@@ -207,12 +207,12 @@
                     <span asp-validation-for="status" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="staff_id" class="control-label"></label>
+                    <label asp-for="staff_id" class="control-label">Created by</label>
                     <input asp-for="staff_id" class="form-control" value="@staffId" readonly />
                     <span asp-validation-for="staff_id" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="date" class="control-label"></label>
+                    <label asp-for="date" class="control-label">Date created</label>
                     <input asp-for="date" class="form-control" readonly />
                     <span asp-validation-for="date" class="text-danger"></span>
                 </div>

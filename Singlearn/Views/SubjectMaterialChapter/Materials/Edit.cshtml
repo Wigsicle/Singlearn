@@ -129,7 +129,7 @@
 
 
                 <div class="form-group" style="padding-bottom:10px;">
-                    <label asp-for="teacher_id" class="control-label"></label>
+                    <label asp-for="teacher_id" class="control-label">Teacher ID</label>
                     <input asp-for="teacher_id" class="form-control" value="@staffId" readonly />
                     <span asp-validation-for="teacher_id" class="text-danger"></span>
                 </div>
@@ -144,17 +144,17 @@
                 </div>
 
                 <div class="form-group" style="padding-bottom:10px;">
-                    <label asp-for="name" class="control-label"></label>
+                    <label asp-for="name" class="control-label">Material Name</label>
                     <input asp-for="name" class="form-control" required />
                     <span asp-validation-for="name" class="text-danger"></span>
                 </div>
 
                 <div class="form-group" style="padding-bottom:10px;">
-                    <label asp-for="description" class="control-label"></label>
+                    <label asp-for="description" class="control-label">Description</label>
                     <input asp-for="description" class="form-control" />
                     <span asp-validation-for="description" class="text-danger"></span>
                 </div>
-
+                
                 <div class="form-group" style="padding-bottom:10px;">
                     <label asp-for="chapter_id" class="control-label">Chapter</label>
                     <select asp-for="chapter_id" class="form-control" id="chapterDropdown" disabled>
@@ -165,31 +165,31 @@
                 </div>
 
                 <div class="form-group" style="padding-bottom:10px;">
-                    <label asp-for="type" class="control-label"></label>
+                    <label asp-for="type" class="control-label">Material Type</label>
                     <select asp-for="type" asp-items="ViewBag.TypeOptions" class="form-control" onchange="toggleFileInputs()"></select>
                     <span asp-validation-for="type" class="text-danger"></span>
                 </div>
 
                 <div class="form-group" style="padding-bottom:10px;" id="linkField">
-                    <label asp-for="link" class="control-label"></label>
+                    <label asp-for="link" class="control-label">Video Link</label>
                     <input asp-for="link" class="form-control" id="linkInput">
                     <span asp-validation-for="link" class="text-danger"></span>
                 </div>
 
                 <div class="form-group" style="padding-bottom:10px;">
-                    <label asp-for="status" class="control-label"></label>
+                    <label asp-for="status" class="control-label">Visibility</label>
                     <select asp-for="status" asp-items="ViewBag.StatusOptions" class="form-control"></select>
                     <span asp-validation-for="status" class="text-danger"></span>
                 </div>
 
                 <div class="form-group" style="padding-bottom:10px;" id="dataFileDiv">
-                    <label asp-for="DataFile" class="control-label"></label>
-                    <input asp-for="DataFile" type="file" id="datafile" class="form-control" onchange="showFileExtension(this)" />
+                    <label asp-for="DataFile" class="control-label">Download Material</label>
+                    <input asp-for="DataFile" type="file" id="datafile" class="form-control"/>
                     <span asp-validation-for="DataFile" class="text-danger"></span>
                 </div>
 
                 <div class="form-group" style="padding-bottom:10px;" id="pdfFileDiv">
-                    <label asp-for="PDFFile" class="control-label"></label>
+                    <label asp-for="PDFFile" class="control-label">Viewable Material</label>
                     <input asp-for="PDFFile" type="file" id="pdffile" class="form-control" />
                     <span asp-validation-for="PDFFile" class="text-danger"></span>
                 </div>
