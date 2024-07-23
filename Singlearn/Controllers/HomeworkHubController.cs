@@ -261,6 +261,34 @@ namespace SinglearnWeb.Controllers
             return RedirectToAction("staff_submission", new { homeworkId = submission.homework_id, classId = submission.class_id });
         }
 
+        public async Task<IActionResult> student_subject(string classId)
+        {
+            var subjectsWithClassId = await dbContext.Subjects
+                .Join(
+                    dbContext.SubjectTeacherClasses,
+                    s => s.subject_id,
+                    stc => stc.subject_id,
+                    (s, stc) => new {
+                        Subject = s,
+                        SubjectTeacherClass = stc
+                    }
+                )
+                .Where(joined => joined.SubjectTeacherClass.class_id.Equals(classId))
+                .Select(joined => new SubjectViewModel
+                {
+                    subject_id = joined.Subject.subject_id,
+                    name = joined.Subject.name,
+                    academic_level = joined.Subject.academic_level,
+                    image = joined.Subject.image,
+                    no_chapters = joined.Subject.no_chapters,
+                    year = joined.Subject.year,
+                    class_id = joined.SubjectTeacherClass.class_id
+                })
+                .ToListAsync();
+
+            return View(subjectsWithClassId);
+        }
+
         public async Task<IActionResult> student_homework(string studentId)
         {
             var student = await dbContext.Students.SingleOrDefaultAsync(s => s.student_id == studentId);

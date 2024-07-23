@@ -181,6 +181,8 @@ namespace Singlearn.Controllers
 
                     _context.Update(existingMaterial);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(IndexMaterials));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -193,7 +195,7 @@ namespace Singlearn.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(IndexMaterials));
+                
             }
             return View("Materials/Edit", material);
         }
