@@ -49,6 +49,12 @@
                                     <td>@Html.DisplayFor(modelItem => item.status)</td>
                                     <td>
                                         <ul class="button-list">
+                                                @if (item.file_type != null)
+                                                {
+                                                <li>
+                                                    <a asp-action="DownloadDocument" asp-controller="SubjectMaterialChapter" asp-route-id="@item.material_id" asp-route-file_type="@item.file_type" class="btn btn-primary" role="button">Download</a>
+                                                </li>
+                                                }
                                             <li>
                                                 <a asp-action="DetailsMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="${item.material_id}" class="btn btn-primary" role="button">Details</a>
                                             </li>
@@ -112,34 +118,47 @@
                 tableBody.innerHTML = "";
 
                 filteredMaterials.forEach(function (item) {
-                    var row = `
-                                        <tr>
-                                            <td>${item.subject_id}</td>
-                                            <td>${item.teacher_id}</td>
-                                            <td>${item.class_id}</td>
-                                            <td>${item.name}</td>
-                                            <td>${item.description}</td>
-                                            <td>${item.chapter_id}</td>
-                                            <td>${item.type}</td>
-                                            <td>${item.link}</td>
-                                            <td>${item.status}</td>
-                                            <td>
-                                                        <ul class="button-list">
-            <li>
-                <a href="/Materials/Details/${item.material_id}" class="btn btn-primary" role="button">Details</a>
-            </li>
-            <li>
-                <a href="/Materials/Edit/${item.material_id}" class="btn btn-warning" role="button">Edit</a>
-            </li>
-            <li>
-                <a href="/Materials/Delete/${item.material_id}" class="btn btn-danger" role="button">Delete</a>
-            </li>
-        </ul>
+                    var downloadButton = '';
 
-                                            </td>
-                                        </tr>`;
+                    // Check if file_type is not null or empty
+                    if (item.file_type) {
+                        downloadButton = `
+                    <li>
+                                <a href="/SubjectMaterialChapter/DownloadDocument?id=${item.material_id}&format=${item.file_type}" class="btn btn-secondary" role="button">Download</a>
+                    </li>`;
+                    }
+
+                    // Build the row with the conditional button
+                    var row = `
+                <tr>
+                    <td>${item.subject_id}</td>
+                    <td>${item.teacher_id}</td>
+                    <td>${item.class_id}</td>
+                    <td>${item.name}</td>
+                    <td>${item.description}</td>
+                    <td>${item.chapter_id}</td>
+                    <td>${item.type}</td>
+                    <td>${item.link}</td>
+                    <td>${item.status}</td>
+                    <td>
+                        <ul class="button-list">
+                            ${downloadButton}
+                            <li>
+                                <a href="/Materials/Details/${item.material_id}" class="btn btn-primary" role="button">Details</a>
+                            </li>
+                            <li>
+                                <a href="/Materials/Edit/${item.material_id}" class="btn btn-warning" role="button">Edit</a>
+                            </li>
+                            <li>
+                                <a href="/Materials/Delete/${item.material_id}" class="btn btn-danger" role="button">Delete</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>`;
+
                     tableBody.innerHTML += row;
                 });
+
 
                 // Update pagination after updating table content
                 updatePagination(filteredMaterials.length);
