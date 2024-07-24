@@ -9,4 +9,136 @@
     var staffId = HttpContextAccessor.HttpContext.Session.GetString("staff_id");
 }
 
-Hello I am admin {{staffId}}
+<div class="container-fluid">
+    <!-- Crud Display -->
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+            <h1 class="fw-bold py-3 mb-2">Tools</h1>
+        </div>
+
+            <div class="col-lg-10 offset-lg-1">
+                <div class="row">
+                        <div class="col-lg-3 padding-bottom-20">
+                    <a asp-controller="SubjectMaterialChapter" asp-action="IndexSubjects" class="card-link no-underline">
+                        <div class="card mb-2 card-hover-effect">
+                                    <div class="card-body">
+                                    <h5 class="card-title fw-bold py-3 mb-2">Subjects</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                <div class="col-lg-3 padding-bottom-20">
+                    <a asp-controller="SubjectMaterialChapter" asp-action="IndexChapterNames" class="card-link no-underline">
+                        <div class="card mb-2 card-hover-effect">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold py-3 mb-2">Chapters</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3 padding-bottom-20">
+                    <a asp-controller="Classes" asp-action="Index" class="card-link no-underline">
+                        <div class="card mb-2 card-hover-effect">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold py-3 mb-2">Classes</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3 padding-bottom-20">
+                    <a asp-controller="SubjectTeacherClasses" asp-action="Index" class="card-link no-underline">
+                        <div class="card mb-2 card-hover-effect">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold py-3 mb-2">SubjectTeacherClasses</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3 padding-bottom-20">
+                    <a asp-controller="STCTemplates" asp-action="Index" class="card-link no-underline">
+                        <div class="card mb-2 card-hover-effect">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold py-3 mb-2">STCTemplates</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                </div>
+            </div>
+
+    </div>
+</div>
+
+<style>
+    .modal-title {
+        color: black; /* Set title color to black */
+    }
+
+    .carousel-img {
+        height: 300px;
+        width: 100%;
+        object-fit: fit;
+    }
+
+    .card-img-custom {
+        height: 225px;
+        width: 100%;
+        object-fit: fit;
+    }
+
+    .round-corner {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .padding-top-10 {
+        padding-top: 10px;
+    }
+
+    .padding-top-20 {
+        padding-top: 20px;
+    }
+
+    .padding-top-40 {
+        padding-top: 40px;
+    }
+
+    .padding-top-60 {
+        padding-top: 60px;
+    }
+
+    .padding-bottom-10 {
+        padding-bottom: 10px;
+    }
+
+    .padding-bottom-20 {
+        padding-bottom: 20px;
+    }
+
+    .padding-bottom-40 {
+        padding-bottom: 40px;
+    }
+
+    .padding-bottom-60 {
+        padding-bottom: 60px;
+    }
+
+    .card-hover-effect {
+        overflow: hidden;
+        position: relative;
+        border-radius: 0.5rem;
+        transition: transform 0.25s ease-in-out;
+    }
+
+        .card-hover-effect:hover {
+            transform: scale(1.05); /* Increase size on hover */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
+        }
+
+    .no-underline {
+        text-decoration: none; /* Removes the underline */
+    }
+
+</style>
