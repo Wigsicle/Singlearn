@@ -53,17 +53,36 @@
 
         .actions {
             margin-top: 20px;
-            text-align: center;
+            text-align: center; /* Center align text and inline elements */
         }
 
-            .actions a {
-                margin: 0 10px;
-                color: #007bff;
-                text-decoration: none;
+        .actions a {
+            margin: 0 10px;
+            color: #007bff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+            .actions a.edit-btn {
+                background-color: #ffc107; /* Yellow background for Edit button */
+                color: #000; /* Black text color for better contrast */
             }
 
-                .actions a:hover {
-                    text-decoration: underline;
+                .actions a.edit-btn:hover {
+                    background-color: #e0a800; /* Darker yellow for hover effect */
+                }
+
+            .actions a.back-btn {
+                background-color: #6c757d; /* Secondary background color for Back to List button */
+                color: #fff; /* White text color */
+            }
+
+                .actions a.back-btn:hover {
+                    background-color: #5a6268; /* Darker gray for hover effect */
                 }
     </style>
 </head>
@@ -110,8 +129,8 @@
                 <span class="details-value">@Html.DisplayFor(model => model.status)</span>
             </div>
             <div class="actions">
-                <a asp-action="EditMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="@Model.material_id">Edit</a> |
-                <a asp-action="IndexMaterials" asp-controller="SubjectMaterialChapter">Back to List</a>
+                <a asp-action="EditMaterial" asp-controller="SubjectMaterialChapter" asp-route-id="@Model.material_id" class="edit-btn">Edit</a>
+                <a asp-action="IndexMaterials" asp-controller="SubjectMaterialChapter" class="back-btn">Back to List</a>
             </div>
         </div>
     </div>
