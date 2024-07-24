@@ -166,12 +166,19 @@
                 alertBox.style.display = 'block';
             }
 
-            function updateTable(page) {
+            function updateTable(page, filter = '') {
                 var startIndex = (page - 1) * rowsPerPage;
                 var endIndex = startIndex + rowsPerPage;
-                var slicedAnnouncements = announcements.slice(startIndex, endIndex);
+                var filteredAnnouncements = announcements.filter(function (announcement) {
+                    // Filter based on Title, image Url, and Description
+                    return announcement.Title.toLowerCase().includes(filter.toLowerCase()) || 
+                           announcement.Description.toLowerCase().includes(filter.toLowerCase()) ||
+                           announcement.Image.toLowerCase().includes(filter.toLowerCase());
+                });
 
+                var slicedAnnouncements = filteredAnnouncements.slice(startIndex, endIndex);
                 updateTableContent(slicedAnnouncements);
+                updatePagination(filteredAnnouncements.length);
             }
 
             function updateTableContent(filteredAnnouncements) {
@@ -194,21 +201,20 @@
                         <td>${announcement.Status}</td>
                         <td>
                             <ul class="button-list">
-                                <li><a href="/Announcements/Details/${announcement.AnnouncementId}"><i class="btn btn-primary">Details</i></a></li>
-                                <li><a href="/Announcements/Edit/${announcement.AnnouncementId}"><i class="btn btn-warning">Edit</i></a></li>
-                                <li><a href="/Announcements/Delete/${announcement.AnnouncementId}"><i class="btn btn-danger">Delete</i></a></li>
+                                <li><a href="/Announcements/Details/${announcement.AnnouncementId}" class="btn btn-primary">Details</a></li>
+                                <li><a href="/Announcements/Edit/${announcement.AnnouncementId}" class="btn btn-warning">Edit</a></li>
+                                <li><a href="/Announcements/Delete/${announcement.AnnouncementId}" class="btn btn-danger">Delete</a></li>
                             </ul>
                         </td>
                     `;
                     tableBody.appendChild(row);
                 });
-
-                updatePagination();
             }
 
-            function updatePagination() {
+
+            function updatePagination(totalItems) {
                 var pagination = document.getElementById('pagination');
-                var totalPages = Math.ceil(announcements.length / rowsPerPage);
+                var totalPages = Math.ceil(totalItems / rowsPerPage);
                 var currentPage = parseInt(pagination.querySelector('.page-item.active')?.textContent) || 1;
 
                 pagination.innerHTML = `
@@ -243,11 +249,15 @@
                         e.preventDefault();
                         var page = parseInt(e.target.getAttribute('data-page'));
                         if (!isNaN(page) && page >= 1 && page <= totalPages) {
-                            updateTable(page);
+                            updateTable(page, document.getElementById('searchInput').value);
                         }
                     });
                 });
             }
+
+            document.getElementById('searchInput').addEventListener('input', function (e) {
+                updateTable(1, e.target.value);
+            });
 
             updateTable(currentPage);
         });
