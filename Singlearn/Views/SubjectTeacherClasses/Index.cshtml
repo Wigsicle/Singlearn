@@ -38,9 +38,17 @@
                                     <td class="col-id">@Html.DisplayFor(modelItem => item.teacher_id)</td>
                                     <td class="col-id">@Html.DisplayFor(modelItem => item.class_id)</td>
                                     <td>
-                                        <a asp-action="Details" asp-route-id="@item.stc_id"><i class="fa fa-eye text-primary"></i></a>
-                                        <a asp-action="Edit" asp-route-id="@item.stc_id"><i class="fa fa-pencil text-warning"></i></a>
-                                        <a asp-action="Delete" asp-route-id="@item.stc_id"><i class="fa fa-trash text-danger"></i></a>
+                                        <ul class="button-list">
+                                            <li>
+                                                <a asp-action="Details" asp-route-id="@item.stc_id" class="btn btn-primary" role="button">Details</a>
+                                            </li>
+                                            <li>
+                                                <a asp-action="Edit" asp-route-id="@item.stc_id" class="btn btn-warning" role="button">Edit</a>
+                                            </li>
+                                            <li>
+                                                <a asp-action="Delete" asp-route-id="@item.stc_id" class="btn btn-danger" role="button">Delete</a>
+                                            </li>
+                                        </ul>
                                     </td>
                                 </tr>
                             }
@@ -94,16 +102,24 @@
 
                 filteredStcList.forEach(function (item) {
                     var row = `
-                                                        <tr>
-                                                            <td class="col-id">${item.subject_id}</td>
-                                                            <td class="col-id">${item.teacher_id}</td>
-                                                            <td class="col-id">${item.class_id}</td>
-                                                            <td>
-                                                                <a href="/SubjectTeacherClasses/Details/${item.stc_id}"><i class="fa fa-eye text-primary"></i></a>
-                                                                <a href="/SubjectTeacherClasses/Edit/${item.stc_id}"><i class="fa fa-pencil text-warning"></i></a>
-                                                                <a href="/SubjectTeacherClasses/Delete/${item.stc_id}"><i class="fa fa-trash text-danger"></i></a>
-                                                            </td>
-                                                        </tr>`;
+                                <tr>
+                                    <td class="col-id">${item.subject_id}</td>
+                                    <td class="col-id">${item.teacher_id}</td>
+                                    <td class="col-id">${item.class_id}</td>
+                                    <td>
+                                        <ul class="button-list">
+                                            <li>
+                                                <a href="/SubjectTeacherClasses/Details/${item.stc_id}" class="btn btn-primary" role="button">Details</a>
+                                            </li>
+                                            <li>
+                                                <a href="/SubjectTeacherClasses/Edit/${item.stc_id}" class="btn btn-warning" role="button">Edit</a>
+                                            </li>
+                                            <li>
+                                                <a href="/SubjectTeacherClasses/Delete/${item.stc_id}" class="btn btn-danger" role="button">Delete</a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>`;
                     tableBody.innerHTML += row;
                 });
 
@@ -117,11 +133,11 @@
                 paginationElement.innerHTML = "";
 
                 var previousLi = `<li class="page-item" id="previousPage">
-                                                                    <a class="page-link" href="" aria-label="Previous">
-                                                                        <span aria-hidden="true">&laquo;</span>
-                                                                        <span class="sr-only">Previous</span>
-                                                                    </a>
-                                                                  </li>`;
+                            <a class="page-link" href="" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>`;
                 paginationElement.innerHTML += previousLi;
 
                 for (var i = 1; i <= totalPages; i++) {
@@ -130,11 +146,11 @@
                 }
 
                 var nextLi = `<li class="page-item" id="nextPage">
-                                                                <a class="page-link" href="" aria-label="Next">
-                                                                    <span aria-hidden="true">&raquo;</span>
-                                                                    <span class="sr-only">Next</span>
-                                                                </a>
-                                                              </li>`;
+                            <a class="page-link" href="" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>`;
                 paginationElement.innerHTML += nextLi;
 
                 var pageLinks = document.querySelectorAll("#pagination .page-link");
@@ -189,8 +205,18 @@
 }
 
 <style>
-
-    .table-responsive {
-        margin-top: 20px;
+    .button-list {
+        list-style: none; /* Removes the default list item bullets */
+        padding: 0; /* Removes default padding */
+        margin: 0; /* Removes default margin */
+        display: flex; /* Aligns the list items horizontally */
     }
+
+        .button-list li {
+            margin-right: 10px; /* Adds spacing between list items */
+        }
+
+            .button-list li:last-child {
+                margin-right: 0; /* Removes right margin from the last item */
+            }
 </style>

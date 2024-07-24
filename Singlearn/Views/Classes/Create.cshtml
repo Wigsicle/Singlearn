@@ -5,53 +5,101 @@
     ViewData["Title"] = "Create Class";
 }
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div style="padding: 15% 3% 3% 3%;">
-                <h2>Create Class</h2>
-                <hr />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Class</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        body {
+            background-color: #f7f7f9;
+        }
 
-                <form asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="class_id" class="control-label">Class ID</label>
-                        <input asp-for="class_id" class="form-control" />
-                        <span asp-validation-for="class_id" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="name" class="control-label">Class Name</label>
-                        <input asp-for="name" class="form-control" />
-                        <span asp-validation-for="name" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="teacher_id" class="control-label">Teacher Id</label>
-                        <select asp-for="teacher_id" class="form-control" asp-items="ViewBag.TeacherList">
-                            <option value="">Select Teacher</option>
-                        </select>
-                        <span asp-validation-for="teacher_id" class="text-danger"></span>
-                    </div>
+        .main-container {
+            padding: 5% 0;
+        }
 
-                    <div class="form-group">
-                        <label asp-for="academic_level" class="control-label">Academic Level</label>
-                        <input asp-for="academic_level" class="form-control" />
-                        <span asp-validation-for="academic_level" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="year" class="control-label">Year</label>
-                        <input asp-for="year" class="form-control" />
-                        <span asp-validation-for="year" class="text-danger"></span>
-                    </div>
-                    <div class="form-group text-center mt-3 mb-3">
-                        <input type="submit" value="Create" class="btn btn-primary" />
-                    </div>
-                </form>
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
 
-                <div>
-                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        .btn-primary {
+            display: block;
+            width: 100%;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        ::placeholder {
+            color: lightgray;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-container">
+        <div class="form-container">
+            <h2>Create Class</h2>
+            <hr />
+
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="class_id" class="control-label">Class ID</label>
+                    <input asp-for="class_id" class="form-control" />
+                    <span asp-validation-for="class_id" class="text-danger"></span>
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <label asp-for="name" class="control-label">Class Name</label>
+                    <input asp-for="name" class="form-control" />
+                    <span asp-validation-for="name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="teacher_id" class="control-label">Teacher Id</label>
+                    <select asp-for="teacher_id" class="form-control" asp-items="ViewBag.TeacherList">
+                        <option value="">Select Teacher</option>
+                    </select>
+                    <span asp-validation-for="teacher_id" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="academic_level" class="control-label">Academic Level</label>
+                    <input asp-for="academic_level" class="form-control" />
+                    <span asp-validation-for="academic_level" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="year" class="control-label">Year</label>
+                    <input asp-for="year" class="form-control" />
+                    <span asp-validation-for="year" class="text-danger"></span>
+                </div>
+
+                <div class="form-group text-center mt-3 mb-3">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+
+                <div class="back-link text-center">
+                    <a asp-action="Index" class="btn btn-secondary btn-block">Back to List</a>
+                </div>
+            </form>
         </div>
     </div>
-</div>
-
+</body>
+</html>

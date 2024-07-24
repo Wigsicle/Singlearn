@@ -5,53 +5,107 @@
     ViewData["Title"] = "Delete Subject";
 }
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div style="padding: 15% 3% 3% 3%;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delete Subject</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        body {
+            background-color: #f7f7f9;
+        }
+
+        .main-container {
+            padding: 5% 0;
+        }
+
+        .details-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .details-header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .details-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .details-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .details-value {
+            color: #555;
+        }
+
+        .actions {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+            .actions button, .actions a {
+                margin: 0 10px;
+                color: #fff;
+                text-decoration: none;
+            }
+
+            .actions button {
+                background-color: #dc3545;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+            }
+
+            .actions a {
+                background-color: #007bff;
+                padding: 10px 20px;
+                border-radius: 5px;
+            }
+
+                .actions a:hover {
+                    text-decoration: underline;
+                }
+    </style>
+</head>
+<body>
+    <div class="container main-container">
+        <div class="details-container">
+            <div class="details-header">
                 <h3>Are you sure you want to delete this?</h3>
-                <hr />
-                <dl class="row">
-                    <dt class="col-sm-4">
-                        Subject Name
-                    </dt>
-                    <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.name)
-                    </dd>
-                    <dt class="col-sm-4">
-                        Year
-                    </dt>
-                    <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.year)
-                    </dd>
-                    <dt class="col-sm-4">
-                        Academic Level
-                    </dt>
-                    <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.academic_level)
-                    </dd>
-                    <dt class="col-sm-4">
-                        No. of Chapters
-                    </dt>
-                    <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.no_chapters)
-                    </dd>
-                    <dt class="col-sm-4">
-                        Image
-                    </dt>
-                    <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.image)
-                    </dd>
-                </dl>
-                <div>
-                    <br />
-                    <form asp-action="DeleteConfirmedSubject" method="post" asp-route-id="@Model.subject_id">
-                        <input type="hidden" asp-for="subject_id" />
-                        <button class="btn btn-danger" type="submit" value="Delete"><i class="fa fa-trash"></i> Delete</button>
-                        <a class="btn btn-secondary" asp-action="IndexSubjects" asp-controller="SubjectMaterialChapter">Back to List</a>
-                    </form>
-                </div>
+            </div>
+            <dl class="row">
+                <dt class="col-sm-4">Subject Name</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.name)</dd>
+                <dt class="col-sm-4">Year</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.year)</dd>
+                <dt class="col-sm-4">Academic Level</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.academic_level)</dd>
+                <dt class="col-sm-4">No. of Chapters</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.no_chapters)</dd>
+                <dt class="col-sm-4">Image</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.image)</dd>
+            </dl>
+            <div class="actions">
+                <form asp-action="DeleteConfirmedSubject" method="post" asp-route-id="@Model.subject_id">
+                    <input type="hidden" asp-for="subject_id" />
+                    <button type="submit" value="Delete">Delete</button>
+                    <a asp-action="IndexSubjects" asp-controller="SubjectMaterialChapter" class="btn btn-secondary">Back to List</a>
+                </form>
             </div>
         </div>
     </div>
-</div>
+</body>
+</html>

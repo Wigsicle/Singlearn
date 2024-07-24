@@ -4,50 +4,99 @@
     Layout = "~/Views/Shared/_LayoutFixed2 - Copy.cshtml";
     ViewData["Title"] = "Edit Subject";
 }
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div style="padding: 15% 3% 3% 3%;">
-                <h2>Edit Subject</h2>
-                <hr />
 
-                <form asp-action="EditSubject" asp-controller="SubjectMaterialChapter" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="subject_id" />
-                    <div class="form-group">
-                        <label asp-for="name" class="control-label"></label>
-                        <input asp-for="name" class="form-control" />
-                        <span asp-validation-for="name" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="year" class="control-label"></label>
-                        <input asp-for="year" class="form-control" />
-                        <span asp-validation-for="year" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="academic_level" class="control-label"></label>
-                        <input asp-for="academic_level" class="form-control" />
-                        <span asp-validation-for="academic_level" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="no_chapters" class="control-label"></label>
-                        <input asp-for="no_chapters" class="form-control" />
-                        <span asp-validation-for="no_chapters" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="image" class="control-label"></label>
-                        <input asp-for="image" class="form-control" />
-                        <span asp-validation-for="image" class="text-danger"></span>
-                    </div>
-                    <div class="form-group text-center mt-3 mb-3">
-                        <input type="submit" value="Update" class="btn btn-primary" />
-                    </div>
-                </form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Subject</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        body {
+            background-color: #f7f7f9;
+        }
 
-                <div>
-                    <a asp-action="IndexSubjects" asp-controller="SubjectMaterialChapter" class="btn btn-secondary">Back to List</a>
+        .main-container {
+            padding: 5% 0;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .btn-primary {
+            display: block;
+            width: 100%;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        ::placeholder {
+            color: lightgray;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-container">
+        <div class="form-container">
+            <h2>Edit Subject</h2>
+            <hr />
+            <form asp-action="EditSubject" asp-controller="SubjectMaterialChapter" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="subject_id" />
+                <div class="form-group">
+                    <label asp-for="name" class="control-label">Name</label>
+                    <input asp-for="name" class="form-control" />
+                    <span asp-validation-for="name" class="text-danger"></span>
                 </div>
+                <div class="form-group">
+                    <label asp-for="year" class="control-label">Year</label>
+                    <input asp-for="year" class="form-control" />
+                    <span asp-validation-for="year" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="academic_level" class="control-label">Academic Level</label>
+                    <input asp-for="academic_level" class="form-control" />
+                    <span asp-validation-for="academic_level" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="no_chapters" class="control-label">Number of Chapters</label>
+                    <input asp-for="no_chapters" class="form-control" />
+                    <span asp-validation-for="no_chapters" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="image" class="control-label">Image URL</label>
+                    <input asp-for="image" class="form-control" />
+                    <span asp-validation-for="image" class="text-danger"></span>
+                </div>
+                <div class="form-group text-center mt-3 mb-3">
+                    <button type="submit" class="btn btn-primary btn-block">Update</button>
+                </div>
+            </form>
+            <div class="back-link text-center">
+                <a asp-action="IndexSubjects" asp-controller="SubjectMaterialChapter" class="btn btn-secondary btn-block">Back to List</a>
             </div>
         </div>
     </div>
-</div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>
