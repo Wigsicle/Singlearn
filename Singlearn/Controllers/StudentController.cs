@@ -241,9 +241,34 @@ namespace Singlearn.Controllers
             }
         }
 
-        public IActionResult profile()
+        [HttpGet]
+        public async Task<IActionResult> profile()
         {
-            return View();
+            var studentId = HttpContext.Session.GetString("student_id");
+            if (string.IsNullOrEmpty(studentId))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var student = await dbContext.Students
+                .Join(dbContext.Classes,
+                      s => s.class_id,
+                      c => c.class_id,
+                      (s, c) => new StudentProfileViewModel
+                      {
+                          student_id = s.student_id,
+                          name = s.name,
+                          contact_no = s.contact_no,
+                          class_id = c.class_id
+                      })
+                .FirstOrDefaultAsync(sp => sp.student_id == studentId);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            return View(student);
         }
 
         public IActionResult lessonmain()
@@ -251,15 +276,5 @@ namespace Singlearn.Controllers
             return View();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> profile(string id)
-        {
-            var student = await dbContext.Students.FindAsync(id);
-            if (student == null)
-            {
-                return NotFound();
-            }
-            return View("Profile", student);
-        }
     }
 }

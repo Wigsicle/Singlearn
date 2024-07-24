@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Singlearn.Data;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Singlearn.Data;
 using Singlearn.Models;
-using Singlearn.ViewModels;
 using Singlearn.Models.Entities;
-using Microsoft.AspNetCore.Hosting;
+using Singlearn.ViewModels;
+
 
 namespace Singlearn.Controllers
 {
@@ -35,7 +36,8 @@ namespace Singlearn.Controllers
                          dbContext.SubjectTeacherClasses,
                          s => s.subject_id,
                          stc => stc.subject_id,
-                         (s, stc) => new {
+                         (s, stc) => new
+                         {
                              Subject = s,
                              SubjectTeacherClass = stc
                          }
@@ -44,7 +46,8 @@ namespace Singlearn.Controllers
                          dbContext.Classes,
                          joined => joined.SubjectTeacherClass.class_id,
                          c => c.class_id,
-                         (joined, c) => new {
+                         (joined, c) => new
+                         {
                              joined.Subject,
                              joined.SubjectTeacherClass,
                              Class = c
@@ -213,9 +216,41 @@ namespace Singlearn.Controllers
             }
         }
 
-        public IActionResult profile()
+        [HttpGet]
+        public async Task<IActionResult> profile()
         {
-            return View();
+            var staffId = HttpContext.Session.GetString("staff_id");
+
+            if (string.IsNullOrEmpty(staffId))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            // Fetch staff details
+            var staff = await dbContext.Staff
+                .FirstOrDefaultAsync(s => s.staff_id == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            // Fetch classes taught by the staff
+            var classes = await dbContext.Classes
+                .Where(c => c.teacher_id == staffId)
+                .Select(c => c.name)
+                .ToListAsync();
+
+            // Create a ViewModel with the necessary data
+            var viewModel = new StaffProfileViewModel
+            {
+                staff_id = staff.staff_id,
+                name = staff.name,
+                contact_no = staff.contact_no,
+                classes = classes
+            };
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> staff_subject(string id)
@@ -255,7 +290,7 @@ namespace Singlearn.Controllers
                 if (string.IsNullOrEmpty(teacherId))
                 {
                     // Redirect to login if teacher_id is not found in the session
-                    return RedirectToAction("Login", "Auth"); 
+                    return RedirectToAction("Login", "Auth");
                 }
 
                 // Retrieve the subjects taught by the teacher
