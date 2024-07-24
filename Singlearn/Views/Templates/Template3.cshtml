@@ -1,4 +1,8 @@
 ﻿@model Singlearn.ViewModels.SubjectViewModel
+@{
+    var currentController = ViewContext.RouteData.Values["controller"].ToString();
+    var announcements = Model.Announcements ?? new List<Singlearn.Models.Entities.Announcement>();
+}
 
 <!DOCTYPE html>
 <html>
@@ -135,7 +139,7 @@
                                     @foreach (var chapter in Model.Chapters)
                                     {
                                         <div class="col-md-6 col-lg-4 padding-bottom-20">
-                                            <a asp-controller="Staff" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@ViewData["ClassId"]" class="card-link">
+                                            <a asp-controller="@currentController" asp-action="MaterialsBySubject" asp-route-subject_id="@chapter.subject_id" asp-route-chapter_id="@chapter.chapter_id" asp-route-class_id="@ViewData["ClassId"]" class="card-link">
                                                 <div class="card mb-2 card-hover-effect chapter-card">
                                                     <div class="card-body">
                                                         <h5 class="card-title fw-bold py-3 mb-2 chapter-card-title">Chapter @chapter.chapter_id: @chapter.name</h5>
