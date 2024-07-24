@@ -23,6 +23,7 @@
                 <table class="table table-striped table-hover" id="subjectsTable">
                     <thead class="thead-dark">
                         <tr>
+                            <th>Subject ID</th>
                             <th>Subject Name</th>
                             <th>Year</th>
                             <th>Academic Level</th>
@@ -35,6 +36,7 @@
                         @foreach (var item in Model)
                         {
                             <tr>
+                                <td class="col-label">@Html.DisplayFor(modelItem => item.subject_id)</td>
                                 <td class="col-label">@Html.DisplayFor(modelItem => item.name)</td>
                                 <td class="col-label">@Html.DisplayFor(modelItem => item.year)</td>
                                 <td class="col-label">@Html.DisplayFor(modelItem => item.academic_level)</td>
@@ -105,6 +107,7 @@
                 filteredSubjects.forEach(function (item) {
                     var row = `
                                 <tr>
+                                    <td>${item.subject_id}</td>
                                     <td>${item.name}</td>
                                     <td>${item.year}</td>
                                     <td>${item.academic_level}</td>
