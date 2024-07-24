@@ -20,28 +20,20 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
         body {
-            background-color: #f7f7f9; /* Light pastel background color */
+            background-color: #f7f7f9;
         }
 
         .main-container {
-            padding: 150px;
-        }
-
-        .header-container {
-            text-align: left;
-            margin-right: 20px;
-            display: flex;
-            align-items: center; /* Center vertically */
-            height: 100%; /* Full height of parent */
+            padding: 5% 0;
         }
 
         .form-container {
-            background-color: #ffffff; /* White background for the form */
+            background-color: #ffffff;
             border-radius: 8px;
             padding: 30px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            flex: 1;
-            max-width: 500px; /* Smaller width */
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .btn-primary {
@@ -54,111 +46,191 @@
             margin-top: 20px;
         }
 
-        .content-wrapper {
-            display: flex;
-            align-items: center; /* Center vertically */
-            justify-content: center; /* Center horizontally */
+        .form-group {
+            margin-bottom: 20px;
         }
 
         ::placeholder {
             color: lightgray;
-            opacity: 1; /* Firefox */
-        }
-
-        .form-group.hidden {
-            display: none;
-        }
-
-        .form-group {
-            margin-bottom: 20px; /* Add space between form groups */
+            opacity: 1;
         }
 
         .checkbox-group {
             display: flex;
-            justify-content: space-between;
-            padding: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .hidden {
+            display: none;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+            $('#subjectGroup').hide();
+            $('#classGroup').hide();
+            $('#subjectDropdown').empty(); // Ensure subjectDropdown is empty initially
+
+            $('#categoryDropdown').change(function () {
+                if ($(this).val() === 'Subject') {
+                    $('#subjectGroup').show();
+                    $('#classGroup').show();
+
+                    // Load subjects and classes based on StaffId via AJAX
+                    var staffId = '@staffId'; 
+
+                    $.ajax({
+                        url: '@Url.Action("GetSubjectsByStaff", "Announcements")',
+                        type: 'GET',
+                        data: { staff_id: staffId },
+                        success: function (data) {
+                            var subjectDropdown = $('#subjectDropdown');
+                            subjectDropdown.empty(); // Ensure the dropdown is empty before adding new options
+                            $.each(data, function (index, value) {
+                                subjectDropdown.append($('<option>').text(value.text).attr('value', value.value));
+                            });
+                        }
+                    });
+
+                    $.ajax({
+                        url: '@Url.Action("GetClassesByStaff", "Announcements")',
+                        type: 'GET',
+                        data: { staff_id: staffId },
+                        success: function (data) {
+                            var classCheckboxes = $('#classCheckboxes');
+                            classCheckboxes.empty(); // Clear existing checkboxes
+                            $.each(data, function (index, value) {
+                                classCheckboxes.append(
+                                    $('<div>').append(
+                                        $('<input>').attr({
+                                            type: 'checkbox',
+                                            name: 'selectedClassIds',
+                                            value: value.value
+                                        }).addClass('form-check-input')
+                                    ).append(
+                                        $('<label>').text(value.text).addClass('form-check-label')
+                                    ).addClass('form-check')
+                                );
+                            });
+                        }
+                    });
+                } else {
+                    $('#subjectGroup').hide();
+                    $('#classGroup').hide();
+
+                    // Clear the subject_id and class_id fields when not 'Subject'
+                    $('#subjectDropdown').empty();
+                    $('#classCheckboxes').empty();
+                }
+            });
+
+            function validateClassSelection() {
+                var selectedCount = $('input[name="selectedClassIds"]:checked').length;
+                if (selectedCount > 1) {
+                    alert('Only one class can be selected for a subject-based announcement.');
+                    $('input[name="selectedClassIds"]:checked').prop('checked', false);
+                }
+            }
+
+            // Form submission validation
+            $('form').submit(function (e) {
+                var category = $('#categoryDropdown').val();
+                if (category === 'Subject') {
+                    var selectedCount = $('input[name="selectedClassIds"]:checked').length;
+                    if (selectedCount === 0) {
+                        alert('Please select at least one class for a subject-based announcement.');
+                        e.preventDefault();
+                    } else if (selectedCount > 1) {
+                        alert('Only one class can be selected for a subject-based announcement.');
+                        e.preventDefault();
+                    }
+                }
+            });
+
+        });
+    </script>
 </head>
 <body>
     <div class="container main-container">
-        <div class="content-wrapper">
-            <div class="header-container">
-                <div>
-                    <h1>Create</h1>
-                    <h4>Announcement</h4>
+        <div class="form-container">
+            <h2>Create Announcement</h2>
+            <hr />
+            <form asp-action="Create" asp-controller="Announcements" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="title" class="control-label">Title</label>
+                    <input asp-for="title" class="form-control" placeholder="Insert your Title Here" />
+                    <span asp-validation-for="title" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="form-container">
-                <form asp-action="Create" asp-controller="Announcements" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="title" class="control-label">Title</label>
-                        <input asp-for="title" class="form-control" placeholder="Insert your Title Here" />
-                        <span asp-validation-for="title" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="description" class="control-label">Description</label>
-                        <textarea asp-for="description" class="form-control" placeholder="Insert your Description Here"></textarea>
-                        <span asp-validation-for="description" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="image" class="control-label">Image link</label>
-                        <input asp-for="image" class="form-control" placeholder="Insert your Image URL Here" />
-                        <span asp-validation-for="image" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="url" class="control-label">URL (optional)</label>
-                        <input asp-for="url" class="form-control" placeholder="Insert your URL Here" />
-                        <span asp-validation-for="url" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="category" class="control-label">Category</label>
-                        <select asp-for="category" class="form-control" id="categoryDropdown">
-                            <option value="News">News</option>
-                            <option value="Events">Events</option>
-                            <option value="Subject">Subject</option>
-                        </select>
-                        <span asp-validation-for="category" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="status" class="control-label">Status</label>
-                        <select asp-for="status" class="form-control">
-                            <option value="Visible">Visible</option>
-                            <option value="Non-Visible">Non-Visible</option>
-                        </select>
-                        <span asp-validation-for="status" class="text-danger"></span>
-                    </div>
-                    <div class="form-group hidden" id="subjectGroup">
-                        <label asp-for="subject_id" class="control-label">Subject</label>
-                        <select asp-for="subject_id" class="form-control" asp-items="ViewBag.Subjects"></select>
-                        <span asp-validation-for="subject_id" class="text-danger"></span>
-                    </div>
-                    <div class="form-group hidden" id="classGroup">
-                        <label class="control-label">Class list</label>
-                        <div id="classCheckboxes">
-                            <!-- Checkboxes will be inserted here via AJAX -->
-                        </div>
-                        <span asp-validation-for="class_id" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="staff_id" class="control-label">Staff ID</label>
-                        <input asp-for="staff_id" class="form-control" value="@staffId" readonly />
-                        <span asp-validation-for="staff_id" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="date" class="control-label">Date</label>
-                        <input asp-for="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
-                        <span asp-validation-for="date" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-primary" />
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="back-link">
-            <a asp-action="Index">Back to List</a>
+
+                <div class="form-group">
+                    <label asp-for="description" class="control-label">Description</label>
+                    <textarea asp-for="description" class="form-control" placeholder="Insert your Description Here"></textarea>
+                    <span asp-validation-for="description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="image" class="control-label">Image URL</label>
+                    <input asp-for="image" class="form-control" placeholder="Insert your Image URL Here" />
+                    <span asp-validation-for="image" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="url" class="control-label">URL (optional)</label>
+                    <input asp-for="url" class="form-control" placeholder="Insert your URL Here" />
+                    <span asp-validation-for="url" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="category" class="control-label">Category</label>
+                    <select asp-for="category" class="form-control" id="categoryDropdown">
+                        <option value="News">News</option>
+                        <option value="Events">Events</option>
+                        <option value="Subject">Subject</option>
+                    </select>
+                    <span asp-validation-for="category" class="text-danger"></span>
+                </div>
+
+                <div class="form-group hidden" id="subjectGroup">
+                    <label asp-for="subject_id" class="control-label">Subject</label>
+                    <select asp-for="subject_id" class="form-control" id="subjectDropdown"></select>
+                </div>
+
+                <div class="form-group hidden" id="classGroup">
+                    <label class="control-label">Class</label>
+                    <div id="classCheckboxes" class="checkbox-group"></div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="status" class="control-label">Status</label>
+                    <select asp-for="status" class="form-control">
+                        <option value="Visible">Visible</option>
+                        <option value="Non-Visible">Non-Visible</option>
+                    </select>
+                    <span asp-validation-for="status" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="staff_id" class="control-label">Staff ID</label>
+                    <input asp-for="staff_id" class="form-control" value="@staffId" readonly />
+                    <span asp-validation-for="staff_id" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="date" class="control-label">Date</label>
+                    <input asp-for="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
+                    <span asp-validation-for="date" class="text-danger"></span>
+                </div>
+
+                <div class="form-group text-center mt-3 mb-3">
+                    <button type="submit" class="btn btn-primary btn-block">Create</button>
+                </div>
+
+                <div class="back-link text-center">
+                    <a asp-action="Index" class="btn btn-secondary btn-block">Back to List</a>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -166,91 +238,6 @@
         @{
             await Html.RenderPartialAsync("_ValidationScriptsPartial");
         }
-        <script>
-            $(document).ready(function () {
-                $('#subjectGroup').hide();
-                $('#classGroup').hide();
-                $('#subjectDropdown').empty(); // Ensure subjectDropdown is empty initially
-
-                $('#categoryDropdown').change(function () {
-                    if ($(this).val() === 'Subject') {
-                        $('#subjectGroup').show();
-                        $('#classGroup').show();
-
-                        // Load subjects and classes based on StaffId via AJAX
-                        var staffId = '@staffId'; 
-
-                        $.ajax({
-                            url: '@Url.Action("GetSubjectsByStaff", "Announcements")',
-                            type: 'GET',
-                            data: { staff_id: staffId },
-                            success: function (data) {
-                                var subjectDropdown = $('#subjectDropdown');
-                                subjectDropdown.empty(); // Ensure the dropdown is empty before adding new options
-                                $.each(data, function (index, value) {
-                                    subjectDropdown.append($('<option>').text(value.text).attr('value', value.value));
-                                });
-                            }
-                        });
-
-                        $.ajax({
-                            url: '@Url.Action("GetClassesByStaff", "Announcements")',
-                            type: 'GET',
-                            data: { staff_id: staffId },
-                            success: function (data) {
-                                var classCheckboxes = $('#classCheckboxes');
-                                classCheckboxes.empty(); // Clear existing checkboxes
-                                $.each(data, function (index, value) {
-                                    classCheckboxes.append(
-                                        $('<div>').append(
-                                            $('<input>').attr({
-                                                type: 'checkbox',
-                                                name: 'selectedClassIds',
-                                                value: value.value
-                                            }).addClass('form-check-input')
-                                        ).append(
-                                            $('<label>').text(value.text).addClass('form-check-label')
-                                        ).addClass('form-check')
-                                    );
-                                });
-                            }
-                        });
-                    } else {
-                        $('#subjectGroup').hide();
-                        $('#classGroup').hide();
-
-                        // Clear the subject_id and class_id fields when not 'Subject'
-                        $('#subjectDropdown').empty();
-                        $('#classCheckboxes').empty();
-                    }
-                });
-
-                function validateClassSelection() {
-                    var selectedCount = $('input[name="selectedClassIds"]:checked').length;
-                    if (selectedCount > 1) {
-                        alert('Only one class can be selected for a subject-based announcement.');
-                        $('input[name="selectedClassIds"]:checked').prop('checked', false);
-                    }
-                }
-
-                // Form submission validation
-                $('form').submit(function (e) {
-                    var category = $('#categoryDropdown').val();
-                    if (category === 'Subject') {
-                        var selectedCount = $('input[name="selectedClassIds"]:checked').length;
-                        if (selectedCount === 0) {
-                            alert('Please select at least one class for a subject-based announcement.');
-                            e.preventDefault();
-                        } else if (selectedCount > 1) {
-                            alert('Only one class can be selected for a subject-based announcement.');
-                            e.preventDefault();
-                        }
-                    }
-                });
-
-            });
-        </script>
-
     }
 </body>
 </html>

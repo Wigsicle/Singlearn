@@ -216,13 +216,13 @@
                     <input asp-for="date" class="form-control" readonly />
                     <span asp-validation-for="date" class="text-danger"></span>
                 </div>
-                <div class="btn-container">
-                    <button type="submit" class="btn btn-primary">Save</button>
+                <div class="form-group text-center mt-3 mb-3">
+                    <button type="submit" class="btn btn-primary btn-block">Update</button>
+                </div>
+                <div class="back-link text-center">
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
                 </div>
             </form>
-        </div>
-        <div class="back-link">
-            <a asp-action="Index">Back to List</a>
         </div>
     </div>
 
