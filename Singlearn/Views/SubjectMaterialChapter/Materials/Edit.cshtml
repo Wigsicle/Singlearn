@@ -121,7 +121,7 @@
                 <!-- Subject dropdown -->
                 <div class="form-group">
                     <label asp-for="subject_id" class="control-label">Subject</label>
-                    <select asp-for="subject_id" asp-items="@ViewBag.SubjectOptions" class="form-control" onchange="fetchClasses(this.value)">
+                    <select asp-for="subject_id" asp-items="@ViewBag.SubjectOptions" class="form-control" required>
                         <option value="">Select a subject</option>
                     </select>
                     <span asp-validation-for="subject_id" class="text-danger"></span>
@@ -137,7 +137,7 @@
                 <!-- Class dropdown -->
                 <div class="form-group">
                     <label asp-for="class_id" class="control-label">Class</label>
-                    <select asp-for="class_id" class="form-control" id="classDropdown" onchange="updateDropdowns(this.value)" disabled>
+                    <select asp-for="class_id" class="form-control" id="classDropdown" required>
                         <option value="">Select a class</option>
                     </select>
                     <span asp-validation-for="class_id" class="text-danger"></span>
@@ -157,7 +157,7 @@
                 
                 <div class="form-group" style="padding-bottom:10px;">
                     <label asp-for="chapter_id" class="control-label">Chapter</label>
-                    <select asp-for="chapter_id" class="form-control" id="chapterDropdown" disabled>
+                    <select asp-for="chapter_id" class="form-control" id="chapterDropdown" required>
                         <option value="">Select a chapter</option>
                     </select>
 
@@ -211,6 +211,21 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var subjectId = $('select[name="subject_id"]').val();
+            if (subjectId) {
+                fetchClasses(subjectId);
+            }
+
+            var classId = $('select[name="class_id"]').val();
+            if (classId) {
+                updateDropdowns(classId)
+            }
+            toggleFileInputs();
+        });
+    </script>
+
     @section Scripts {
         <script>
             function showFileExtension(input) {
@@ -219,6 +234,9 @@
                     document.getElementById('fileExtensionDisplay').value = fileExtension;
                 }
             }
+            // Trigger fetchClasses on page load
+            var subjectId = $('select[name="subject_id"]').val();
+            fetchClasses(subjectId);
 
             function toggleFileInputs() {
                 var typeSelect = document.querySelector('select[name="type"]');
@@ -282,14 +300,24 @@
                             var option = document.createElement('option');
                             option.value = c.value;
                             option.text = c.text;
+                            if (c.value == '@Model.class_id') { // Pre-select the class if it matches
+                                option.selected = true;
+                            }
                             classDropdown.add(option);
                         });
 
-                        // Reset chapter dropdown
-                        document.getElementById('chapterDropdown').disabled = true;
-                        document.getElementById('chapterDropdown').innerHTML = '<option value="">Select a chapter</option>';
+                        // Enable chapter dropdown if a class is selected
+                        var classId = classDropdown.value;
+                        if (classId) {
+                            fetchChapters(subjectId, classId);
+                        } else {
+                            document.getElementById('chapterDropdown').disabled = true;
+                            document.getElementById('chapterDropdown').innerHTML = '<option value="">Select a chapter</option>';
+                        }
                     });
             }
+
+
 
 
             function fetchChapters(subjectId, classId) {
@@ -305,14 +333,22 @@
                         var chapterDropdown = document.getElementById('chapterDropdown');
                         chapterDropdown.disabled = false;
                         chapterDropdown.innerHTML = '<option value="">Select a chapter</option>';
+
+                        // Add chapters to the dropdown
                         data.forEach(chapter => {
                             var option = document.createElement('option');
                             option.value = chapter.id;
-                            option.text = `${chapter.number}`;
+                            option.text = chapter.name; // Correct property name
+                            // Set the existing chapter as selected
+                            if (chapter.id == '@Model.chapter_id') { // Ensure this value matches your existing chapter ID
+                                option.selected = true;
+                            }
                             chapterDropdown.add(option);
                         });
                     });
             }
+
+
 
 
             document.addEventListener("DOMContentLoaded", function () {

@@ -208,24 +208,15 @@ namespace Singlearn.Controllers
                 return Unauthorized();
             }
 
-            // Fetch the number of chapters based on subjectId
-            var subject = await _context.Subjects
-                .Where(s => s.subject_id == subjectId)
-                .Select(s => new { s.no_chapters })
-                .FirstOrDefaultAsync();
-
-            if (subject == null)
-            {
-                return Json(new List<object>());
-            }
-
-            // Generate chapters based on the number of chapters
-            var chapters = Enumerable.Range(1, subject.no_chapters)
-                                     .Select(n => new { id = n, number = n })
-                                     .ToList();
+            // Fetch chapters from the ChapterNames table based on subjectId
+            var chapters = await _context.ChapterNames
+                .Where(c => c.subject_id == subjectId)
+                .Select(c => new { id = c.chapter_id, name = c.name })
+                .ToListAsync();
 
             return Json(chapters);
         }
+
 
         [HttpGet]
         [Route("/Materials/Edit/{id?}")]
