@@ -5,10 +5,6 @@
 @using Singlearn.ViewModels
 @using Microsoft.AspNetCore.Http;
 @inject IHttpContextAccessor HttpContextAccessor;
-@{
-    var studentId = HttpContextAccessor.HttpContext.Session.GetString("student_id");
-}
-
 
 @model HomepageViewModel
 <div class="container-fluid">

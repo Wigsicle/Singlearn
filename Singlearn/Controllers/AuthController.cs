@@ -52,6 +52,16 @@ namespace Singlearn.Controllers
                             return RedirectToAction("Home", "Staff");
                         }
                     }
+                    else if (user.role == "Admin")
+                    {
+                        var staff = await dbContext.Staff.FirstOrDefaultAsync(s => s.user_id == user.user_id);
+                        if (staff != null)
+                        {
+                            HttpContext.Session.SetString("staff_id", staff.staff_id.ToString());
+                            HttpContext.Session.SetString("role", "Admin");
+                            return RedirectToAction("Index", "Admin");
+                        }
+                    }
                 }
             }
             ModelState.AddModelError("", "Invalid login attempt");

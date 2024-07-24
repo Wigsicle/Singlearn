@@ -1,0 +1,12 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutFixed2 - Copy.cshtml";
+    ViewData["StaffTitle"] = "Homepage";
+}
+@using Singlearn.ViewModels
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var staffId = HttpContextAccessor.HttpContext.Session.GetString("staff_id");
+}
+
+Hello I am admin {{staffId}}

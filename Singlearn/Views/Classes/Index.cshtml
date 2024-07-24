@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Singlearn.Models.Entities.Class>
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutFixed2 - Copy.cshtml";
     ViewData["Title"] = "Classes";
 
     var classes = Model.Select(m => m.name).Distinct().OrderBy(classes => classes).ToList();
