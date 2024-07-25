@@ -106,13 +106,13 @@
                     
                     <div class="form-group" style="padding-bottom:10px;" id="dataFileDiv">
                         <label asp-for="DataFile" class="control-label">Download Material</label>
-                        <input asp-for="DataFile" type="file" id="datafile" class="form-control" onchange="showFileExtension(this)" />
+                        <input asp-for="DataFile" type="file" id="datafile" class="form-control" onchange="showFileExtension(this)" accept=".pdf, .docx, .pptx, .xlsx, .xls" />
                         <span asp-validation-for="DataFile" class="text-danger"></span>
                     </div>
                     
                     <div class="form-group" style="padding-bottom:10px;" id="pdfFileDiv">
                         <label asp-for="PDFFile" class="control-label">Viewable Material</label>
-                        <input asp-for="PDFFile" type="file" id="pdffile"  class="form-control" />
+                        <input asp-for="PDFFile" type="file" id="pdffile"  class="form-control" accept=".pdf"/>
                         <span asp-validation-for="PDFFile" class="text-danger"></span>
                     </div>
                     
