@@ -7,6 +7,7 @@ using Singlearn.ViewModels;
 using Microsoft.IdentityModel.Tokens;
 using Singlearn.Models;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SinglearnWeb.Controllers
 {
@@ -268,6 +269,11 @@ namespace SinglearnWeb.Controllers
 
         public async Task<IActionResult> student_subject(string classId)
         {
+            var className = await dbContext.Classes
+                .Where(c => c.class_id == classId)
+                .Select(c => c.name)
+                .FirstOrDefaultAsync();
+
             var subjectsWithClassId = await dbContext.Subjects
                 .Join(
                     dbContext.SubjectTeacherClasses,
@@ -279,22 +285,33 @@ namespace SinglearnWeb.Controllers
                     }
                 )
                 .Where(joined => joined.SubjectTeacherClass.class_id.Equals(classId))
-                .Select(joined => new SubjectViewModel
+                .GroupBy(joined => new
                 {
-                    subject_id = joined.Subject.subject_id,
-                    name = joined.Subject.name,
-                    academic_level = joined.Subject.academic_level,
-                    image = joined.Subject.image,
-                    no_chapters = joined.Subject.no_chapters,
-                    year = joined.Subject.year,
-                    class_id = joined.SubjectTeacherClass.class_id
+                    joined.Subject.subject_id,
+                    joined.Subject.name,
+                    joined.Subject.academic_level,
+                    joined.Subject.image,
+                    joined.Subject.no_chapters,
+                    joined.Subject.year
+                })
+                .Select(group => new SubjectViewModel
+                {
+                    subject_id = group.Key.subject_id,
+                    name = group.Key.name,
+                    academic_level = group.Key.academic_level,
+                    image = group.Key.image,
+                    no_chapters = group.Key.no_chapters,
+                    year = group.Key.year,
+                    class_id = classId,
+                    class_name = className
                 })
                 .ToListAsync();
 
             return View(subjectsWithClassId);
         }
 
-        public async Task<IActionResult> student_homework(string studentId)
+        [HttpGet]
+        public async Task<IActionResult> student_homework(string studentId, int subjectId)
         {
             var student = await dbContext.Students.SingleOrDefaultAsync(s => s.student_id == studentId);
             if (student == null)
@@ -308,8 +325,9 @@ namespace SinglearnWeb.Controllers
                 h=> h.subject_id,
                 stc => stc.subject_id,
                 (h, stc) => new { h, stc })
-                .Where(hstc => hstc.stc.class_id == student.class_id && hstc.stc.teacher_id == hstc.stc.teacher_id)
+                .Where(hstc => hstc.stc.class_id == student.class_id && hstc.h.subject_id == subjectId)
                 .Select(hstc => hstc.h)
+                .Distinct()
                 .ToListAsync();
 
             return View(homeworks);

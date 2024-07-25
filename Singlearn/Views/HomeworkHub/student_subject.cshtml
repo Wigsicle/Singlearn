@@ -28,13 +28,11 @@
                     @foreach (var subject in Model)
                     {
                         <div class="col-md-6 col-lg-3 padding-bottom-20">
-                            @* <a asp-controller="Staff" asp-action="GetChapters" asp-route-subject_id="@subject.subject_id" asp-route-class_id="@subject.class_id" class="card-link"> *@
-                            <a href="~/HomeworkHub/student_homework?subjectId=@subject.subject_id&studentid=@studentId" class="card-link">
+                            <a asp-controller="HomeworkHub" asp-action="student_homework" asp-route-subjectId="@subject.subject_id" asp-route-studentId="@studentId" class="card-link">
                                 <div class="card mb-2 card-hover-effect">
                                     <img class="card-img-top card-img-custom" src="@subject.image" alt="Card image cap" />
                                     <div class="card-body">
-                                        <h5 class="card-title fw-bold py-3 mb-2">@subject.academic_level @subject.year @subject.name (@subject.class_id) @subject.subject_id</h5>
-
+                                        <h5 class="card-title fw-bold py-3 mb-2">@subject.academic_level @subject.year @subject.name (@subject.class_name)</h5>
                                     </div>
                                 </div>
                             </a>
@@ -45,7 +43,7 @@
             }
             else
             {
-                <p>No subjects found for this staff.</p>
+                <p>No subjects found for this student.</p>
             }
         </div>
     </div>
