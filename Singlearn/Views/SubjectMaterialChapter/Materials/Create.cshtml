@@ -233,7 +233,7 @@
                     data.forEach(chapter => {
                         var option = document.createElement('option');
                         option.value = chapter.id;
-                        option.text = `${chapter.number}`;
+                        option.text = chapter.name;
                         chapterDropdown.add(option);
                     });
                 });
