@@ -28,7 +28,7 @@
                     @foreach (var subject in Model)
                     {
                         <div class="col-md-6 col-lg-3 padding-bottom-20">
-                            <a href="~/HomeworkHub/student_homework?subjectId=@subject.subject_id&studentid=@studentId" class="card-link">
+                            <a asp-controller="HomeworkHub" asp-action="student_homework" asp-route-subjectId="@subject.subject_id" asp-route-studentId="@studentId" class="card-link">
                                 <div class="card mb-2 card-hover-effect">
                                     <img class="card-img-top card-img-custom" src="@subject.image" alt="Card image cap" />
                                     <div class="card-body">

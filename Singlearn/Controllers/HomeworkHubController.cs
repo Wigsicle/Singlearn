@@ -310,7 +310,8 @@ namespace SinglearnWeb.Controllers
             return View(subjectsWithClassId);
         }
 
-        public async Task<IActionResult> student_homework(string studentId)
+        [HttpGet]
+        public async Task<IActionResult> student_homework(string studentId, int subjectId)
         {
             var student = await dbContext.Students.SingleOrDefaultAsync(s => s.student_id == studentId);
             if (student == null)
@@ -324,8 +325,9 @@ namespace SinglearnWeb.Controllers
                 h=> h.subject_id,
                 stc => stc.subject_id,
                 (h, stc) => new { h, stc })
-                .Where(hstc => hstc.stc.class_id == student.class_id && hstc.stc.teacher_id == hstc.stc.teacher_id)
+                .Where(hstc => hstc.stc.class_id == student.class_id && hstc.h.subject_id == subjectId)
                 .Select(hstc => hstc.h)
+                .Distinct()
                 .ToListAsync();
 
             return View(homeworks);
